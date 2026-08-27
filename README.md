@@ -1,6 +1,32 @@
 # FaultTracing-Scripts
 Useful scripts for analyzing, downloading, and visualizing logs.
 
+## Setup with uv
+
+The setup scripts install `uv`, initialize all Git submodules, create a shared
+`.venv`, and install the Python dependencies used by the decoders.
+
+On Windows PowerShell:
+
+```powershell
+.\setup_uv.ps1
+.\.venv\Scripts\Activate.ps1
+```
+
+On Ubuntu or another Linux shell:
+
+```bash
+chmod +x setup_uv.sh
+./setup_uv.sh
+source .venv/bin/activate
+```
+
+Ubuntu users may also need the system Tkinter package for the graphical tools:
+
+```bash
+sudo apt-get install python3-tk
+```
+
 Initialize both decoder submodules after cloning:
 
 ```powershell
