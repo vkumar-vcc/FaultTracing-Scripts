@@ -4,3 +4,6 @@
 [submodule "SAT_Readout_decoder"]
 	path = SAT_Readout_decoder
 	url = https://github.com/vkumar-vcc/SAT_Readout_decoder
+[submodule "download_combine_NUC_dlt"]
+	path = download_combine_NUC_dlt
+	url = git@github.com:vkumar-vcc/download_combine_NUC_dlt.git

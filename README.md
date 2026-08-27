@@ -7,6 +7,12 @@ Initialize both decoder submodules after cloning:
 git submodule update --init --recursive
 ```
 
+## NUC DLT downloader
+
+The NUC DLT downloader is maintained in the `download_combine_NUC_dlt`
+submodule. Its setup, Azure authentication, CLI options, batch modes, and
+output layout are documented in [download_combine_NUC_dlt/README.md](download_combine_NUC_dlt/README.md).
+
 ## SAT readout decoder
 
 The SAT readout decoder is maintained in the `SAT_Readout_decoder` submodule.
