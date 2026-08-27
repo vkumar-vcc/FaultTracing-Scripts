@@ -1,0 +1,6 @@
+[submodule "standby-decoder"]
+	path = standby-decoder
+	url = https://github.com/vkumar-vcc/standby-decoder.git
+[submodule "SAT_Readout_decoder"]
+	path = SAT_Readout_decoder
+	url = https://github.com/vkumar-vcc/SAT_Readout_decoder
