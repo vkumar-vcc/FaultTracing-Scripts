@@ -4,7 +4,7 @@ Useful scripts for analyzing, downloading, and visualizing logs.
 ## Setup with uv
 
 The setup scripts install `uv`, initialize all Git submodules, create a shared
-`.venv`, and install the Python dependencies used by the decoders.
+`.venv`, and sync the Python dependencies from `pyproject.toml`.
 
 On Windows PowerShell:
 
@@ -31,6 +31,51 @@ Initialize both decoder submodules after cloning:
 
 ```powershell
 git submodule update --init --recursive
+```
+
+Add or update Python dependencies from the repository root with `uv`:
+
+```powershell
+uv add requests
+uv sync
+```
+
+## ConfigHub lookup
+
+Use `confighub_lookup.py` to look up ConfigHub software or hardware part
+metadata, software version history, connected baselines, and parent baseline
+trees.
+
+Run a single part lookup from the repository root:
+
+```powershell
+uv run python confighub_lookup.py 32456876AH
+```
+
+By default, the script prompts for your ConfigHub username and password. To use
+an existing bearer token instead, set `CONFIGHUB_TOKEN` before running it:
+
+```powershell
+$env:CONFIGHUB_TOKEN = "<token>"
+uv run python confighub_lookup.py 32456876AH
+```
+
+Look up multiple labeled part numbers and print a summary table:
+
+```powershell
+uv run python confighub_lookup.py --parts "SWLM:80 07 35 12 AAF" "SWL2:80 06 79 86 AK"
+```
+
+Scan a log file for labeled part numbers and look them up in table mode:
+
+```powershell
+uv run python confighub_lookup.py --log-file path\to\log.txt
+```
+
+To walk a specific parent baseline tree, pass its baseline handle:
+
+```powershell
+uv run python confighub_lookup.py 32456876AH --baseline-id <handle>
 ```
 
 ## NUC DLT downloader

@@ -1,0 +1,20 @@
+[project]
+name = "faulttracing-scripts"
+version = "0.1.0"
+description = "Useful scripts for analyzing, downloading, and visualizing logs."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "azure-identity",
+    "azure-storage-blob",
+    "keyring",
+    "pydlt",
+    "requests",
+    "smbprotocol",
+    "tkcalendar",
+    "truststore",
+    "zstandard",
+]
+
+[tool.uv]
+package = false

@@ -4,7 +4,7 @@ Set-Location $PSScriptRoot
 
 if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
     Write-Host "uv was not found. Installing uv..."
-    irm https://astral.sh/uv/install.ps1 | iex
+    Invoke-RestMethod https://astral.sh/uv/install.ps1 | Invoke-Expression
 
     $uvCandidates = @(
         "$HOME\.local\bin\uv.exe",
@@ -25,11 +25,8 @@ if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
 Write-Host "Initializing Git submodules..."
 git submodule update --init --recursive
 
-Write-Host "Creating the uv virtual environment..."
-uv venv .venv
-
-Write-Host "Installing Python dependencies..."
-uv pip install --python .venv\Scripts\python.exe -r download_combine_NUC_dlt\requirements.txt smbprotocol keyring
+Write-Host "Syncing the uv project environment..."
+uv sync
 
 Write-Host "Setup complete. Activate the environment with:"
 Write-Host "  .\.venv\Scripts\Activate.ps1"

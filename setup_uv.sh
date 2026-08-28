@@ -17,11 +17,8 @@ fi
 echo "Initializing Git submodules..."
 git submodule update --init --recursive
 
-echo "Creating the uv virtual environment..."
-uv venv .venv
-
-echo "Installing Python dependencies..."
-uv pip install --python .venv/bin/python -r download_combine_NUC_dlt/requirements.txt smbprotocol keyring
+echo "Syncing the uv project environment..."
+uv sync
 
 if ! python3 -c "import tkinter" >/dev/null 2>&1; then
   echo "Warning: tkinter is not available. Install it with your system package manager, for example:"
