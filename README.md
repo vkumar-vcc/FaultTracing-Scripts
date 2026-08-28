@@ -52,8 +52,16 @@ Run a single part lookup from the repository root:
 uv run python confighub_lookup.py 32456876AH
 ```
 
-By default, the script prompts for your ConfigHub username and password. To use
-an existing bearer token instead, set `CONFIGHUB_TOKEN` before running it:
+By default, the script prompts for your ConfigHub username and password on the
+first successful login, then stores them in your OS keyring for later runs. To
+forget saved credentials and prompt again, use `--reset-credentials`:
+
+```powershell
+uv run python confighub_lookup.py 32456876AH --reset-credentials
+```
+
+To use an existing bearer token instead, set `CONFIGHUB_TOKEN` before running
+the script:
 
 ```powershell
 $env:CONFIGHUB_TOKEN = "<token>"
@@ -72,10 +80,17 @@ Scan a log file for labeled part numbers and look them up in table mode:
 uv run python confighub_lookup.py --log-file path\to\log.txt
 ```
 
-To walk a specific parent baseline tree, pass its baseline handle:
+To summarize a specific parent baseline tree, pass its baseline handle:
 
 ```powershell
 uv run python confighub_lookup.py 32456876AH --baseline-id <handle>
+```
+
+The default single-part output is a compact summary. Add `--details` when you
+need the raw part fields and the full parent baseline tree:
+
+```powershell
+uv run python confighub_lookup.py 32456876AH --details
 ```
 
 ## NUC DLT downloader

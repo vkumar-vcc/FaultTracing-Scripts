@@ -16,11 +16,13 @@ Usage:
     python confighub_lookup.py 32456876AH
     python confighub_lookup.py 32456876AH --baseline-id <handle>  # to also
         walk the parent tree of one specific connected baseline
+    python confighub_lookup.py 32456876AH --details  # print raw details
 
 Credentials:
     You'll be prompted securely (getpass) for your ConfigHub username and
-    password. Nothing is written to disk. The access token only lives in
-    memory for the duration of the script run.
+    password on first use. After a successful login, the credentials are saved
+    to your OS keyring so later runs can sign in without prompting. The access
+    token only lives in memory for the duration of the script run.
 
     Alternatively, set the CONFIGHUB_TOKEN environment variable to an
     existing bearer token to skip the interactive login step.
@@ -46,6 +48,11 @@ except ImportError:
           "certificate verification errors behind a corporate proxy, run:\n"
           "    pip install truststore\n", file=__import__("sys").stderr)
 
+try:
+    import keyring
+except ImportError:
+    keyring = None
+
 import requests
 
 # Ensure Unicode box-drawing characters print correctly even on legacy
@@ -57,6 +64,8 @@ except Exception:
 
 BASE_URL = "https://confighub.volvocars.net"
 CONTRACT_ID = "10002"
+KEYRING_SERVICE = "FaultTracing-Scripts ConfigHub"
+KEYRING_USERNAME_KEY = "__username__"
 
 
 class ConfigHubClient:
@@ -133,6 +142,92 @@ def find_files_by_supplier_version(history: list, supplier_version: str) -> list
     return [h for h in history if h.get("SupplierVersion") == supplier_version]
 
 
+def get_stored_credentials() -> Optional[tuple[str, str]]:
+    if keyring is None:
+        return None
+
+    try:
+        username = keyring.get_password(KEYRING_SERVICE, KEYRING_USERNAME_KEY)
+        if not username:
+            return None
+        password = keyring.get_password(KEYRING_SERVICE, username)
+    except Exception as exc:
+        print(f"Keyring is not available: {exc}")
+        return None
+
+    if not password:
+        return None
+    return username, password
+
+
+def save_credentials(username: str, password: str) -> None:
+    if keyring is None:
+        print("Keyring package is not installed; credentials were not saved.")
+        return
+
+    try:
+        keyring.set_password(KEYRING_SERVICE, KEYRING_USERNAME_KEY, username)
+        keyring.set_password(KEYRING_SERVICE, username, password)
+    except Exception as exc:
+        print(f"Could not save credentials to keyring: {exc}")
+    else:
+        print("Credentials saved to OS keyring for future runs.")
+
+
+def forget_stored_credentials() -> None:
+    if keyring is None:
+        print("Keyring package is not installed; no stored credentials to remove.")
+        return
+
+    try:
+        username = keyring.get_password(KEYRING_SERVICE, KEYRING_USERNAME_KEY)
+        if not username:
+            print("No stored ConfigHub credentials found in keyring.")
+            return
+        keyring.delete_password(KEYRING_SERVICE, username)
+        keyring.delete_password(KEYRING_SERVICE, KEYRING_USERNAME_KEY)
+    except Exception as exc:
+        print(f"Could not remove stored credentials from keyring: {exc}")
+    else:
+        print("Stored ConfigHub credentials removed from keyring.")
+
+
+def prompt_and_login(client: ConfigHubClient, default_username: Optional[str] = None) -> None:
+    prompt = f"ConfigHub username [{default_username}]: " if default_username else "ConfigHub username: "
+    username = input(prompt).strip() or (default_username or "")
+    if not username:
+        raise RuntimeError("ConfigHub username is required.")
+    password = getpass.getpass("ConfigHub password: ")
+    print("Logging in...")
+    client.login(username, password)
+    print("Login successful.")
+    save_credentials(username, password)
+
+
+def login_with_keyring_or_prompt(client: ConfigHubClient, reset_credentials: bool = False) -> None:
+    if reset_credentials:
+        forget_stored_credentials()
+
+    stored = None if reset_credentials else get_stored_credentials()
+    if not stored:
+        prompt_and_login(client)
+        return
+
+    username, password = stored
+    print(f"Using ConfigHub credentials from keyring for {username}.")
+    try:
+        client.login(username, password)
+    except requests.HTTPError as exc:
+        status_code = exc.response.status_code if exc.response is not None else None
+        if status_code not in (400, 401, 403):
+            raise
+        print("Stored ConfigHub credentials were rejected; please sign in again.")
+        forget_stored_credentials()
+        prompt_and_login(client, username)
+    else:
+        print("Login successful.")
+
+
 def print_parent_tree(node: dict, depth: int = 0) -> None:
     name = node.get("Name")
     version = node.get("Version")
@@ -141,6 +236,49 @@ def print_parent_tree(node: dict, depth: int = 0) -> None:
     print("  " * depth + f"{name} (v{version}, {type_}, id={node_id})")
     for parent in node.get("ParentBaselines", []):
         print_parent_tree(parent, depth + 1)
+
+
+def baseline_label(node: dict) -> str:
+    name = node.get("Name", "?")
+    version = node.get("Version", "?")
+    type_ = node.get("Type", "?")
+    node_id = node.get("Id") or node.get("Handle") or "?"
+    return f"{name} v{version} ({type_}, id={node_id})"
+
+
+def collect_baseline_descendants(node: dict) -> list[dict]:
+    descendants = []
+    for parent in node.get("ParentBaselines", []):
+        descendants.append(parent)
+        descendants.extend(collect_baseline_descendants(parent))
+    return descendants
+
+
+def summarize_baseline_families(nodes: list[dict]) -> list[str]:
+    by_name: dict[str, list[int]] = {}
+    for node in nodes:
+        name = node.get("Name", "?")
+        try:
+            version = int(node.get("Version"))
+        except (TypeError, ValueError):
+            continue
+        by_name.setdefault(name, []).append(version)
+
+    summary = []
+    for name, versions in sorted(by_name.items(), key=lambda kv: max(kv[1]), reverse=True):
+        versions.sort()
+        if len(versions) == 1:
+            summary.append(f"{name} v{versions[0]}")
+        else:
+            summary.append(f"{name} v{versions[0]}-v{versions[-1]} ({len(versions)} links)")
+    return summary
+
+
+def version_sort_value(item: dict) -> int:
+    try:
+        return int(item.get("Version", 0))
+    except (TypeError, ValueError):
+        return 0
 
 
 def summarize_baseline_connections(connected: list) -> str:
@@ -193,6 +331,143 @@ def render_table(headers: list[str], rows: list[list[str]]) -> str:
             lines.append(hline("├", "┼", "┤"))
     lines.append(hline("└", "┴", "┘"))
     return "\n".join(lines)
+
+
+def print_key_value_section(title: str, rows: list[tuple[str, Any]]) -> None:
+    if title:
+        print(f"\n{title}")
+    label_width = max(len(label) for label, _ in rows) if rows else 0
+    for label, value in rows:
+        print(f"  {label:<{label_width}} : {value}")
+
+
+def format_bool(value: Any) -> str:
+    if value is True:
+        return "yes"
+    if value is False:
+        return "no"
+    return "?"
+
+
+def summarize_variant_expressions(part: dict) -> str:
+    variants = part.get("VariantExpressions", [])
+    if not variants:
+        return "none"
+
+    contexts = sorted({ve.get("Context") for ve in variants if ve.get("Context")})
+    ecu_params = sorted({ve.get("EcuSolutionParameter") for ve in variants if ve.get("EcuSolutionParameter")})
+    config_values = sorted({value for ve in variants for value in ve.get("ConfigurationParameterValues", [])})
+
+    parts = [f"{len(variants)} expression(s)"]
+    if contexts:
+        parts.append(f"contexts: {', '.join(contexts)}")
+    if ecu_params:
+        parts.append(f"ECU solution: {', '.join(ecu_params)}")
+    if config_values:
+        parts.append(f"config values: {', '.join(config_values)}")
+    return "; ".join(parts)
+
+
+def print_part_summary(part_number: str, part: dict, kind: str) -> None:
+    position = part.get("Position") or {}
+    position_name = position.get("Name") or "?"
+    position_structure = part.get("PositionStructure") or "?"
+    part_type = part.get("SwPartType") or part.get("KDPPartType") or kind.upper()
+    audit = part.get("Audit") or {}
+
+    print(f"\n=== ConfigHub summary for {part_number} ===")
+    print_key_value_section("Part", [
+        ("Kind", kind),
+        ("Type", part_type),
+        ("Version", f"v{part.get('Version', '?')}"),
+        ("Filestate", part.get("Filestate", "?")),
+        ("Latest", format_bool(part.get("IsLatestVersion"))),
+        ("Published", format_bool(part.get("IsPublished"))),
+        ("Blocked", format_bool(part.get("IsBlocked"))),
+        ("Position", f"{position_name} ({position_structure})"),
+        ("Supplier version", part.get("SupplierVersion", "?")),
+        ("Created", audit.get("CreatedAt", "?")),
+        ("Updated", audit.get("UpdatedAt", "?")),
+    ])
+
+    print_key_value_section("Identifiers", [
+        ("Artifact ID", part.get("Id", "?")),
+        ("Replaces", part.get("Replaces") or "none"),
+        ("Replaced by", part.get("ReplacedBy") or "none"),
+        ("Checksum", part.get("CheckSum", "?")),
+        ("SHA256", part.get("Sha256CheckSum", "?")),
+    ])
+
+    print_key_value_section("Variants", [
+        ("Summary", summarize_variant_expressions(part)),
+    ])
+
+
+def print_history_summary(part_number: str, history: list, supplier_version: str) -> None:
+    print(f"\nVersion history for {part_number}")
+    if not history:
+        print("  No version history found.")
+        return
+
+    versions_sorted = sorted(history, key=version_sort_value)
+    matches = find_files_by_supplier_version(history, supplier_version)
+    match_versions = ", ".join(f"v{h.get('Version', '?')}" for h in sorted(matches, key=version_sort_value))
+    latest_match = max(matches, key=version_sort_value, default=None)
+
+    rows = [
+        ("Total versions", len(history)),
+        ("Version range", f"v{versions_sorted[0].get('Version', '?')} - v{versions_sorted[-1].get('Version', '?')}"),
+        ("Supplier version", supplier_version or "?"),
+        ("Matching versions", match_versions or "none"),
+    ]
+    if latest_match:
+        rows.extend([
+            ("Latest matching file", latest_match.get("FileURI", "?")),
+            ("Latest matching SHA256", latest_match.get("Sha256CheckSum", "?")),
+        ])
+    print_key_value_section("", rows)
+
+
+def print_connected_baselines_summary(connected: list) -> None:
+    print("\nConnected baselines")
+    if not connected:
+        print("  No connected baselines found.")
+        return
+
+    rows = []
+    for baseline in sorted(connected, key=version_sort_value, reverse=True):
+        rows.append([
+            baseline.get("Name", "?"),
+            f"v{baseline.get('Version', '?')}",
+            baseline.get("BaselineStatus", {}).get("Value", "?"),
+            format_bool(baseline.get("IsPublished")),
+            baseline.get("Handle", "?"),
+        ])
+    print(render_table(["Name", "Version", "Status", "Published", "Handle"], rows))
+
+
+def print_parent_tree_summary(tree: dict) -> None:
+    print("\nParent baseline summary")
+    print(f"  Selected baseline : {baseline_label(tree)}")
+
+    direct_parents = tree.get("ParentBaselines", [])
+    if not direct_parents:
+        print("  No parent baseline data found.")
+        return
+
+    print(f"  Direct parents    : {len(direct_parents)}")
+    for parent in direct_parents:
+        descendants = collect_baseline_descendants(parent)
+        print(f"    - {baseline_label(parent)} ({len(descendants)} upstream link(s))")
+
+    upstream = collect_baseline_descendants(tree)
+    families = summarize_baseline_families(upstream)
+    if families:
+        print("  Upstream families :")
+        for family in families[:8]:
+            print(f"    - {family}")
+        if len(families) > 8:
+            print(f"    - ... {len(families) - 8} more")
 
 
 def parse_labeled_parts(entries: list[str]) -> list[tuple[str, str]]:
@@ -313,6 +588,10 @@ def main() -> None:
                          help="Single part number to look up in detail, e.g. 32456876AH")
     parser.add_argument("--baseline-id", help="Baseline handle to walk the parent tree for "
                                                "(defaults to the first connected baseline found)")
+    parser.add_argument("--details", action="store_true",
+                         help="Print raw part details and the full parent baseline tree.")
+    parser.add_argument("--reset-credentials", action="store_true",
+                         help="Remove saved ConfigHub credentials from keyring and prompt again.")
     parser.add_argument("--parts", nargs="+", metavar="LABEL:PARTNUMBER",
                          help="Batch/table mode: one or more 'Label:PartNumber' entries, e.g. "
                               "--parts \"SWLM:80 07 35 12 AAF\" \"SWL2:80 06 79 86  AK\". "
@@ -334,11 +613,7 @@ def main() -> None:
         print("Using CONFIGHUB_TOKEN from environment.")
         client.use_token(token)
     else:
-        username = input("ConfigHub username: ").strip()
-        password = getpass.getpass("ConfigHub password: ")
-        print("Logging in...")
-        client.login(username, password)
-        print("Login successful.")
+        login_with_keyring_or_prompt(client, args.reset_credentials)
 
     if args.parts or args.log_file:
         if args.log_file:
@@ -372,36 +647,31 @@ def main() -> None:
 
     part = sw_part if is_software else hw_part
     kind = "software" if is_software else "hardware"
-    print(f"Found as {kind} part.\n")
-    summarize_part(part)
+    print_part_summary(part_number, part, kind)
+
+    if args.details:
+        print("\n=== Raw part details ===")
+        summarize_part(part)
 
     # 2. History + supplier version match (software only, mirrors what we did).
     if is_software:
-        print(f"\n=== Version history for {part_number} ===")
         history = client.get_software_history(part_number) or []
-        print(f"Total versions: {len(history)}")
-        if history:
-            versions_sorted = sorted(history, key=lambda h: h.get("Version", 0))
-            print(f"Version range: {versions_sorted[0]['Version']} - {versions_sorted[-1]['Version']}")
-
         supplier_version = part.get("SupplierVersion")
-        print(f"\nSupplierVersion: {supplier_version!r}")
-        matches = find_files_by_supplier_version(history, supplier_version)
-        print(f"Files sharing this SupplierVersion ({len(matches)}):")
-        for h in sorted(matches, key=lambda x: x.get("Version", 0)):
-            print(f"  v{h['Version']:>4} | {h.get('FileURI')} | SHA256={h.get('Sha256CheckSum')} "
-                  f"| Created={h['Audit']['CreatedAt']}")
+        print_history_summary(part_number, history, supplier_version)
+
+        if args.details:
+            matches = find_files_by_supplier_version(history, supplier_version)
+            print(f"\nFiles sharing this SupplierVersion ({len(matches)}):")
+            for h in sorted(matches, key=lambda x: x.get("Version", 0)):
+                print(f"  v{h['Version']:>4} | {h.get('FileURI')} | SHA256={h.get('Sha256CheckSum')} "
+                      f"| Created={h['Audit']['CreatedAt']}")
 
     # 3. Connected baselines (software artifact Id).
     artifact_id = part.get("Id")
     connected = []
     if is_software and artifact_id:
-        print(f"\n=== Baselines connected to artifact {artifact_id} ===")
         connected = client.get_connected_baselines(artifact_id) or []
-        for b in connected:
-            print(f"  {b.get('Name')} v{b.get('Version')} (handle={b.get('Handle')}) "
-                  f"status={b.get('BaselineStatus', {}).get('Value')} "
-                  f"published={b.get('IsPublished')}")
+        print_connected_baselines_summary(connected)
 
     # 4. Parent baseline tree.
     baseline_id = args.baseline_id
@@ -409,10 +679,13 @@ def main() -> None:
         baseline_id = connected[0].get("Handle")
 
     if baseline_id:
-        print(f"\n=== Parent baseline tree for baseline {baseline_id} ===")
         tree = client.get_baseline_parent_tree(baseline_id)
         if tree:
-            print_parent_tree(tree)
+            if args.details:
+                print(f"\n=== Parent baseline tree for baseline {baseline_id} ===")
+                print_parent_tree(tree)
+            else:
+                print_parent_tree_summary(tree)
         else:
             print("No parent baseline data found.")
     else:
