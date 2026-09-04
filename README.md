@@ -33,6 +33,32 @@ Initialize both decoder submodules after cloning:
 git submodule update --init --recursive
 ```
 
+## Run tools
+
+The root runners dispatch arguments to each tool from one consistent command.
+Use `run.ps1` on Windows PowerShell or `run.sh` on Linux/macOS:
+
+```powershell
+.\run.ps1 <tool> [arguments]
+```
+
+```bash
+./run.sh <tool> [arguments]
+```
+
+Available tools are `confighub`, `can`, `nuc`, `sat`, and `standby`. Use the
+tool's normal arguments after its name:
+
+```powershell
+.\run.ps1 confighub 32456876AH
+.\run.ps1 can log.blf --map can_decoder\channels.txt
+.\run.ps1 nuc --help
+.\run.ps1 standby --input-file hp_coldboot.log
+```
+
+To see the dispatcher help, run `.run.ps1 --help` or `./run.sh --help`.
+To see the dispatcher help, run `.\run.ps1 --help` or `./run.sh --help`.
+
 Add or update Python dependencies from the repository root with `uv`:
 
 ```powershell
