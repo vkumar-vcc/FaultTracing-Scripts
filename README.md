@@ -118,3 +118,10 @@ To decode a different log, pass its path with `--input-file`:
 ```powershell
 python standby-decoder\hpa_stanby_decoder.py --input-file path\to\hp_coldboot.log
 ```
+
+## CAN decoder
+
+The CAN decoder is maintained in the `can_decoder` submodule. It decodes BLF
+or ASC logs with DBC databases into Parquet and provides an interactive
+Streamlit signal viewer. See the [can_decoder README](can_decoder/README.md)
+for setup and usage instructions.

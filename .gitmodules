@@ -7,3 +7,7 @@
 [submodule "download_combine_NUC_dlt"]
 	path = download_combine_NUC_dlt
 	url = git@github.com:vkumar-vcc/download_combine_NUC_dlt.git
+[submodule "can_decoder"]
+	path = can_decoder
+	url = git@github.com:vkumar-vcc/can-decoder.git
+	branch = main

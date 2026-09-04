@@ -5,6 +5,7 @@ description = "Useful scripts for analyzing, downloading, and visualizing logs."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "azure-cli>=2.60",
     "azure-identity",
     "azure-storage-blob",
     "keyring",
