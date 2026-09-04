@@ -3,8 +3,9 @@ Useful scripts for analyzing, downloading, and visualizing logs.
 
 ## Setup with uv
 
-The setup scripts install `uv`, initialize all Git submodules, create a shared
-`.venv`, and sync the Python dependencies from `pyproject.toml`.
+The setup scripts install `uv`, initialize all Git submodules, create the root
+`.venv`, and sync the Python dependencies from `pyproject.toml`. They also sync
+the CAN decoder's separate environment from `can_decoder/pyproject.toml`.
 
 On Windows PowerShell:
 

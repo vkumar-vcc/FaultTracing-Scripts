@@ -28,5 +28,14 @@ git submodule update --init --recursive
 Write-Host "Syncing the uv project environment..."
 uv sync
 
+Write-Host "Syncing the CAN decoder environment..."
+Push-Location can_decoder
+try {
+    uv sync
+}
+finally {
+    Pop-Location
+}
+
 Write-Host "Setup complete. Activate the environment with:"
 Write-Host "  .\.venv\Scripts\Activate.ps1"

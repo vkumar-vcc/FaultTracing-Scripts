@@ -20,6 +20,9 @@ git submodule update --init --recursive
 echo "Syncing the uv project environment..."
 uv sync
 
+echo "Syncing the CAN decoder environment..."
+(cd can_decoder && uv sync)
+
 if ! python3 -c "import tkinter" >/dev/null 2>&1; then
   echo "Warning: tkinter is not available. Install it with your system package manager, for example:"
   echo "  sudo apt-get install python3-tk"
