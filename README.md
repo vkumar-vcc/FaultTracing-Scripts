@@ -152,3 +152,20 @@ The CAN decoder is maintained in the `can_decoder` submodule. It decodes BLF
 or ASC logs with DBC databases into Parquet and provides an interactive
 Streamlit signal viewer. See the [can_decoder README](can_decoder/README.md)
 for setup and usage instructions.
+
+## UART verifier
+
+The UART Verifier is a Tkinter desktop tool for discovering USB/UART COM ports,
+identifying attached nodes, logging serial traffic, and opening per-port
+consoles. It is maintained in `verify_uart`.
+
+Install its dependency and run it from the repository root:
+
+```powershell
+pip install pyserial
+python verify_uart\verify_uart_V2.py
+```
+
+For scan, logging, console, and executable packaging instructions, see the
+[verify_uart README](verify_uart/README.md). Windows builds can be created with
+`verify_uart\build_windows.ps1`.

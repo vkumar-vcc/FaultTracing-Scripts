@@ -1,0 +1,27 @@
+# PyInstaller build output
+build/
+dist/
+*.manifest
+
+# Captured serial logs
+uart_logs/
+*.log
+
+# Virtual environments
+venv/
+.venv/
+.buildvenv/
+env/
+
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Editor / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
