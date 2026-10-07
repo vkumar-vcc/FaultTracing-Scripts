@@ -1,0 +1,55 @@
+name: VehicleNotificationService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: DismissNotification
+    id: 1
+    payload:
+      request: veno.DismissNotification
+  - name: ReportVisibleNotification # DEPRECATED
+    id: 2
+    payload:
+      request: veno.ReportVisibleNotification
+  - name: GetActiveNotifications
+    id: 3
+    payload:
+      response: veno.ActiveNotifications
+  - name: GetCurrentNotification
+    id: 4
+    payload:
+      response: veno.CurrentNotification
+  - name: GetDirectMessage
+    id: 5
+    payload:
+      response: veno.DirectMessage
+  - name: GetIndications
+    id: 6
+    payload:
+      response: veno.Indications
+
+event_groups:
+  - name: VehicleNotificationGroup
+    id: 1
+    events:
+      - name: ActiveNotifications
+        id: 40960
+      - name: CurrentNotification
+        id: 40961
+      - name: DirectMessage
+        id: 40962
+      - name: Indications
+        id: 40963
+
+payload_proto: vehicle_notification # Name of proto file supplied
+parent_proto_messages: # Parent messages defined in proto file supplied
+  - veno_ActiveNotifications
+  - veno_CurrentNotification
+  - veno_DirectMessage
+  - veno_DismissNotification
+  - veno_Indications
+  - veno_ReportVisibleNotification # DEPRECATED

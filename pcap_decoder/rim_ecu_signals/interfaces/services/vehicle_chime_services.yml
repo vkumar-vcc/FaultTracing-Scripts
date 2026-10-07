@@ -1,0 +1,27 @@
+name: VehicleChimesVsomeipServer
+type: service
+platform: qnx
+api_version_major: 0
+api_version_minor: 0
+service_provider: DHU
+service_consumers: HPA
+
+methods:
+  - name: PlaySound
+    id: 0
+  - name: PlayContinuousSound
+    id: 1
+  - name: StopContinuousSound
+    id: 2
+
+event_groups:
+  - name: ExteriorChimesGroup
+    id: 18743
+    events:
+      - name: ExteriorChimeEvent
+        id: 47368
+
+payload_proto: vehicle_chimes
+parent_proto_messages:
+  - VehicleChimeRequest
+  - ExteriorChimeEvent

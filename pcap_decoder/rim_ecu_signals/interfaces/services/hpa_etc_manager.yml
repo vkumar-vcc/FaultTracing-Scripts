@@ -1,0 +1,72 @@
+name: EtcManagerService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: SetConnectableMode
+    id: 1
+  - name: GetTransactions
+    id: 2
+  - name: SetSwitchTransactionMode
+    id: 3
+  - name: ReqAccountUnbind
+    id: 4
+  - name: ReqEtcmPointName
+    id: 5
+
+event_groups:
+  - name: EtcmServiceStatusGroup
+    id: 16385
+    events:
+      - name: OnBoardUnitStatus
+        id: 32769
+      - name: AccountStatus
+        id: 32770
+      - name: TransactionEvent
+        id: 32771
+      - name: ActiveStatus
+        id: 32772
+      - name: AvailableStatus
+        id: 32773
+      - name: SelfCheckStatus
+        id: 32774
+      - name: SwitchTransactionStatus
+        id: 32775
+      - name: PointNameEvent
+        id: 32776
+      - name: BlueToothStatus
+        id: 32777
+      - name: ErrorInfo
+        id: 32778
+      - name: ServiceStatus
+        id: 32779
+      - name: HistoryTransactionNumber
+        id: 32780
+      - name: TransactionPacket
+        id: 32781
+
+payload_proto: etc_manager
+parent_proto_messages:
+  - vendor_volvocars_hardware_etc_PointName
+  - vendor_volvocars_hardware_etc_EtcmAccountUnbind
+  - vendor_volvocars_hardware_etc_ReqEtcmPointName
+  - vendor_volvocars_hardware_etc_ErrorInfo
+  - vendor_volvocars_hardware_etc_BlueToothStatus
+  - vendor_volvocars_hardware_etc_SwitchTransactionStatus
+  - vendor_volvocars_hardware_etc_SelfCheckStatus
+  - vendor_volvocars_hardware_etc_AvailableStatus
+  - vendor_volvocars_hardware_etc_ActiveStatus
+  - vendor_volvocars_hardware_etc_ConnectionMode
+  - vendor_volvocars_hardware_etc_AccountStatus
+  - vendor_volvocars_hardware_etc_OnBoardUnitStatus
+  - vendor_volvocars_hardware_etc_Transaction
+  - vendor_volvocars_hardware_etc_Timestamp
+  - vendor_volvocars_hardware_etc_Int32Value
+  - vendor_volvocars_hardware_etc_StringValue
+  - vendor_volvocars_hardware_etc_ServiceStatus
+  - vendor_volvocars_hardware_etc_HistoryTransactionNumber
+  - vendor_volvocars_hardware_etc_TransactionPacket

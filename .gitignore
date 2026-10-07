@@ -216,3 +216,32 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- FaultTracing: ignore generated/output/data, keep only source & scripts ---
+# Streamlit secrets at any depth (keep config.toml)
+**/.streamlit/secrets.toml
+
+# Decode outputs and run logs
+pcap_decoder/out/
+**/run_log.txt
+**/decode.log
+
+# Large captures, logging files, and decoded binaries (never commit)
+*.pcap
+*.pcapng
+*.pcap.zst
+*.pcapng.zst
+*.zst
+*.mf4
+*.mdf
+*.mf4z
+*.dlt
+*.blf
+*.asc
+
+# NUC/DLT download destinations
+NUC_DLT_downloads/
+
+# Local uploads served by the Streamlit app
+pcap_ui_uploads/
+

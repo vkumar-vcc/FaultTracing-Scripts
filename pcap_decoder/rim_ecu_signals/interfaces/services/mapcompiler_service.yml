@@ -1,0 +1,18 @@
+name: MapcompilerSomeipservice
+type: service
+platform: android
+api_version_major: 0
+api_version_minor: 0
+service_provider: DHU
+service_consumers: HPA
+
+event_groups:
+  - name: HorizonMapData
+    id: 1
+    events:
+      - name: TileInHorizon
+        id: 1
+
+payload_proto: mapcompiler
+parent_proto_messages:
+   - zenseact_mapcompiler_Tile

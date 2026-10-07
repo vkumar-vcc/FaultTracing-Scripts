@@ -1,0 +1,22 @@
+# Build outputs
+build/
+*.o
+*.obj
+*.so
+*.pyd
+*.dll
+*.exe
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# SDB cache (downloaded ARXML/ZIPs)
+*.arxml
+*.mf4
+
+# Decompressed captures + decode outputs
+*.pcap
+*.pcapng
+out/

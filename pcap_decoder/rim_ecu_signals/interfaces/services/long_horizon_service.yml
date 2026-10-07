@@ -1,0 +1,22 @@
+name: LongHorizonService
+type: service
+platform: android
+api_version_major: 0
+api_version_minor: 0
+service_provider: DHU
+service_consumers: HPA
+
+event_groups:
+  - name: LongHorizonData
+    id: 1
+    events:
+      - name: LongHorizonUpdate
+        id: 1
+      - name: NavigationStatus
+        id: 2
+
+payload_proto: long_horizon_service
+parent_proto_messages:
+  - LongHorizonParcel
+  - NavigationStatus
+  - LongHorizon

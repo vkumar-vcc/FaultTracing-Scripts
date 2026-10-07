@@ -1,0 +1,48 @@
+name: AssistanceCallAdapterService
+type: service
+platform: csp
+service_id: 266
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: SetPassengerTpsPriority
+    id: 1
+  - name: HandleEmergencyCall
+    id: 2
+
+event_groups:
+  - name: AssistanceCallAdapterEventGroup
+    id: 32768
+    events:
+      - name: IsPremiumAudioMuted
+        id: 32769
+      - name: CallState
+        id: 32770
+      - name: TcaSelectedTpsPriority
+        id: 32771
+      - name: TcaStatus
+        id: 32772
+      - name: VehicleDataSendStatus
+        id: 32773
+      - name: ButtonState
+        id: 32774
+      - name: CallType
+        id: 32775
+      - name: SafetyCallServiceDelayTime
+        id: 32776
+
+payload_proto: assistance_call_adapter_service
+parent_proto_messages:
+  - SetPassengerTpsPriorityRequest
+  - IsPremiumAudioMutedEvent
+  - CallStateEvent
+  - TcaSelectedTpsPriorityEvent
+  - TcaStatusEvent
+  - VehicleDataSendStatusEvent
+  - HandleEmergencyCallRequest
+  - ButtonStateEvent
+  - CallTypeEvent
+  - SafetyCallServiceDelayTimeEvent

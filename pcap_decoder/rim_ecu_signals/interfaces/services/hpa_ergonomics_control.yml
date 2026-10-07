@@ -1,0 +1,87 @@
+name: ErgonomicsControlService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: setSeatControlViewStatus
+    id: 5073
+  - name: SetMassageSettings
+    id: 5074
+  - name: SetErgonomicsAutoSaveStatus
+    id: 5075
+  - name: SaveErgonomicsSetup
+    id: 5076
+  - name: RestoreErgonomicsSetup
+    id: 5077
+  - name: StopAutomovement
+    id: 5078
+  - name: GetErgonomicsAutoSaveStatus
+    id: 5079
+  - name: GetEasyEntryFeatureToggleStatus
+    id: 5080
+  - name: GetEasyEntrySeatToggleStatus
+    id: 5081
+  - name: GetEasyEntrySteeringWheelToggleStatus
+    id: 5082
+  - name: SetEasyEntryFeatureToggleStatus
+    id: 5083
+  - name: SetEasyEntrySeatToggleStatus
+    id: 5084
+  - name: SetEasyEntrySteeringWheelToggleStatus
+    id: 5085
+  - name: SetEasyEntryCustomizationState
+    id: 5086
+  - name: GetDriverSeatControlViewStatus
+    id: 5087
+  - name: GetPassangerSeatControlViewStatus
+    id: 5088
+  - name: GetDriverMassageSettings
+    id: 5089
+  - name: GetPassangerMassageSettings
+    id: 5090
+
+event_groups:
+  - name: ErgonomicsControlEventGroup
+    id: 511
+    events:
+      - name: SeatControlDisplayState
+        id: 305
+      - name: SeatMessageStatus
+        id: 306
+      - name: ErgonomicsAutoSaveUpdateEvent
+        id: 307
+      - name: ErgonomicsChangeNotificationEvent
+        id: 308
+      - name: ErgonomicsAutomovementEvent
+        id: 309
+      - name: EasyEntryFeatureToggleUpdate
+        id: 310
+      - name: EasyEntrySeatToggleUpdate
+        id: 311
+      - name: EasyEntrySteeringWheelToggleUpdate
+        id: 312
+      - name: EasyEntryStateUpdate
+        id: 313
+      - name: EasyEntryCustomizationAvailability
+        id: 314
+      - name: ErgonomicDataNotificationEvent
+        id: 315
+
+payload_proto: ergonomics_control  # Name of proto file supplied for ergonomics_control status
+parent_proto_messages:          # Parent messages defined in proto file for ergonomics_control status
+  - SeatControlSelection
+  - SeatControlViewStatus
+  - MassageSettings
+  - ErgonomicsAutomovement
+  - ErgonomicsPosAutoSave
+  - ErgonomicsPosAutomovement
+  - ErgonomicsChangingNodes
+  - EasyEntryFeatureToggle
+  - CallEasyEntryCustomizationStateChange
+  - CurrentEasyEntryRelatedState
+  - EasyEntryCustomizationAvailability
+  - ErgoDataNotification

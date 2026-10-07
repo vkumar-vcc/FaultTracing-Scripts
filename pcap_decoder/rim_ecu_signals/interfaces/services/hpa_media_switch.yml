@@ -1,0 +1,54 @@
+name: MediaSwitchService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+event_groups:
+  - name: MediaSwitchEventGroup
+    id: 500
+    events:
+      - name: PlayPauseButtonEvent
+        id: 200
+      - name: ForwardButtonEvent
+        id: 201
+      - name: BackwardButtonEvent
+        id: 202
+      - name: RotaryEvent
+        id: 203
+      - name: SwsVoiceAssistButtonEvent # DEPRECATED, subscribe to event 212 SwsButtonEventV2 instead
+        id: 204
+      - name: SwsViewChangeButtonEvent # DEPRECATED, subscribe to event 212 SwsButtonEventV2 instead
+        id: 205
+      - name: SwsMediaButtonEvent # DEPRECATED, subscribe to event 212 SwsButtonEventV2 instead
+        id: 206
+      - name: SwsNotificationButtonEvent # DEPRECATED, subscribe to event 212 SwsButtonEventV2 instead
+        id: 207
+      - name: SwsAdjustmentButtonEvent # DEPRECATED, subscribe to event 212 SwsButtonEventV2 instead
+        id: 208
+      - name: BugReportToastMessageEvent
+        id: 209
+      - name: TriggerBugReportCollectionEvent
+        id: 210
+      - name: ConvenienceDeactivationPendingEvent
+        id: 211
+      - name: SwsButtonEventV2 # Payload SwsButtonMessageV2
+        id: 212
+
+methods:
+  - name: ExtendConvenienceMode
+    id: 1
+
+payload_proto: media_switch  # Name of proto file supplied for media switch
+parent_proto_messages:          # Parent messages defined in proto file for media switch
+  - ButtonMessage
+  - RotaryMessage
+  - SwsVoiceAssistButtonMessage
+  - SwsViewChangeButtonMessage
+  - SwsMediaButtonMessage
+  - SwsNotificationButtonMessage
+  - SwsAdjustmentButtonMessage
+  - ExtendConvenienceModeMessage
+  - SwsButtonMessageV2

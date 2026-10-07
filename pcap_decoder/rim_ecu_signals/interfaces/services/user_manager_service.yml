@@ -1,0 +1,87 @@
+name: UserManagerService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+payload_proto: user_manager_service
+
+methods:
+  - name: UserOperationRequest
+    id: 1
+  - name: RequestPairedDeviceList
+    id: 2
+  - name: SendPhoneDeleteRequest
+    id: 3
+  - name: RequestAuthenticatedDevicesInside
+    id: 4
+  - name: RequestDeviceSearchOnReader
+    id: 5
+  - name: FactoryResetInfo
+    id: 6
+  - name: RequestOwnerPairingUserInstruction
+    id: 7
+  - name: SetUniqueDriverIdentification
+    id: 8
+  - name: DeviceOperationRequest
+    id: 9
+  - name: RequestConnectedDeviceList
+    id: 10
+  - name: RequestLPCActiveStatus
+    id: 11
+  - name: SetPrivacyConsentList
+    id: 12
+  - name: SetDefaultProfile
+    id: 13
+  - name: RequestKeySearchOwnership
+    id: 14
+
+event_groups:
+  - name: UserEventGroup
+    id: 1
+    events:
+      - name: UserOperationEvent
+        id: 1
+      - name: PairedDeviceListEvent
+        id: 2
+      - name: AuthenticatedDevicesInsideListEvent
+        id: 3
+      - name: PhonePairingStatusEvent
+        id: 4
+      - name: IsKeySearchOngoingEvent
+        id: 5
+      - name: OwnerPairingUserInstructionEvent
+        id: 6
+      - name: LPCActiveStatusEvent
+        id: 7
+      - name: DeviceOperationEvent
+        id: 8
+      - name: ConnectedDeviceListEvent
+        id: 9
+      - name: TriggerPrivacyConsentNotificationEvent
+        id: 10
+      - name: IsKeySearchOwnershipOngoingEvent
+        id: 11
+      - name: IsOwnershipProvenEvent
+        id: 12
+
+parent_proto_messages:
+  - UserOperationMessage
+  - PairedDevice
+  - PairedDeviceListMessage
+  - DeviceLocationData
+  - AuthenticatedDevicesInsideListMessage
+  - PhonePairingStatusMessage
+  - FactoryResetMessage
+  - IsKeySearchOngoingMessage
+  - OwnerPairingUserInstructionMessage
+  - UniqueDriverIdentificationMessage
+  - LPCActiveStatusMessage
+  - DeviceOperationMessage
+  - ConnectedDeviceListMessage
+  - PrivacyConsentList
+  - DefaultProfileConfigMessage
+  - IsKeySearchOwnershipOngoingMessage
+  - IsOwnershipProvenMessage

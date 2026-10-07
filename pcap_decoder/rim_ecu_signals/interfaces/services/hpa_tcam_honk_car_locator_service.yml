@@ -1,0 +1,16 @@
+name: TcamHonkCarLocatorService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: TCAM
+
+methods:
+  - name: HonkCarLocatorRequestHpa
+    id: 4096
+
+payload_proto: tcam_honk_car_locator
+parent_proto_messages:
+  - HonkCarLocatorRequestHpa
+  - HonkCarLocatorResponseHpa

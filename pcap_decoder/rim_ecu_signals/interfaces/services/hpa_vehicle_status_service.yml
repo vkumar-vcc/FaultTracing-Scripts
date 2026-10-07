@@ -1,0 +1,118 @@
+name: VehicleStatusService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 1
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: GetActiveNotifications
+    id: 4996
+  - name: GetLocaleValue
+    id: 4998
+  - name: SetLocaleValue
+    id: 4999
+  - name: SetTowMode
+    id: 5000
+  - name: SetNotificationIdStatus
+    id: 5001
+  - name: StorePressure
+    id: 5002
+  - name: GetInitialData
+    id: 5003
+  - name : CalibrateTpmsWithReferencePressure
+    id: 5004
+  - name: RequestCarWashMode
+    id: 5005
+  - name: GetCarWashMode
+    id: 5006
+
+event_groups:
+  - name: VFStatusEventGroup
+    id: 511
+    events:
+      - name: ActiveNotifications
+        id: 257
+      - name: LocaleValue
+        id: 259
+      - name: TowModeState
+        id: 260
+      - name: VehicleParkedState
+        id: 261
+      - name: KeyfobBatteryLevel
+        id: 262
+      - name: TpmsData
+        id: 263
+      - name: InterfaceShutdownNotify
+        id: 264
+      - name: ServiceReminder
+        id: 265
+      - name: TyrePressureState
+        id: 266
+      - name: CalibrationStatus
+        id: 267
+      - name: IsCalibrationPossible
+        id: 268
+      - name: SystemStatus
+        id: 269
+      - name: ReferenceTyrePressure
+        id: 270
+      - name: TyrePressureStatus
+        id: 271
+      - name: ReferenceTyrePressureLimits
+        id: 272
+      - name: LifetimeNOxExhaustEmissions
+        id: 273
+      - name: LifetimeFuelConsumption
+        id: 274
+      - name: LifetimeElectricalEnergyConsumption
+        id: 275
+      - name: VirtualDistanceV2X
+        id: 276
+      - name: TractionBatteryStateOfHealth
+        id: 277
+      - name: LastTripNOxExhaustEmissions
+        id: 278
+      - name: LastTripFuelConsumption
+        id: 279
+      - name: LastTripElectricalEnergyConsumption
+        id: 280
+      - name: NOxEmissionLimit
+        id: 281
+      - name: EstimatedTyrePressureState
+        id: 282
+      - name: CarWashMode
+        id: 283
+
+payload_proto: vehicle_status_service  # Name of proto file supplied for vehicle status
+parent_proto_messages:          # Parent messages defined in proto file for vehicle status
+  - vss_ActiveNotifications
+  - vss_LocaleValue
+  - vss_RequestTowMode
+  - vss_TowModeState
+  - vss_VehicleParkedState
+  - vss_KeyfobBatteryLevel
+  - vss_NotificationStatusMessage
+  - vss_InterfaceShutdownNotify
+  - vss_ServiceReminder
+  - vss_TPMSTyrePressureState
+  - vss_TPMSCalibrationStatus
+  - vss_IsCalibrationPossible
+  - vss_SystemStatus
+  - vss_TPMSReferenceTyrePressure
+  - vss_TPMSTyrePressureStatus
+  - vss_CalibrateTpmsWithReferencePressure
+  - vss_ReferenceTyrePressureLimits
+  - vss_LifetimeNOxExhaustEmissions
+  - vss_LifetimeFuelConsumption
+  - vss_LifetimeElectricalEnergyConsumption
+  - vss_VirtualDistanceV2X
+  - vss_TractionBatteryStateOfHealth
+  - vss_LastTripNOxExhaustEmissions
+  - vss_LastTripFuelConsumption
+  - vss_LastTripElectricalEnergyConsumption
+  - vss_NOxEmissionLimit
+  - vss_EstimatedTyrePressureState
+  - vss_RequestCarWashMode
+  - vss_CarWashMode

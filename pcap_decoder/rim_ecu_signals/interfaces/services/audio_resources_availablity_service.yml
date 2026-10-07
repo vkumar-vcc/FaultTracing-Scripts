@@ -1,0 +1,26 @@
+name: AudioResourcesCheckService
+type: service
+platform: qnx
+api_version_major: 0
+api_version_minor: 0
+service_provider: DHU
+service_consumers: CSP
+
+methods:
+  - name: CheckExteriorAudioResources
+    id: 0
+
+event_groups:
+  - name: CheckExteriorSpeakerGroup
+    id: 18743
+    events:
+      - name: ExteriorSpeakerStatus
+        id: 47345
+
+payload_proto: audio_resources
+parent_proto_messages:
+  - ExteriorAudioResourcesCheckStarted
+  - ExteriorAudioResourcesStatus
+
+api_version_major: 0
+api_version_minor: 1

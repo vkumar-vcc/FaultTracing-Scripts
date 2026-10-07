@@ -1,0 +1,82 @@
+type: vsomeip_common
+platform: qnx
+
+unicast: 198.19.56.204
+diagnosis: 0xCC # Defines client_id prefix
+
+logging:
+  level: debug
+  console: true
+  version:
+    enable: true
+  status_log_interval: 30
+  dlt: true
+  statistics:
+    min-frequency: 0
+    interval: 30000
+
+applications:
+  - name: SomeIp_Router
+  - name: vsomeip_test_basic_client
+  - name: vsomeip_test_basic_service
+  - name: powerdaemon_vsomeip_test_client
+
+# Test service
+services:
+  - service: 511
+    instance: 1
+    reliable:
+      port: 31598
+      enable-magic-cookies: false
+    events:
+      - event: 3
+        is_reliable: true
+        is_field: false
+    eventgroups:
+      - eventgroup: 4
+        events:
+          - 3
+
+clients:
+  - reliable_remote_ports:
+      first: 0
+      last: 31000
+    reliable_client_ports:
+      first: 31600
+      last: 31699
+  - reliable_remote_ports:
+      first: 31002
+      last: 65535
+    reliable_client_ports:
+      first: 31600
+      last: 31699
+  - service: 43045
+    instance: 1
+    reliable: [31001]
+
+suppress_missing_event_logs:
+  - service: 307
+  - service: 286
+  - service: 285
+  - service: 267
+  - service: 260
+  - service: 258
+
+routing: SomeIp_Router
+network: SOMEIP
+
+service-discovery:
+  enable: true
+  multicast: 239.255.0.6
+  port: 30490
+  protocol: udp
+  initial_delay_min: 10
+  initial_delay_max: 100
+  find_initial_debounce_reps: 3
+  find_initial_debounce_time: 100
+  repetitions_base_delay: 300
+  repetitions_max: 3
+  ttl: 6
+  netmask: 255.255.0.0
+  cyclic_offer_delay: 2000
+  request_response_delay: 1000

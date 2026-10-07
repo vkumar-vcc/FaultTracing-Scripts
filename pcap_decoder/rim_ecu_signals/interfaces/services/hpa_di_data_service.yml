@@ -1,0 +1,83 @@
+name: DiDataService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: GetInitialStart
+    id: 1
+    payload:
+      response: dida.InitialStart
+  - name: GetSeatBeltReminder
+    id: 2
+    payload:
+      response: dida.SeatBeltReminder
+  - name: GetSpeedWarning
+    id: 3
+    payload:
+      response: dida.SpeedWarning
+  - name: GetSteeringWheelSwitchesLeft
+    id: 4
+    payload:
+      response: dida.SteeringWheelSwitchesLeft
+  - name: GetSteeringWheelSwitchesRight
+    id: 5
+    payload:
+      response: dida.SteeringWheelSwitchesRight
+  - name: GetTouristSpeed
+    id: 6
+    payload:
+      response: dida.TouristSpeed
+  - name: GetWiperStatus
+    id: 7
+    payload:
+      response: dida.WiperStatus
+  - name: GetDimViewMode
+    id: 8
+    payload:
+      response: dida.DimViewMode
+  - name: SetDimViewMode
+    id: 9
+    payload:
+      request: dida.DimViewMode
+  - name: GetTowMode
+    id: 10
+    payload:
+      response: dida.TowMode
+
+event_groups:
+  - name: DiDataGroup
+    id: 1
+    events:
+      - name: InitialStart
+        id: 40960
+      - name: SeatBeltReminder
+        id: 40961
+      - name: SpeedWarning
+        id: 40962
+      - name: SteeringWheelSwitchesLeft
+        id: 40963
+      - name: SteeringWheelSwitchesRight
+        id: 40964
+      - name: TouristSpeed
+        id: 40965
+      - name: WiperStatus
+        id: 40966
+      - name: DimViewMode
+        id: 40967
+      - name: TowMode
+        id: 40968
+
+payload_proto: di_data # Name of proto file supplied
+parent_proto_messages: # Parent messages defined in proto file supplied
+  - dida_InitialStart
+  - dida_SeatBeltReminder
+  - dida_SpeedWarning
+  - dida_SteeringWheelSwitches
+  - dida_TouristSpeed
+  - dida_WiperStatus
+  - dida_DimViewMode
+  - dida_TowMode

@@ -1,0 +1,29 @@
+name: TcamPreCleaningControlService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: TCAM
+
+methods:
+  - name: PreCleaningStart
+    id: 4096
+  - name: PreCleaningStop
+    id: 4097
+  - name: PreCleaningStatus
+    id: 4098
+
+event_groups:
+  - name: PreCleaningStatusEventGroup
+    id: 256
+    events:
+      - name: PreCleaningStatus
+        id: 257
+
+payload_proto: tcam_pre_cleaning_control   # Name of proto file supplied for precleaning control
+parent_proto_messages:                # Parent messages defined in proto file for precleaning control
+  - pre_cleaning_HPAStatusUpdate
+  - pre_cleaning_StartRequest
+  - pre_cleaning_StopRequest
+  - pre_cleaning_StartStopResponse

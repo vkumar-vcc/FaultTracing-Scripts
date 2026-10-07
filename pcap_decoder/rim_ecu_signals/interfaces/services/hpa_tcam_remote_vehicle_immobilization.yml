@@ -1,0 +1,27 @@
+name: TcamRemoteVehicleImmobilizationService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: TCAM
+
+methods:
+  - name: RviRequestHpa
+    id: 4096
+  - name: RviStatusRequestHpa
+    id: 4097
+
+event_groups:
+  - name: RviEventGroup
+    id: 256
+    events:
+      - name: RviStatusUpdateHpa
+        id: 257
+
+payload_proto: tcam_remote_vehicle_immobilization   # Name of proto file supplied for cloud services
+parent_proto_messages:                              # Parent messages defined in proto file for cloud services
+  - RviRequestHpa
+  - RviResponseHpa
+  - RviStatusRequestHpa
+  - RviStatusUpdateHpa

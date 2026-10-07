@@ -1,0 +1,31 @@
+name: ShiftedTcamPositioningService
+type: service
+platform: android
+api_version_major: 0
+api_version_minor: 2
+service_provider: DHU
+service_consumers: TCAM, HPA
+
+# The intention with this service is to provide shifted coordinates (GCJ-02)
+# in China, as the shifting has to be done in DHU. It provides the same
+# location events as the TcamPositioningService and use the same protobuf
+# types for the messages. The only difference is that the lat-lon coordinates
+# are converted into a different geodetic datum (coordinate system).
+# The service will only run when there is a need to convert coordinates, i.e.
+# only in China variants.
+
+event_groups:
+  - name: DrLocation
+    id: 1
+    events:
+      - name: LocationEvent  # Dead reckoned location
+        id: 1
+  - name: RawLocation
+    id: 2
+    events:
+      - name: RawLocationEvent  # Raw location, only sent when there is a gnss fix
+        id: 2
+
+payload_proto: tcam_positioning_service
+parent_proto_messages:
+  - gnss_Location

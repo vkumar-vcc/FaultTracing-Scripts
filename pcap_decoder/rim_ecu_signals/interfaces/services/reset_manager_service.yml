@@ -1,0 +1,23 @@
+name: ResetManagerService
+type: service
+platform: android
+api_version_major: 0
+api_version_minor: 0
+service_provider: DHU
+service_consumers: HPA,HPB,TCAM
+
+payload_proto: reset_manager_service
+
+methods:
+  - name: RequestFactoryResetInfo
+    id: 1
+
+event_groups:
+  - name: ResetEventGroup
+    id: 1
+    events:
+      - name: FactoryResetEvent
+        id: 1
+
+parent_proto_messages:
+  - FactoryResetInfoMessage

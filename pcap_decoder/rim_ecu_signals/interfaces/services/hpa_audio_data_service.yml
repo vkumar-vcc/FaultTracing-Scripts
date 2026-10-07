@@ -1,0 +1,21 @@
+name: AudioDataService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+event_groups:
+  - name: AudioDataGroup
+    id: 1
+    events:
+      - name: HvacFanSpeed
+        id: 32768
+      - name: ElectricalHealth
+        id: 32769
+
+payload_proto: audio_data # Name of proto file supplied
+parent_proto_messages: # Parent messages defined in proto file supplied
+  - HvacFanSpeed
+  - ElectricalHealth

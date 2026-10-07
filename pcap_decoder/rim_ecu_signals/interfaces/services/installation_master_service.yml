@@ -1,0 +1,37 @@
+name: InstallationMasterService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: Assign
+    id: 4096
+  - name: Revoke
+    id: 4097
+    # Do not re-use id 4098
+  - name: ReportDeliveryFinished
+    id: 4099
+  - name: StopAndResetInstallationRequest
+    id: 5000
+
+event_groups:
+  - name: InstallationMasterEventGroup
+    id: 32768
+    events:
+      - name: Notify
+        id: 32769
+      - name: Report
+        id: 32770
+
+payload_proto: installation_master # Name of proto file supplied for installation master control
+parent_proto_messages:
+  - Assignment
+  - AssignmentResult
+  - AssignmentStatus
+  - StopAndResetInstallationRequestResult
+  - RevokeData
+  - RevokeResult
+  - Summary

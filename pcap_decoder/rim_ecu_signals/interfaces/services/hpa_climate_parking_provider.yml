@@ -1,0 +1,33 @@
+name: ParkingClimateService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: TCAM & DHU
+methods:
+  - name: SetParkingTimers
+    id: 4104
+  - name: GetParkingTimers
+    id: 4105
+  - name: SetKeepClimateActiveState
+    id: 4106
+  - name: GetKeepClimateActiveState
+    id: 4107
+  - name: GetParkingClimateInformation
+    id: 4108
+event_groups:
+  - name: ParkingClimateEventGroup
+    id: 256
+    events:
+      - name: ParkingTimersState
+        id: 262
+      - name: KeepClimateActiveState
+        id: 263
+      - name: ClimateInformationStatus
+        id: 264
+payload_proto: climate_parking_provider
+parent_proto_messages:
+  - pcp_TimerList
+  - pcp_KeepClimateActive
+  - pcp_ClimateInformation

@@ -1,0 +1,16 @@
+name: RequestDhuColdBootService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: RequestColdBoot
+    id: 1
+
+payload_proto: cold_boot_request
+parent_proto_messages:
+  - RequestDhuColdBootMessage
+  - ColdBootRequestResult

@@ -1,0 +1,24 @@
+name: TcamServiceAndWarningsService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: TCAM
+
+methods:
+  - name: ServiceAndWarningsStatusRequestHpa
+    id: 4096
+
+event_groups:
+  - name: ServiceAndWarningsEventGroup
+    id: 256
+    events:
+      - name: ServiceAndWarningsUpdateHpa
+        id: 257
+
+payload_proto: tcam_service_and_warnings  # Name of proto file supplied for service and warnings
+parent_proto_messages:                    # Parent messages defined in proto file for service and warnings
+  - ServiceAndWarningsStatusRequestHpa
+  - ServiceAndWarningsStatusResponseHpa
+  - ServiceAndWarningsUpdateHpa

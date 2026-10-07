@@ -1,0 +1,15 @@
+name: HUDAsilDataService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+is_asil: true
+
+event_groups:
+  - name: HudData
+    id: 1
+    events:
+      - name: ForwardAmbientLightLevel
+        id: 40961

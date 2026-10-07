@@ -1,0 +1,130 @@
+name: LSAService
+type: service
+platform: csp
+api_version_major: 2
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: ActivatePAPScanning
+    id: 2
+  - name: StartPAPManeuver
+    id: 3
+  - name: EnableRabAndCta
+    id: 4
+  - name: GetCalibrationData
+    id: 5
+  - name: GetAllData
+    id: 6
+  - name: SetParkingSpotSelection
+    id: 7
+  - name: MutePasWarnings
+    id: 8
+    payload:
+      response: PasMuted
+
+event_groups:
+  - name: LSAEventGroup
+    id: 256
+    events:
+      - name: PAS
+        id: 257
+      - name: TrailerPresent
+        id: 259
+      - name: CamerasAvailability
+        id: 260
+      - name: PASAudio
+        id: 262
+      - name: IsAlive
+        id: 263
+      - name: PASStatus
+        id: 266
+      - name: RAB
+        id: 267
+      - name: CTA
+        id: 268
+      - name: TowbarState
+        id: 269
+      - name: ServiceCalibrationStatus
+        id: 270
+      - name: CameraExtrinsicSrcb
+        id: 271
+      - name: CameraExtrinsicSrcf
+        id: 272
+      - name: CameraExtrinsicSrcl
+        id: 273
+      - name: CameraExtrinsicSrcr
+        id: 274
+      - name: CameraIntrinsicSrcb
+        id: 275
+      - name: CameraIntrinsicSrcf
+        id: 276
+      - name: CameraIntrinsicSrcl
+        id: 277
+      - name: CameraIntrinsicSrcr
+        id: 278
+      - name: SuspensionPositionData
+        id: 279
+      - name: TrackWidth
+        id: 280
+      - name: WheelBase
+        id: 281
+      - name: TireRadius
+        id: 282
+      - name: DistanceToRearAxleCenter
+        id: 283
+      - name: PAPAutoParking
+        id: 284
+      - name: PAPSlotCoordinates
+        id: 285
+      - name: ParkingAssistPilotStatus
+        id: 286
+      - name: PAPDistanceToObject
+        id: 287
+      - name: ParkAssistPilotInformation
+        id: 288
+      - name: TrackedParkingSpots
+        id: 289
+      - name: PasMuted
+        id: 290
+      - name: EgoTrajectoryCoors
+        id: 291
+
+payload_proto: lsa_service   # Name of proto file supplied
+parent_proto_messages:       # Parent messages defined in proto file supplied
+  - PAS
+  - TrailerPresent
+  - CamerasAvailability
+  - PASAudio
+  - IsAlive
+  - ActivatePAPScanning
+  - StartPAPManeuver
+  - PASStatus
+  - RAB
+  - CTA
+  - EnableRabAndCta
+  - TowbarState
+  - CameraExtrinsicSrcb
+  - CameraExtrinsicSrcf
+  - CameraExtrinsicSrcl
+  - CameraExtrinsicSrcr
+  - CameraIntrinsicSrcb
+  - CameraIntrinsicSrcf
+  - CameraIntrinsicSrcl
+  - CameraIntrinsicSrcr
+  - ServiceCalibrationStatus
+  - SuspensionPositionData
+  - DistanceToRearAxleCenter
+  - TrackWidth
+  - WheelBase
+  - TireRadius
+  - PAPAutoParking
+  - PAPSlotCoordinates
+  - ParkingAssistPilotStatus
+  - PAPDistanceToObject
+  - ParkAssistPilotInformation
+  - TrackedParkingSpots
+  - SetParkingSpotSelection
+  - PasMuted
+  - EgoTrajectoryCoors

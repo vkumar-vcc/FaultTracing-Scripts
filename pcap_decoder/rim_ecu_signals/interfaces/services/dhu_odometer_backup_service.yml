@@ -1,0 +1,40 @@
+name: OdometerBackupService
+type: service
+platform: qnx
+api_version_major: 1
+api_version_minor: 0
+service_provider: DHU
+service_consumers: HPA
+
+methods:
+  - name: SetOdometerBackup # DEPRECATED
+    id: 1
+    payload:
+      request: odba.SetOdometerBackup
+  - name: GetOdometerBackup # DEPRECATED
+    id: 2
+    payload:
+      response: odba.GetOdometerBackup
+  - name: SetOdometerBackupSecure
+    id: 3
+    payload:
+      request: odba.SetOdometerBackupSecureRequest
+      response: odba.SetOdometerBackupSecureResponse
+  - name: GetOdometerBackupSecure
+    id: 4
+    payload:
+      request: odba.GetOdometerBackupSecureRequest
+      response: odba.GetOdometerBackupSecureResponse
+
+payload_proto: odometer_backup
+parent_proto_messages:
+  - odba_SetOdometerBackup # DEPRECATED
+  - odba_GetOdometerBackup # DEPRECATED
+  - odba_SetOdometerBackupSecureRequest
+  - odba_SetOdometerBackupSecureResponse
+  - odba_GetOdometerBackupSecureRequest
+  - odba_GetOdometerBackupSecureResponse
+  - odba_GetOdometerBackupSecureRequest_Payload
+  - odba_SetOdometerBackupSecureRequest_Payload
+  - odba_SetOdometerBackupSecureResponse_Payload
+  - odba_GetOdometerBackupSecureResponse_Payload

@@ -1,0 +1,31 @@
+name: DisplayControlDataService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: GetDisplaySettings
+    id: 1
+    payload:
+      response: dico.DisplaySettings
+  - name: GetHudAdjustmentSettings
+    id: 2
+    payload:
+      response: dico.HudAdjustmentSettings
+
+event_groups:
+  - name: DisplayControlDataGroup
+    id: 1
+    events:
+      - name: DisplaySettings
+        id: 40960
+      - name: HudAdjustmentSettings
+        id: 40961
+
+payload_proto: display_control_data
+parent_proto_messages:
+  - dico_DisplaySettings
+  - dico_HudAdjustmentSettings

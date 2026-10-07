@@ -1,0 +1,32 @@
+name: RmsGatewayService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: TCAM
+
+
+event_groups:
+  - name: RmsGatewayServiceEventGroup
+    id: 17509
+    events:
+      - name: GetOveralVehicleData
+        id: 34680
+      - name: GetEdriveData
+        id: 34681
+      - name: GetGeneralWarningMark
+        id: 34689
+      - name: GetShLocalData
+        id: 34690
+      - name: GetTcamInternalSignal
+        id: 34691
+
+
+payload_proto: tcam_gateway  # Name of proto file supplied for rms_gateway
+parent_proto_messages:          # Parent messages defined in proto file for climate control
+  - overalVehicleData
+  - eDriveData
+  - generalWarningMark
+  - shLocalData
+  - tcamInternalSignal

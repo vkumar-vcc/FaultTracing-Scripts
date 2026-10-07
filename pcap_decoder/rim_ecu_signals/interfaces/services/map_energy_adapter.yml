@@ -1,0 +1,29 @@
+name: MapEnergyAdapter
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: SetEnergyForecast
+    id: 1
+  - name: SetEnergyForecastV2
+    id: 2
+
+event_groups:
+  - name: MapEnergyAdapterEventGroup
+    id: 1
+    events:
+      - name: EnergyModel
+        id: 1
+      - name: GlobalEnergyState
+        id: 2
+
+payload_proto: map_energy_adapter
+parent_proto_messages:
+  - EnergyModel
+  - EnergyForecast
+  - EnergyForecastV2
+  - GlobalEnergyState

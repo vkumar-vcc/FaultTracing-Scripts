@@ -1,0 +1,128 @@
+name: TcamChargingService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 3
+service_provider: HPA
+service_consumers: TCAM
+
+methods:
+  - name: SetChargingTargetSoe
+    id: 4096
+  - name: CreateChargingLocation
+    id: 4097
+  - name: ModifyChargingLocation
+    id: 4098
+  - name: DeleteChargingLocation
+    id: 4099
+  - name: SetPlugAndChargeEnabled
+    id: 4101
+  - name: StopResumeCharging
+    id: 4102
+  - name: SetChargeNow
+    id: 4103
+  - name: SetDischargeMinSoc
+    id: 4104
+  - name: ManualBatteryPreconditioning
+    id: 4105
+
+event_groups:
+  - name: ChargingStatusEventGroup
+    id: 256
+    events:
+      - name: StateOfEnergyUpdateHpa
+        id: 257
+      - name: EstimatedDistanceToEmptyUpdateHpa
+        id: 258
+
+  - name: ChargingInfoEventGroup
+    id: 265
+    events:
+      - name: ChargingStatusHpa
+        id: 266
+      - name: ChargingNotificationMessagesHpa
+        id: 267
+
+  - name: ChargingTargetSoeEventGroup
+    id: 270
+    events:
+      - name: ChargingTargetSoeUpdateHpa
+        id: 271
+
+  - name: ChargingLocationEventGroup
+    id: 280
+    events:
+      - name: ChargingLocationUpdateHpa
+        id: 281
+      - name: CurrentSheduledChargingStatus
+        id: 282
+      - name: ChargingLocationActualUpdateHpa
+        id: 283
+      - name: ChargingLocationDefaultUpdateHpa
+        id: 284
+
+  - name: PlugAndChargeEventGroup
+    id: 290
+    events:
+      - name: PlugAndChargeEnabledUpdateHpa
+        id: 291
+      - name: PlugAndChargeIdUpdateHpa
+        id: 292
+
+  - name: ChargeNowEventGroup
+    id: 300
+    events:
+      - name: ChargeNowUpdateHpa
+        id: 301
+
+  - name: DischargeMinSocEventGroup
+    id: 310
+    events:
+      - name: DischargeMinSocUpdateHpa
+        id: 311
+
+  - name: ManualPreconditioningEventGroup
+    id: 320
+    events:
+      - name: ManualPreconditioningUpdate
+        id: 321
+
+  - name: ColdBatteryAtParkIndicationEventGroup
+    id: 330
+    events:
+      - name: ColdBatteryAtParkIndicationUpdate
+        id: 331
+
+payload_proto: tcam_charging          # Name of proto file supplied for charging
+parent_proto_messages:                # Parent messages defined in proto file for charging
+  - StateOfEnergyUpdateHpa
+  - EstimatedDistanceToEmptyUpdateHpa
+  - ChargingStatusHpa
+  - ChargingNotificationMessagesHpa
+  - ChargingTargetSoeRequestTcam
+  - ChargingTargetSoeResponseHpa
+  - ChargingTargetSoeStatusUpdateHpa
+  - CreateChargingLocationHpa
+  - ModifyChargingLocationHpa
+  - DeleteChargingLocationHpa
+  - ChargingLocationUpdateHpa
+  - CurrentScheduledChargingStatusHpa
+  - ChargingLocationActualUpdateHpa
+  - ChargingLocationDefaultUpdateHpa
+  - ChargingLocationResponseHpa
+  - PlugAndChargeIdUpdateHpa
+  - PlugAndChargeEnabledUpdateHpa
+  - PlugAndChargeEnabledRequestTcam
+  - PlugAndChargeResponseHpa
+  - ChargeNowRequestTcam
+  - ChargeNowResponseHpa
+  - ChargeNowUpdateHpa
+  - StopResumeChargingRequestTcam
+  - StopResumeChargingResponseHpa
+  - DischargeMinSocRequestHpa
+  - DischargeMinSocResponseHpa
+  - DischargeMinSocUpdateHpa
+  - ManualPreconditioningUpdate
+  - ManualPreconditioningRequest
+  - ManualPreconditioningResponse
+  - ColdBatteryAtParkIndicationUpdate

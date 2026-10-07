@@ -1,0 +1,17 @@
+name: DriverInformationAsilDataService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+is_asil: true
+
+event_groups:
+  - name: CommonGroup
+    id: 1
+    events:
+      - name: MonitorStates
+        id: 40960
+      - name: CarConfig
+        id: 40961

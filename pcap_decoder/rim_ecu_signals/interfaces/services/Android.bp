@@ -1,0 +1,9 @@
+// Copyright 2021 Volvo Car Corporation
+// This file is covered by LICENSE file in the root of this project
+
+filegroup {
+    name: "rim_ecu_signals_yml",
+    srcs: [
+        "./*.yml",
+    ],
+}

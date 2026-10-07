@@ -1,0 +1,16 @@
+name: TcamCloudService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: TCAM
+
+methods:
+  - name: CloudServicesHPAWakeUp
+    id: 4096
+
+payload_proto: tcam_cloud_services   # Name of proto file supplied for cloud services
+parent_proto_messages:                # Parent messages defined in proto file for cloud services
+  - CloudServicesHPAWakeUpRequest
+  - CloudServicesHPAWakeUpResponse

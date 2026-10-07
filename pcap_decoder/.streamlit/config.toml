@@ -1,0 +1,3 @@
+[server]
+# Allow large vehicle-Ethernet captures to be uploaded when the app is deployed.
+maxUploadSize = 4096

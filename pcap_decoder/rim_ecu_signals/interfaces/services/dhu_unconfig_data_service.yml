@@ -1,0 +1,15 @@
+name: DhuUnconfigDataService
+type: service
+platform: qnx
+api_version_major: 0
+api_version_minor: 0
+service_provider: DHU
+service_consumers: HPA
+
+methods:
+  - name: SetDhuUnconfigData
+    id: 1
+
+payload_proto: dhu_unconfig_data # Name of proto file supplied
+parent_proto_messages: # Parent messages defined in proto file supplied
+  - UnconfigParameters

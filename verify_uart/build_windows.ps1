@@ -65,17 +65,27 @@ try {
 
     Write-Host 'Installing build dependencies...' -ForegroundColor Cyan
     & $venvPython -m pip install --upgrade pip --quiet
-    & $venvPython -m pip install --upgrade pyserial pyinstaller --quiet
+    & $venvPython -m pip install --upgrade pyserial pyinstaller pillow --quiet
     if ($LASTEXITCODE -ne 0) { throw 'Dependency installation failed.' }
 
     # PyInstaller only accepts .ico for the Windows executable icon.
     $iconArgs = @()
     $ico = Join-Path $root 'icon.ico'
+    if (-not (Test-Path $ico)) {
+        $png = Join-Path $root 'icon.png'
+        if (Test-Path $png) {
+            $ico = Join-Path $buildDir "$Name.ico"
+            New-Item -ItemType Directory -Force -Path $buildDir | Out-Null
+            & $venvPython -c "from PIL import Image; import sys; Image.open(sys.argv[1]).save(sys.argv[2], format='ICO', sizes=[(16, 16), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])" $png $ico
+            if ($LASTEXITCODE -ne 0) { throw 'Failed to convert icon.png to an ICO file.' }
+        }
+    }
+
     if (Test-Path $ico) {
         $iconArgs = @('--icon', $ico)
     }
     else {
-        Write-Warning 'icon.ico not found - building without a custom icon.'
+        Write-Warning 'icon.ico and icon.png not found - building without a custom icon.'
     }
 
     $pyiArgs = @(

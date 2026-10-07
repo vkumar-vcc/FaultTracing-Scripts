@@ -1,0 +1,32 @@
+name: SceneControllerService
+type: service
+platform: csp
+service_id: 444
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: EnterScene
+    id: 1
+
+  - name: ExitScene
+    id: 2
+
+  - name: SendHeartbeat
+    id: 3
+
+  - name: GetAllActiveScenes
+    id: 4
+
+payload_proto: scene_controller_service
+parent_proto_messages:
+  - SceneController_EnterScene
+  - SceneController_EnterSceneResp
+  - SceneController_ExitScene
+  - SceneController_ExitSceneResp
+  - SceneController_SendHeartbeat
+  - SceneController_SendHeartbeatResp
+  - SceneController_GetAllActiveScenes
+  - SceneController_GetAllActiveScenesResp

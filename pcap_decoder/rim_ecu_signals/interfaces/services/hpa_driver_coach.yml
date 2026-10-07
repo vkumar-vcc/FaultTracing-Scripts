@@ -1,0 +1,52 @@
+name: DriverCoachService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: GetRangeSelection
+    id: 4097
+  - name: SetRangeSelection
+    id: 4098
+  - name: GetHistoryViewSelection
+    id: 4099
+  - name: SetHistoryViewSelection
+    id: 4100
+  - name: GetRangeOptimizer
+    id: 4101
+  - name: SetRangeOptimizer
+    id: 4102
+  - name: SetResetRequest
+    id: 4103
+  - name: GetEngineeringData
+    id: 4104
+
+event_groups:
+  - name: DriverCoachEventGroup
+    id: 256
+    events:
+      - name: dca_LowFreqEvent
+        id: 258
+      - name: dca_HighFreqEvent
+        id: 259
+      - name: dca_RangeOptimizerEvent
+        id: 260
+      - name: dca_HistoryViewSelectionEvent
+        id: 261
+      - name: dca_ResetRequestEvent
+        id: 262
+      - name: dca_EngineeringDataEvent
+        id: 263
+
+payload_proto: driver_coach # Name of proto file supplied for range
+parent_proto_messages:      # Parent messages defined in proto file for range
+  - dca_LowFreqMessage
+  - dca_HighFreqMessage
+  - dca_RangeSelection
+  - dca_HistoryViewSelection
+  - dca_RangeOptimizer
+  - dca_ResetRequest
+  - dca_EngineeringDataMessage

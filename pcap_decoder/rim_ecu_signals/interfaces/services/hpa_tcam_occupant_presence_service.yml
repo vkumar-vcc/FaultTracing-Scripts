@@ -1,0 +1,28 @@
+name: TcamOccupantPresenceService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: TCAM
+
+#methods:
+#  - name: FirstMethod
+#    id: 4096
+
+event_groups:
+  - name: OccupantStatusGroup
+    id: 256
+    events:
+      - name: OccupantForgottenAssessmentModeHpa
+        id: 257
+      - name: OccupantPresenceUpdateHpa
+        id: 258
+      - name: DriverPresenceConfidenceHpa
+        id: 259
+
+payload_proto: tcam_occupant_presence          # Name of proto file supplied
+parent_proto_messages:                # Parent messages defined in proto file
+  - OccupantForgottenAssessmentModeHpa
+  - OccupantPresenceUpdateHpa
+  - DriverPresenceConfidenceHpa

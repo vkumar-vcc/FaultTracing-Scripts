@@ -1,0 +1,4127 @@
+---
+version: 0.5.2
+topology_configuration:
+  id: 288230376239222768
+  topology_configuration_id: TC-33
+  name: TopoConfig 33 (VIU, RHD, Level 4-1, Orin, 800V)
+  version: 31
+  status: CSReleased
+  configuration_parameters:
+    - name: Assist Drive Redundancy
+      code: 0HBA
+      domain:
+        name: Technical
+        code: VD01
+      value:
+        name: Level 4-1
+        code: 60T
+    - name: Computing Infrastructure
+      code: FGU5
+      domain:
+        name: Technical
+        code: VD01
+      value:
+        name: VIU
+        code: "312"
+    - name: HPA Processor Gen
+      code: TSUS
+      domain:
+        name: Technical
+        code: VD01
+      value:
+        name: Orin
+        code: 5J6
+    - name: Steering Position
+      code: EUDQ
+      domain:
+        name: Technical
+        code: VD01
+      value:
+        name: RHD
+        code: "831"
+    - name: System Voltage
+      code: BIBP
+      domain:
+        name: Technical
+        code: VD01
+      value:
+        name: 800V
+        code: Y7L
+viu:
+  - connector_key: DGWM
+    mcu0:
+      gateway:
+        ip_address: 198.19.4.24
+        mac_address: 02:00:00:00:00:0A
+      house_keeping:
+        ip_address: 198.19.4.23
+        mac_address: 02:00:00:00:00:09
+        ecu_address: 0x1D19
+    mcu1:
+      gateway:
+        ip_address: 198.19.4.26
+        mac_address: 02:00:00:00:00:0C
+      house_keeping:
+        ip_address: 198.19.4.25
+        mac_address: 02:00:00:00:00:0B
+        ecu_address: 0x1D15
+    bus:
+      - bus_type: 4
+        bus_name: LIN_14
+        viu_address: 198.19.4.25
+        viu_port: 3007
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: AQSM
+            ecu_address: 0x0000
+            node_address: 0x03
+        lin_schedules:
+          - 1:
+              - operation: MasterReq
+                delay: 15
+          - 2:
+              - operation: SlaveRsp
+                delay: 15
+          - 3:
+              - operation: write
+                parameter: 0x0A
+                delay: 140
+              - operation: read
+                parameter: 0x10
+                delay: 140
+        lin_frames:
+          - frame_id: 0x10
+            size: 8
+          - frame_id: 0x0A
+            size: 1
+      - bus_type: 3
+        bus_name: LIN_13
+        viu_address: 198.19.4.25
+        viu_port: 3006
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: ASWM
+            ecu_address: 0x0000
+            node_address: 0x05
+        lin_schedules:
+          - 1:
+              - operation: write
+                parameter: 0x01
+                delay: 10
+              - operation: read
+                parameter: 0x02
+                delay: 15
+              - operation: write
+                parameter: 0x04
+                delay: 10
+              - operation: read
+                parameter: 0x05
+                delay: 10
+              - operation: write
+                parameter: 0x06
+                delay: 10
+              - operation: read
+                parameter: 0x07
+                delay: 10
+              - operation: read
+                parameter: 0x08
+                delay: 10
+              - operation: write
+                parameter: 0x09
+                delay: 10
+              - operation: write
+                parameter: 0x0A
+                delay: 10
+              - operation: write
+                parameter: 0x0B
+                delay: 10
+              - operation: read
+                parameter: 0x0C
+                delay: 15
+        lin_frames:
+          - frame_id: 0x01
+            size: 1
+          - frame_id: 0x02
+            size: 7
+          - frame_id: 0x04
+            size: 4
+          - frame_id: 0x05
+            size: 1
+          - frame_id: 0x06
+            size: 1
+          - frame_id: 0x07
+            size: 4
+          - frame_id: 0x08
+            size: 6
+          - frame_id: 0x09
+            size: 5
+          - frame_id: 0x0A
+            size: 2
+          - frame_id: 0x0B
+            size: 1
+          - frame_id: 0x0C
+            size: 8
+      - bus_type: 7
+        bus_name: CAN_16
+        viu_address: 198.19.4.24
+        viu_port: 5003
+        frame_routing:
+          - frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.46
+                vcu_port: 2000
+          - name: CCMB1CAN => CcmbCcmb1canFrame03 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0050
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: CCMB1CAN => CcmbCcmb1canFrame04 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0060
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: CCMB1CAN => CcmbCcmb1canFrame05 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0070
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: CCMB1CAN => CcmbCcmb1canFrame06 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0080
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: CCMB1CAN => CcmbCcmb1canFrame07 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0090
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: CCMB1CAN => CcmbCcmb1canFrame08 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00A0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: CCMB1CAN => CcmbCcmb1canFrame09 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: CCMB
+            ecu_address: 0x1A11
+            frame_id_tx: 0x711
+            frame_id_rx: 0x611
+      - bus_type: 4
+        bus_name: LIN_15
+        viu_address: 198.19.4.25
+        viu_port: 3008
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: HOD
+            ecu_address: 0x1D85
+            node_address: 0x44
+        lin_schedules:
+          - 1:
+              - operation: MasterReq
+                delay: 10
+          - 2:
+              - operation: SlaveRsp
+                delay: 10
+          - 3:
+              - operation: read
+                parameter: 0x21
+                delay: 15
+              - operation: write
+                parameter: 0x25
+                delay: 25
+              - operation: read
+                parameter: 0x23
+                delay: 10
+          - 4:
+              - operation: write
+                parameter: 0x25
+                delay: 40
+              - operation: read
+                parameter: 0x23
+                delay: 10
+          - 5:
+              - operation: write
+                parameter: 0x24
+                delay: 10
+        lin_frames:
+          - frame_id: 0x24
+            size: 7
+          - frame_id: 0x25
+            size: 7
+          - frame_id: 0x21
+            size: 8
+          - frame_id: 0x23
+            size: 8
+      - bus_type: 4
+        bus_name: LIN_12
+        viu_address: 198.19.4.25
+        viu_port: 3005
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: APMS
+            ecu_address: 0x0000
+            node_address: 0x42
+          - ecu_name: HBMF
+            ecu_address: 0x0000
+            node_address: 0x60
+          - ecu_name: AAC
+            ecu_address: 0x0000
+            node_address: 0x68
+          - ecu_name: HUSI
+            ecu_address: 0x0000
+            node_address: 0x72
+        lin_schedules:
+          - 1:
+              - operation: MasterReq
+                delay: 15
+          - 2:
+              - operation: SlaveRsp
+                delay: 15
+          - 3:
+              - operation: read
+                parameter: 0x32
+                delay: 40
+              - operation: write
+                parameter: 0x27
+                delay: 60
+              - operation: read
+                parameter: 0x11
+                delay: 40
+              - operation: write
+                parameter: 0x33
+                delay: 60
+              - operation: read
+                parameter: 0x32
+                delay: 40
+              - operation: write
+                parameter: 0x27
+                delay: 60
+              - operation: read
+                parameter: 0x1B
+                delay: 40
+              - operation: write
+                parameter: 0x15
+                delay: 60
+              - operation: read
+                parameter: 0x32
+                delay: 40
+              - operation: write
+                parameter: 0x27
+                delay: 160
+              - operation: read
+                parameter: 0x32
+                delay: 40
+              - operation: write
+                parameter: 0x27
+                delay: 160
+              - operation: read
+                parameter: 0x32
+                delay: 40
+              - operation: write
+                parameter: 0x27
+                delay: 80
+              - operation: read
+                parameter: 0x10
+                delay: 80
+        lin_frames:
+          - frame_id: 0x11
+            size: 1
+          - frame_id: 0x1B
+            size: 7
+          - frame_id: 0x32
+            size: 8
+          - frame_id: 0x10
+            size: 8
+          - frame_id: 0x33
+            size: 1
+          - frame_id: 0x15
+            size: 7
+          - frame_id: 0x27
+            size: 8
+      - bus_type: 9
+        bus_name: CAN_15
+        viu_address: 198.19.4.24
+        viu_port: 5007
+        frame_routing:
+          - name: IHRA1CAN => IHRASignalFrame03 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0075
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHRA1CAN => IHRASignalFrame02 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0085
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2215
+          - name: IHRA1CAN => IHRASignalFrame06 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x009A
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHRA1CAN => IHRASignalFrame08 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0125
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHRA1CAN => IHRASignalFrame10 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0140
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHRA1CAN => IHRASignalFrame05 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0150
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHRA1CAN => IHRASignalFrame14 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0160
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHRA1CAN => IHRASignalFrame13 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0190
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHRA1CAN => IHRASignalFrame15 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0245
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHRA1CAN => IHRASignalFrame12 => LP1CAN
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x03CB
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: IHRA1CAN => IHRASignalFrame09 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0480
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2215
+          - name: IHRA1CAN => IhraNmFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0502
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHRA1CAN => IHRAToIHRAdpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0637
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+        diagnostic_routing:
+          - ecu_name: IHRA
+            ecu_address: 0x1637
+            frame_id_tx: 0x737
+            frame_id_rx: 0x637
+      - bus_type: 7
+        bus_name: CAN_1
+        viu_address: 198.19.4.24
+        viu_port: 5000
+        frame_routing:
+          - name: LP1CAN => GcccLp1CanSporadicFrame30 => IHRA1CAN
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x03F2
+            end_points:
+              - dest_can_channel: CAN_15
+        diagnostic_routing:
+          - ecu_name: LPA
+            ecu_address: 0x1D1A
+            frame_id_tx: 0x700
+            frame_id_rx: 0x600
+      - bus_type: 9
+        bus_name: CAN_3
+        viu_address: 198.19.4.26
+        viu_port: 5003
+        frame_routing:
+          - name: PSMD1CAN => PSMDCanFrame01 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x01A0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMD1CAN => PSMDCanFrame02 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02A0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMD1CAN => PSMDCanFrame05 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02BA
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMD1CAN => PSMDCanFrame06 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02BB
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMD1CAN => PSMDCanFrame07 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02BC
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMD1CAN => PSMDCanFrame08 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02BD
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMD1CAN => PSMDCanFrame03 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x03A0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMD1CAN => PSMDDevRespCanFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x03B0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMD1CAN => PSMDCanFrame04 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x04A0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMD1CAN => PsmdNmFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0505
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMD1CAN => PsmdToPsmddpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0606
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: PSMD
+            ecu_address: 0x1A14
+            frame_id_tx: 0x706
+            frame_id_rx: 0x606
+      - bus_type: 9
+        bus_name: CAN_11
+        viu_address: 198.19.4.26
+        viu_port: 5005
+        frame_routing:
+          - name: PSMR1CAN => PsmrPsmrdpCanSporadicFr01 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0100
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMR1CAN => PsmrPsmrdpCanSporadicFr02 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0110
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMR1CAN => PsmrPsmrdpCanSporadicFr03 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0120
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMR1CAN => PsmrPsmrdpCanSporadicFr04 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0130
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMR1CAN => PsmrPsmrdpCanSporadicFr05 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0140
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMR1CAN => PsmrPsmrdpCanSporadicFr06 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0150
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMR1CAN => PsmrPsmrdpCanSporadicFr07 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0160
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMR1CAN => PsmrNmFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0504
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMR1CAN => PsmrToPsmrdpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0632
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: PSMR
+            ecu_address: 0x1D0C
+            frame_id_tx: 0x732
+            frame_id_rx: 0x632
+      - bus_type: 4
+        bus_name: LIN_2
+        viu_address: 198.19.4.23
+        viu_port: 3002
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: RCSM
+            ecu_address: 0x0000
+            node_address: 0x64
+        lin_schedules:
+          - 1:
+              - operation: write
+                parameter: 0x22
+                delay: 40
+              - operation: write
+                parameter: 0x07
+                delay: 40
+              - operation: read
+                parameter: 0x14
+                delay: 10
+          - 2:
+              - operation: write
+                parameter: 0x22
+                delay: 20
+              - operation: write
+                parameter: 0x07
+                delay: 20
+              - operation: write
+                parameter: 0x23
+                delay: 15
+              - operation: read
+                parameter: 0x14
+                delay: 10
+              - operation: read
+                parameter: 0x21
+                delay: 10
+              - operation: write
+                parameter: 0x24
+                delay: 10
+          - 3:
+              - operation: MasterReq
+                delay: 15
+          - 4:
+              - operation: SlaveRsp
+                delay: 15
+        lin_frames:
+          - frame_id: 0x07
+            size: 7
+          - frame_id: 0x22
+            size: 7
+          - frame_id: 0x23
+            size: 8
+          - frame_id: 0x24
+            size: 7
+          - frame_id: 0x14
+            size: 7
+          - frame_id: 0x21
+            size: 7
+      - bus_type: 7
+        bus_name: CAN_6
+        viu_address: 198.19.4.26
+        viu_port: 5002
+        frame_routing:
+          - name: RMR1CAN => RmrRmr1canFrame01_10 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0025
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RMR1CAN => RMRNMFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0502
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RMR1CAN => RmrToRmrdpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0617
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: RMR
+            ecu_address: 0x1417
+            frame_id_tx: 0x717
+            frame_id_rx: 0x617
+      - bus_type: 9
+        bus_name: CAN_10
+        viu_address: 198.19.4.26
+        viu_port: 5004
+        frame_aggregation:
+          frame_id_head: 0x0050
+          frame_id_tail: 0x009E
+          agg_threshold: 19
+          end_points:
+            - vcu_address: 198.19.4.1
+              vcu_port: 2000
+            - vcu_address: 198.19.4.49
+              vcu_port: 2000
+        frame_routing:
+          - name: RSRR1CAN => RsrrRsrr1canFrame52 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B6
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame52 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B6
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame53 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B8
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame53 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B8
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame54 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BA
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame54 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BA
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame55 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BC
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame55 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BC
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame56 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BE
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame56 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BE
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame57 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame57 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C0
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame58 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C2
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame58 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C2
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame59 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C4
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame59 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C4
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame60 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C6
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame60 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C6
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame61 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C8
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame61 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C8
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame62 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CA
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame62 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CA
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame63 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CC
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame63 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CC
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame64 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CE
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame64 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CE
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame65 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame65 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D0
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame66 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D3
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame66 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D3
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame67 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D6
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrRsrr1canFrame67 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D6
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRR1CAN => RsrrToRsrrdpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x062D
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: RSRR
+            ecu_address: 0x1D23
+            frame_id_tx: 0x72D
+            frame_id_rx: 0x62D
+      - bus_type: 4
+        bus_name: LIN_3
+        viu_address: 198.19.4.23
+        viu_port: 3003
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: SHFR
+            ecu_address: 0x0000
+            node_address: 0x0B
+          - ecu_name: SHRR
+            ecu_address: 0x0000
+            node_address: 0x74
+        lin_schedules:
+          - 1:
+              - operation: write
+                parameter: 0x02
+                delay: 95
+              - operation: read
+                parameter: 0x04
+                delay: 10
+          - 2:
+              - operation: write
+                parameter: 0x03
+                delay: 95
+              - operation: read
+                parameter: 0x05
+                delay: 10
+          - 3:
+              - operation: MasterReq
+                delay: 10
+          - 4:
+              - operation: SlaveRsp
+                delay: 10
+          - 5:
+              - operation: write
+                parameter: 0x02
+                delay: 95
+              - operation: read
+                parameter: 0x04
+                delay: 10
+              - operation: write
+                parameter: 0x03
+                delay: 95
+              - operation: read
+                parameter: 0x05
+                delay: 10
+        lin_frames:
+          - frame_id: 0x02
+            size: 5
+          - frame_id: 0x03
+            size: 5
+          - frame_id: 0x04
+            size: 2
+          - frame_id: 0x05
+            size: 2
+      - bus_type: 4
+        bus_name: LIN_6
+        viu_address: 198.19.4.23
+        viu_port: 3006
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: SWSL
+            ecu_address: 0x0000
+            node_address: 0x0D
+        lin_schedules:
+          - 1:
+              - operation: write
+                parameter: 0x10
+                delay: 10
+              - operation: write
+                parameter: 0x12
+                delay: 10
+              - operation: read
+                parameter: 0x15
+                delay: 10
+              - operation: write
+                parameter: 0x02
+                delay: 10
+              - operation: read
+                parameter: 0x07
+                delay: 10
+        lin_frames:
+          - frame_id: 0x02
+            size: 7
+          - frame_id: 0x10
+            size: 7
+          - frame_id: 0x12
+            size: 7
+          - frame_id: 0x07
+            size: 7
+          - frame_id: 0x15
+            size: 7
+      - bus_type: 4
+        bus_name: LIN_11
+        viu_address: 198.19.4.23
+        viu_port: 3007
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: SWSR
+            ecu_address: 0x0000
+            node_address: 0x0E
+        lin_schedules:
+          - 1:
+              - operation: write
+                parameter: 0x10
+                delay: 10
+              - operation: write
+                parameter: 0x12
+                delay: 10
+              - operation: read
+                parameter: 0x15
+                delay: 10
+              - operation: write
+                parameter: 0x02
+                delay: 10
+              - operation: read
+                parameter: 0x07
+                delay: 10
+        lin_frames:
+          - frame_id: 0x02
+            size: 7
+          - frame_id: 0x10
+            size: 7
+          - frame_id: 0x12
+            size: 7
+          - frame_id: 0x07
+            size: 7
+          - frame_id: 0x15
+            size: 7
+  - connector_key: FGWM
+    mcu0:
+      gateway:
+        ip_address: 198.19.4.4
+        mac_address: 02:00:00:00:00:02
+      house_keeping:
+        ip_address: 198.19.4.3
+        mac_address: 02:00:00:00:00:01
+        ecu_address: 0x1D07
+    mcu1:
+      gateway:
+        ip_address: 198.19.4.6
+        mac_address: 02:00:00:00:00:04
+      house_keeping:
+        ip_address: 198.19.4.5
+        mac_address: 02:00:00:00:00:03
+        ecu_address: 0x1D0B
+    bus:
+      - bus_type: 9
+        bus_name: CAN_8
+        viu_address: 198.19.4.4
+        viu_port: 5002
+        frame_routing:
+          - name: BCMA1CAN => BcmaBcma1CANFrame01 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0100
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BCMA1CAN => BcmaBcma1CANFrame01 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0100
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2008
+          - name: BCMA1CAN => BcmaBcma1CANDp1AndDp1HIBFrame01 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0101
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BCMA1CAN => BcmaBcma1CANDp1AndDp1HIBFrame01 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0101
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2008
+          - name: BCMA1CAN => BcmaBcma1CANDp1AndDp1HIBFrame02 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0105
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BCMA1CAN => BcmaBcma1CANDp1AndDp1HIBFrame02 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0105
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2008
+          - name: BCMA1CAN => BcmaBcma1CANDp1HIBOnlyFrame01 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0111
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2008
+          - name: BCMA1CAN => BcmaBcma1CANFrame03 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0140
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BCMA1CAN => Bcma1NmCanFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0502
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BCMA1CAN => BcmaDiagRespCanFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x06A1
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: BCMA
+            ecu_address: 0x16A1
+            frame_id_tx: 0x7A1
+            frame_id_rx: 0x6A1
+      - bus_type: 9
+        bus_name: CAN_15
+        viu_address: 198.19.4.4
+        viu_port: 5007
+        frame_routing:
+          - name: BCMA2CAN => BcmaBcma2CANFrame02 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0110
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BCMA2CAN => BcmaBcma2CANFrame01 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0120
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BCMA2CAN => BcmaBcma2CANFrame01 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0120
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: BCMA2CAN => BcmaBcma2CANDp2AndDp2HIBFrame02 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0121
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BCMA2CAN => BcmaBcma2CANDp2AndDp2HIBFrame02 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0121
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2006
+          - name: BCMA2CAN => BcmaBcma2CANDp2AndDp2HIBFrame01 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0131
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BCMA2CAN => BcmaBcma2CANDp2AndDp2HIBFrame01 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0131
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2006
+          - name: BCMA2CAN => BcmaBcma2CANDp2AndDp2HIBFrame01 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0131
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: BCMA2CAN => BcmaBcma2CANDp2HIBOnlyFrame01 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0191
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2006
+          - name: BCMA2CAN => BcmaBcma2CANDp2HIBOnlyFrame02 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0201
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2006
+          - name: BCMA2CAN => Bcma2NmCanFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0502
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: BCMA
+            ecu_address: 0x16A1
+            frame_id_tx: 0x7A1
+            frame_id_rx: 0x6A1
+      - bus_type: 4
+        bus_name: LIN_1
+        viu_address: 198.19.4.3
+        viu_port: 3001
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: BMSA
+            ecu_address: 0x0000
+            node_address: 0xC3
+        lin_schedules:
+          - 1:
+              - operation: MasterReq
+                delay: 15
+          - 2:
+              - operation: SlaveRsp
+                delay: 15
+          - 3:
+              - operation: read
+                parameter: 0x09
+                delay: 15
+              - operation: read
+                parameter: 0x1D
+                delay: 15
+              - operation: read
+                parameter: 0x02
+                delay: 15
+              - operation: read
+                parameter: 0x03
+                delay: 15
+              - operation: read
+                parameter: 0x09
+                delay: 15
+              - operation: read
+                parameter: 0x1D
+                delay: 15
+              - operation: read
+                parameter: 0x04
+                delay: 15
+              - operation: read
+                parameter: 0x1B
+                delay: 15
+              - operation: read
+                parameter: 0x09
+                delay: 15
+              - operation: read
+                parameter: 0x1D
+                delay: 15
+              - operation: read
+                parameter: 0x1C
+                delay: 15
+              - operation: write
+                parameter: 0x0D
+                delay: 10
+              - operation: read
+                parameter: 0x09
+                delay: 15
+              - operation: read
+                parameter: 0x1D
+                delay: 15
+              - operation: write
+                parameter: 0x08
+                delay: 15
+              - operation: write
+                parameter: 0x10
+                delay: 15
+              - operation: read
+                parameter: 0x09
+                delay: 15
+              - operation: read
+                parameter: 0x1D
+                delay: 15
+              - operation: write
+                parameter: 0x07
+                delay: 10
+          - 4:
+              - operation: read
+                parameter: 0x22
+                delay: 10
+              - operation: read
+                parameter: 0x22
+                delay: 10
+              - operation: read
+                parameter: 0x22
+                delay: 10
+              - operation: read
+                parameter: 0x23
+                delay: 10
+              - operation: read
+                parameter: 0x23
+                delay: 10
+              - operation: read
+                parameter: 0x23
+                delay: 10
+              - operation: read
+                parameter: 0x0E
+                delay: 10
+              - operation: read
+                parameter: 0x06
+                delay: 10
+        lin_frames:
+          - frame_id: 0x02
+            size: 8
+          - frame_id: 0x03
+            size: 8
+          - frame_id: 0x04
+            size: 8
+          - frame_id: 0x09
+            size: 8
+          - frame_id: 0x22
+            size: 7
+          - frame_id: 0x23
+            size: 4
+          - frame_id: 0x0E
+            size: 7
+          - frame_id: 0x06
+            size: 7
+          - frame_id: 0x1B
+            size: 8
+          - frame_id: 0x1C
+            size: 8
+          - frame_id: 0x1D
+            size: 8
+          - frame_id: 0x0D
+            size: 5
+          - frame_id: 0x08
+            size: 8
+          - frame_id: 0x10
+            size: 8
+          - frame_id: 0x07
+            size: 7
+      - bus_type: 9
+        bus_name: CAN_11
+        viu_address: 198.19.4.6
+        viu_port: 5005
+        frame_routing:
+          - name: BPBM1CAN => BpbmBpbm1CANFrame01 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0100
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPBM1CAN => BpbmBpbm1CANFrame01 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0100
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2011
+          - name: BPBM1CAN => BpbmNmCanFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0502
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPBM1CAN => BpbmToBpbmdpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0649
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: BPBM
+            ecu_address: 0x1D55
+            frame_id_tx: 0x749
+            frame_id_rx: 0x649
+      - bus_type: 9
+        bus_name: CAN_14
+        viu_address: 198.19.4.4
+        viu_port: 5006
+        frame_routing:
+          - frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.46
+                vcu_port: 2000
+          - name: FIOC1CAN => FiocFioc1CanFr04 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x01C1
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FIOC1CAN => FiocFioc1CanFr04 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x01C1
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2014
+          - name: FIOC1CAN => FiocFioc1canFr02 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x03FF
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FIOC1CAN => FiocFioc1canFr03 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0402
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FIOC1CAN => FiocFioc1canNMFr => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0500
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FIOC1CAN => FiocToFiocdpFioc1canUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0608
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FIOC1CAN => BcpmToFiocdpFioc1CanUdsDiagRespFr => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x060A
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FIOC1CAN => CpedToFiocdpFioc1CanUdsDiagRespFr => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x060B
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FIOC1CAN => FiocFioc1canDkProxy => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0703
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FIOC1CAN => FiocFioc1CanDkLowPrio => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0704
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: FIOC
+            ecu_address: 0x1D08
+            frame_id_tx: 0x708
+            frame_id_rx: 0x608
+            uudt_frame_id_rx:
+              - 0x6FD
+              - 0x6FC
+              - 0x6FB
+              - 0x6FA
+      - bus_type: 9
+        bus_name: CAN_3
+        viu_address: 198.19.4.6
+        viu_port: 5003
+        frame_routing:
+          - name: FLR1CAN => Match all => HPA
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FLR1CAN => Match all => HPB
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: FLR
+            ecu_address: 0x1451
+            frame_id_tx: 0x751
+            frame_id_rx: 0x651
+      - bus_type: 9
+        bus_name: CAN_4
+        viu_address: 198.19.4.6
+        viu_port: 5000
+        frame_aggregation:
+          frame_id_head: 0x0050
+          frame_id_tail: 0x009E
+          agg_threshold: 19
+          end_points:
+            - vcu_address: 198.19.4.1
+              vcu_port: 2000
+            - vcu_address: 198.19.4.49
+              vcu_port: 2000
+        frame_routing:
+          - name: FSRL1CAN => FsrlFsrl1canFrame52 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B6
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame52 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B6
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame53 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B8
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame53 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B8
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame54 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BA
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame54 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BA
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame55 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BC
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame55 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BC
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame56 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BE
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame56 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BE
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame57 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame57 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C0
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame58 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C2
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame58 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C2
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame59 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C4
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame59 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C4
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame60 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C6
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame60 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C6
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame61 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C8
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame61 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C8
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame62 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CA
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame62 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CA
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame67 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D6
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlFsrl1canFrame67 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D6
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRL1CAN => FsrlToFsrldpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0661
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: FSRL
+            ecu_address: 0x1471
+            frame_id_tx: 0x761
+            frame_id_rx: 0x661
+      - bus_type: 9
+        bus_name: CAN_10
+        viu_address: 198.19.4.6
+        viu_port: 5004
+        frame_aggregation:
+          frame_id_head: 0x0050
+          frame_id_tail: 0x009E
+          agg_threshold: 19
+          end_points:
+            - vcu_address: 198.19.4.1
+              vcu_port: 2000
+            - vcu_address: 198.19.4.49
+              vcu_port: 2000
+        frame_routing:
+          - name: FSRR1CAN => FsrrFsrr1canFrame52 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B6
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame52 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B6
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame53 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B8
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame53 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B8
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame54 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BA
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame54 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BA
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame55 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BC
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame55 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BC
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame56 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BE
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame56 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BE
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame57 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame57 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C0
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame58 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C2
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame58 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C2
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame59 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C4
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame59 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C4
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame60 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C6
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame60 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C6
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame61 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C8
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame61 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C8
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame62 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CA
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame62 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CA
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame67 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D6
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrFsrr1canFrame67 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D6
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: FSRR1CAN => FsrrToFsrrdpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0681
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: FSRR
+            ecu_address: 0x1481
+            frame_id_tx: 0x781
+            frame_id_rx: 0x681
+      - bus_type: 9
+        bus_name: CAN_5
+        viu_address: 198.19.4.6
+        viu_port: 5001
+        frame_routing:
+          - name: IHFA1CAN => IHFASignalFrame03 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0075
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHFA1CAN => IHFASignalFrame02 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0085
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2005
+          - name: IHFA1CAN => IHFASignalFrame06 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x009A
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHFA1CAN => IHFASignalFrame08 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0125
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHFA1CAN => IHFASignalFrame09 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0140
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHFA1CAN => IHFASignalFrame05 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0150
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHFA1CAN => IHFASignalFrame14 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0160
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHFA1CAN => IHFASignalFrame13 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0190
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHFA1CAN => IhfaNmCanFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0502
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: IHFA1CAN => IHFAToIHFAdpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0692
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+        diagnostic_routing:
+          - ecu_name: IHFA
+            ecu_address: 0x1692
+            frame_id_tx: 0x792
+            frame_id_rx: 0x692
+      - bus_type: 7
+        bus_name: CAN_1
+        viu_address: 198.19.4.4
+        viu_port: 5000
+        frame_routing:
+          - name: DummyFrame
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0xFFFFFFFF
+            end_points:
+              - dest_can_channel: CAN_8
+        diagnostic_routing:
+          - ecu_name: LPA
+            ecu_address: 0x1D1A
+            frame_id_tx: 0x700
+            frame_id_rx: 0x600
+      - bus_type: 9
+        bus_name: CAN_7
+        viu_address: 198.19.4.4
+        viu_port: 5001
+        frame_routing:
+          - name: PSCM1CAN => PscmPscm1CanFrame16 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0018
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2013
+          - name: PSCM1CAN => PscmPscm1CanFrame17_20 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0022
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2013
+          - name: PSCM1CAN => PscmPscm1CanFrame01_02 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0039
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2013
+          - name: PSCM1CAN => PscmPscm1CanFrame12_05 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x003B
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSCM1CAN => PscmPscm1CanFrame12_05 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x003B
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2013
+          - name: PSCM1CAN => PscmPscm1CanFrame18_05 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x003E
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2013
+          - name: PSCM1CAN => PscmPscm1CanFrame20 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0041
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2013
+          - name: PSCM1CAN => PscmPscm1CanFrame19_15 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0042
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2013
+          - name: PSCM1CAN => PscmPscm1CanFrame02_10 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0047
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSCM1CAN => PscmPscm1CanFrame02_10 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0047
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2013
+          - name: PSCM1CAN => PscmPscm1CanFrame09 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0050
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSCM1CAN => PscmPscm1CanFrame09 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0050
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2013
+          - name: PSCM1CAN => PscmPscm1CanFrame03_20 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0070
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSCM1CAN => PscmPscm1CanFrame08_2000 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0200
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSCM1CAN => PscmToPscmdpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0605
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: PSCM
+            ecu_address: 0x1612
+            frame_id_tx: 0x705
+            frame_id_rx: 0x605
+      - bus_type: 4
+        bus_name: LIN_2
+        viu_address: 198.19.4.3
+        viu_port: 3002
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: EXVB
+            ecu_address: 0x0000
+            node_address: 0x30
+          - ecu_name: ELAC
+            ecu_address: 0x0000
+            node_address: 0x41
+          - ecu_name: HVHB
+            ecu_address: 0x0000
+            node_address: 0x54
+        lin_schedules:
+          - 1:
+              - operation: MasterReq
+                delay: 15
+          - 2:
+              - operation: SlaveRsp
+                delay: 15
+          - 3:
+              - operation: read
+                parameter: 0x24
+                delay: 10
+              - operation: write
+                parameter: 0x30
+                delay: 10
+              - operation: write
+                parameter: 0x19
+                delay: 15
+              - operation: read
+                parameter: 0x11
+                delay: 35
+              - operation: read
+                parameter: 0x24
+                delay: 10
+              - operation: write
+                parameter: 0x30
+                delay: 10
+              - operation: read
+                parameter: 0x35
+                delay: 15
+              - operation: read
+                parameter: 0x2F
+                delay: 35
+              - operation: read
+                parameter: 0x24
+                delay: 10
+              - operation: write
+                parameter: 0x30
+                delay: 10
+              - operation: read
+                parameter: 0x24
+                delay: 10
+              - operation: write
+                parameter: 0x30
+                delay: 10
+              - operation: read
+                parameter: 0x24
+                delay: 10
+              - operation: write
+                parameter: 0x30
+                delay: 10
+          - 4:
+              - operation: write
+                parameter: 0x19
+                delay: 15
+              - operation: write
+                parameter: 0x20
+                delay: 10
+              - operation: write
+                parameter: 0x00
+                delay: 10
+              - operation: read
+                parameter: 0x25
+                delay: 15
+              - operation: read
+                parameter: 0x26
+                delay: 15
+              - operation: read
+                parameter: 0x11
+                delay: 15
+              - operation: read
+                parameter: 0x01
+                delay: 15
+              - operation: read
+                parameter: 0x02
+                delay: 15
+              - operation: read
+                parameter: 0x27
+                delay: 15
+              - operation: read
+                parameter: 0x28
+                delay: 15
+              - operation: read
+                parameter: 0x29
+                delay: 15
+              - operation: read
+                parameter: 0x2A
+                delay: 15
+              - operation: write
+                parameter: 0x19
+                delay: 15
+              - operation: write
+                parameter: 0x20
+                delay: 10
+              - operation: write
+                parameter: 0x00
+                delay: 10
+              - operation: read
+                parameter: 0x25
+                delay: 15
+              - operation: read
+                parameter: 0x26
+                delay: 15
+              - operation: read
+                parameter: 0x11
+                delay: 15
+              - operation: read
+                parameter: 0x01
+                delay: 15
+              - operation: read
+                parameter: 0x02
+                delay: 15
+              - operation: read
+                parameter: 0x03
+                delay: 15
+              - operation: read
+                parameter: 0x04
+                delay: 15
+              - operation: read
+                parameter: 0x05
+                delay: 15
+              - operation: read
+                parameter: 0x06
+                delay: 15
+              - operation: read
+                parameter: 0x07
+                delay: 15
+        lin_frames:
+          - frame_id: 0x24
+            size: 7
+          - frame_id: 0x35
+            size: 8
+          - frame_id: 0x2F
+            size: 8
+          - frame_id: 0x25
+            size: 8
+          - frame_id: 0x26
+            size: 8
+          - frame_id: 0x27
+            size: 8
+          - frame_id: 0x28
+            size: 8
+          - frame_id: 0x29
+            size: 8
+          - frame_id: 0x2A
+            size: 8
+          - frame_id: 0x11
+            size: 8
+          - frame_id: 0x01
+            size: 8
+          - frame_id: 0x02
+            size: 8
+          - frame_id: 0x03
+            size: 8
+          - frame_id: 0x04
+            size: 8
+          - frame_id: 0x05
+            size: 8
+          - frame_id: 0x06
+            size: 8
+          - frame_id: 0x07
+            size: 8
+          - frame_id: 0x30
+            size: 3
+          - frame_id: 0x19
+            size: 8
+          - frame_id: 0x20
+            size: 7
+          - frame_id: 0x00
+            size: 7
+      - bus_type: 7
+        bus_name: CAN_16
+        viu_address: 198.19.4.4
+        viu_port: 5003
+        frame_routing:
+          - name: SWM1CAN => SwmSwm1CanFrame02 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0037
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SWM1CAN => SwmSwm1CanFrame02 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0037
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2016
+          - name: SWM1CAN => SwmSwm1CanFrame04 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x003C
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SWM1CAN => SwmSwm1CanFrame05 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0040
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SWM1CAN => SwmSwm1CanFrame05 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0040
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2016
+          - name: SWM1CAN => SwmSwm1CanFrame06 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0045
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SWM1CAN => SwmSwm1CanFrame07 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0080
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SWM1CAN => SwmSwm1CanFrame07 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0080
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2016
+          - name: SWM1CAN => SwmSwm1CanFrame08 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0090
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SWM1CAN => SWMNmFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0502
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SWM1CAN => SwlToSwldpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0600
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: SWM
+            ecu_address: 0x1B91
+            frame_id_tx: 0x700
+            frame_id_rx: 0x600
+      - bus_type: 4
+        bus_name: LIN_7
+        viu_address: 198.19.4.5
+        viu_port: 3001
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0100
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: Dummy LIN ECU
+            ecu_address: 0x0000
+            node_address: 0x30
+        lin_schedules:
+          - 1:
+              - operation: MasterReq
+                delay: 15
+          - 2:
+              - operation: SlaveRsp
+                delay: 15
+          - 3:
+              - operation: read
+                parameter: 0x24
+                delay: 10
+        lin_frames:
+          - frame_id: 0x24
+            size: 1
+  - connector_key: PGWM
+    mcu0:
+      gateway:
+        ip_address: 198.19.4.14
+        mac_address: 02:00:00:00:00:06
+      house_keeping:
+        ip_address: 198.19.4.13
+        mac_address: 02:00:00:00:00:05
+        ecu_address: 0x1D20
+    mcu1:
+      gateway:
+        ip_address: 198.19.4.16
+        mac_address: 02:00:00:00:00:08
+      house_keeping:
+        ip_address: 198.19.4.15
+        mac_address: 02:00:00:00:00:07
+        ecu_address: 0x1D16
+    bus:
+      - bus_type: 4
+        bus_name: LIN_6
+        viu_address: 198.19.4.13
+        viu_port: 3006
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: BMS
+            ecu_address: 0x0000
+            node_address: 0x61
+        lin_schedules:
+          - 1:
+              - operation: MasterReq
+                delay: 15
+          - 2:
+              - operation: SlaveRsp
+                delay: 15
+          - 3:
+              - operation: read
+                parameter: 0x09
+                delay: 15
+              - operation: read
+                parameter: 0x1D
+                delay: 15
+              - operation: read
+                parameter: 0x02
+                delay: 15
+              - operation: read
+                parameter: 0x03
+                delay: 15
+              - operation: read
+                parameter: 0x09
+                delay: 15
+              - operation: read
+                parameter: 0x1D
+                delay: 15
+              - operation: read
+                parameter: 0x04
+                delay: 15
+              - operation: read
+                parameter: 0x1B
+                delay: 15
+              - operation: read
+                parameter: 0x09
+                delay: 15
+              - operation: read
+                parameter: 0x1D
+                delay: 15
+              - operation: read
+                parameter: 0x1C
+                delay: 15
+              - operation: write
+                parameter: 0x0D
+                delay: 10
+              - operation: read
+                parameter: 0x09
+                delay: 15
+              - operation: read
+                parameter: 0x1D
+                delay: 15
+              - operation: write
+                parameter: 0x08
+                delay: 15
+              - operation: write
+                parameter: 0x10
+                delay: 15
+              - operation: read
+                parameter: 0x09
+                delay: 15
+              - operation: read
+                parameter: 0x1D
+                delay: 15
+              - operation: write
+                parameter: 0x07
+                delay: 10
+          - 4:
+              - operation: read
+                parameter: 0x22
+                delay: 10
+              - operation: read
+                parameter: 0x22
+                delay: 10
+              - operation: read
+                parameter: 0x22
+                delay: 10
+              - operation: read
+                parameter: 0x23
+                delay: 10
+              - operation: read
+                parameter: 0x23
+                delay: 10
+              - operation: read
+                parameter: 0x23
+                delay: 10
+              - operation: read
+                parameter: 0x0E
+                delay: 10
+              - operation: read
+                parameter: 0x06
+                delay: 10
+        lin_frames:
+          - frame_id: 0x02
+            size: 8
+          - frame_id: 0x03
+            size: 8
+          - frame_id: 0x04
+            size: 8
+          - frame_id: 0x09
+            size: 8
+          - frame_id: 0x22
+            size: 7
+          - frame_id: 0x23
+            size: 4
+          - frame_id: 0x0E
+            size: 7
+          - frame_id: 0x06
+            size: 7
+          - frame_id: 0x1B
+            size: 8
+          - frame_id: 0x1C
+            size: 8
+          - frame_id: 0x1D
+            size: 8
+          - frame_id: 0x0D
+            size: 5
+          - frame_id: 0x08
+            size: 8
+          - frame_id: 0x10
+            size: 8
+          - frame_id: 0x07
+            size: 7
+      - bus_type: 7
+        bus_name: CAN_4
+        viu_address: 198.19.4.16
+        viu_port: 5000
+        frame_routing:
+          - name: BPD1CAN => BpdBpd1canFrame31 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0032
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame27 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0034
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame28 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0038
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame25 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0100
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame24 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0115
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame32 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0125
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame01 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0200
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame29 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0202
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame30 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0204
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame02 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0210
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame03 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0220
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame04 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0230
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame05 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0240
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame06 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0250
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame07 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0260
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame08 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0270
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame09 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0280
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame10 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0290
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame11 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02A0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame12 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02B0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame13 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02C0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame14 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02D0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame15 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02E0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame16 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02F0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame17 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0300
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame18 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0310
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame19 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0320
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame20 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0330
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame21 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0340
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdBpd1canFrame22 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0350
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: BPD1CAN => BpdToBpddpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0635
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: BPD
+            ecu_address: 0x1D2C
+            frame_id_tx: 0x735
+            frame_id_rx: 0x635
+      - bus_type: 9
+        bus_name: CAN_14
+        viu_address: 198.19.4.14
+        viu_port: 5006
+        frame_routing:
+          - name: CRSM1CAN => CrsmCrsm1CanFr02 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0180
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: CRSM1CAN => CrsmdpCrsm1CanFr04 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0190
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: CRSM1CAN => CrsmCrsm1CanFr01 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0200
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: CRSM1CAN => CrsmCrsm1CanSporadicFr01 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0440
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: CRSM1CAN => CrsmCrsm1CanSporadicFr02 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0443
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: CRSM1CAN => CrsmNmCanFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0502
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: CRSM1CAN => CrsmToCrsmdpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0618
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: CRSM
+            ecu_address: 0x1D81
+            frame_id_tx: 0x718
+            frame_id_rx: 0x618
+      - bus_type: 9
+        bus_name: CAN_16
+        viu_address: 198.19.4.14
+        viu_port: 5003
+        frame_routing:
+          - frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.46
+                vcu_port: 2000
+          - name: HLCM1CAN => HlcmHlcm1canFrame03_5 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0020
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2116
+          - name: HLCM1CAN => HlcmHlcm1canFrame05 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0120
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: HLCM1CAN => HlcmHlcm1canFrame05 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0120
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2116
+          - name: HLCM1CAN => HlcmHlcm1canFrame08 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0140
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: HLCM1CAN => HlcmHlcm1canFrame01_50 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0290
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: HLCM1CAN => HlcmHlcm1canFrame01_50 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0290
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2116
+          - name: HLCM1CAN => HlcmHlcm1canFrame04 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0370
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: HLCM1CAN => HlcmHlcm1canFrame01_500 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0380
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: HLCM1CAN => HlcmToHlcmdpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x061D
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: HLCM
+            ecu_address: 0x1D10
+            frame_id_tx: 0x71D
+            frame_id_rx: 0x61D
+            uudt_frame_id_rx:
+              - 0x6EC
+              - 0x6ED
+              - 0x6EE
+              - 0x6EF
+      - bus_type: 7
+        bus_name: CAN_8
+        viu_address: 198.19.4.14
+        viu_port: 5002
+        frame_routing:
+          - name: HVBM1CAN => Match all => HPA
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2001
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame53_80 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame27_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFBFF
+            frame_id_filter: 0x0023
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: HVBM1CAN => HvbmHvbm1canFrame04_100 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0090
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2108
+          - name: HVBM1CAN => HvbmLpa1canFrame03_500 => LP1CAN
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0112
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: HVBM1CAN => HvbmHlcm1canSporadicFrame01 => HLCM1CAN
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0128
+            end_points:
+              - dest_can_channel: CAN_16
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame54_100 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame55_300 => LP1CAN
+            frame_id_mask: 0xFFFFFFFD
+            frame_id_filter: 0x0151
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: HVBM1CAN => HvbmHvbm1canFrame14_100 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0212
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2108
+          - name: HVBM1CAN => HvbmHvbm1canFrameSpon18_50 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0304
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2108
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame29_100 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame59_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFFD
+            frame_id_filter: 0x0401
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame58_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame62_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame26_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame46_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFDB
+            frame_id_filter: 0x0402
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame60_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrameSpont61_50 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame13_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame14_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFEE
+            frame_id_filter: 0x0404
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame01_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame08_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame47_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame63_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFD7
+            frame_id_filter: 0x0407
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame02_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame04_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame17_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame18_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFEE
+            frame_id_filter: 0x0408
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame06_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame20_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFEF
+            frame_id_filter: 0x040B
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame05_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame07_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame52_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame56_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFDD
+            frame_id_filter: 0x040C
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame09_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame10_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame11_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame12_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame64_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame65_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame66_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame67_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFDC
+            frame_id_filter: 0x0410
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame15_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame16_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame70_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame71_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFDE
+            frame_id_filter: 0x0416
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame19_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame74_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFDF
+            frame_id_filter: 0x041A
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame21_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame22_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame76_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame77_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFDE
+            frame_id_filter: 0x041C
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame23_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame79_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFDF
+            frame_id_filter: 0x041F
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame24_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame25_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame28_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame45_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFFA
+            frame_id_filter: 0x0420
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame48_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame49_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame50_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame51_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFFC
+            frame_id_filter: 0x0428
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame68_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame69_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFFE
+            frame_id_filter: 0x0434
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame72_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame73_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFFE
+            frame_id_filter: 0x0438
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: HVBM1CAN => HvbmLpa1canFrame75_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x043B
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: HVBM1CAN => HvbmLpa1canFrame78_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x043E
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame80_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame81_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame82_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame83_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFFC
+            frame_id_filter: 0x0440
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame31_1000 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame30_100 => LP1CAN
+            frame_id_mask: 0xFFFFFFFE
+            frame_id_filter: 0x0446
+            end_points:
+              - dest_can_channel: CAN_1
+          - name: |-
+              HVBM1CAN => HvbmLpa1canFrame84_100 => LP1CAN
+              HVBM1CAN => HvbmLpa1canFrame85_1000 => LP1CAN
+            frame_id_mask: 0xFFFFFFFE
+            frame_id_filter: 0x0448
+            end_points:
+              - dest_can_channel: CAN_1
+        diagnostic_routing:
+          - ecu_name: HVBM
+            ecu_address: 0x1D13
+            frame_id_tx: 0x753
+            frame_id_rx: 0x653
+            uudt_frame_id_rx:
+              - 0x6E1
+              - 0x6E2
+              - 0x6E3
+              - 0x6E4
+              - 0x6E5
+      - bus_type: 7
+        bus_name: CAN_1
+        viu_address: 198.19.4.14
+        viu_port: 5000
+        frame_routing:
+          - name: LP1CAN => GcccLp1CanFrame03 => HVBM1CAN
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0187
+            end_points:
+              - dest_can_channel: CAN_8
+          - name: LP1CAN => GhcaLp1CanFrame01 => HVBM1CAN
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0188
+            end_points:
+              - dest_can_channel: CAN_8
+          - name: LP1CAN => GcccLp1CanFrame04 => HVBM1CAN
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0217
+            end_points:
+              - dest_can_channel: CAN_8
+          - name: LP1CAN => GcccLp1CanSporadicFrame40 => HVBM1CAN
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x03B5
+            end_points:
+              - dest_can_channel: CAN_8
+          - name: LP1CAN => GcccLp1CanSporadicFrame33 => HVBM1CAN
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x03D3
+            end_points:
+              - dest_can_channel: CAN_8
+          - name: LP1CAN => GcccLp1CanSporadicFrame28 => HVBM1CAN
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0444
+            end_points:
+              - dest_can_channel: CAN_8
+          - name: LP1CAN => GcccLp1CanSporadicFrame29 => HVBM1CAN
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0445
+            end_points:
+              - dest_can_channel: CAN_8
+        diagnostic_routing:
+          - ecu_name: LPA
+            ecu_address: 0x1D1A
+            frame_id_tx: 0x700
+            frame_id_rx: 0x600
+      - bus_type: 9
+        bus_name: CAN_7
+        viu_address: 198.19.4.14
+        viu_port: 5001
+        frame_routing:
+          - name: LPC1CAN => LpcLpc1CanFr01_10ms => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0110
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2005
+          - name: LPC1CAN => LpcLpc1CanFr06_Sec => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0111
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2005
+          - name: LPC1CAN => LpcLpc1CanFr09 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0112
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2005
+          - name: LPC1CAN => LpcLpc1CanFr02_20ms => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0210
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2005
+          - name: LPC1CAN => LpcLpc1CanFr02_20ms => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0210
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: LPC1CAN => LpcLpc1CanFr05_AutoIllum => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0212
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2005
+          - name: LPC1CAN => LpcLpc1CanFr03_70ms => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0310
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2005
+          - name: LPC1CAN => LpcLpc1CanFr07_70ms => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0312
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2005
+          - name: LPC1CAN => LpcLpc1CanFr08_Dkey => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0407
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2005
+          - name: LPC1CAN => LpcLpc1CanFr04_900ms => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0410
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2005
+          - name: LPC1CAN => LpcLpc1CanNMFr => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0502
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2005
+        diagnostic_routing:
+          - ecu_name: LPC
+            ecu_address: 0x1D1B
+            frame_id_tx: 0x700
+            frame_id_rx: 0x600
+      - bus_type: 4
+        bus_name: LIN_1
+        viu_address: 198.19.4.13
+        viu_port: 3001
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: MSM
+            ecu_address: 0x0000
+            node_address: 0x31
+        lin_schedules:
+          - 1:
+              - operation: write
+                parameter: 0x21
+                delay: 10
+              - operation: read
+                parameter: 0x11
+                delay: 10
+          - 2:
+              - operation: MasterReq
+                delay: 10
+          - 3:
+              - operation: SlaveRsp
+                delay: 10
+        lin_frames:
+          - frame_id: 0x21
+            size: 7
+          - frame_id: 0x11
+            size: 7
+      - bus_type: 7
+        bus_name: CAN_12
+        viu_address: 198.19.4.16
+        viu_port: 5006
+        frame_routing:
+          - name: PPD1CAN => PpdPpd1canFrame26 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0039
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame26 => HIA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0039
+            end_points:
+              - vcu_address: 198.19.4.46
+                vcu_port: 2112
+          - name: PPD1CAN => PpdPpd1canFrame27 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x003C
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame27 => HIA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x003C
+            end_points:
+              - vcu_address: 198.19.4.46
+                vcu_port: 2112
+          - name: PPD1CAN => PpdPpd1canFrame28 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0040
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame28 => HIA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0040
+            end_points:
+              - vcu_address: 198.19.4.46
+                vcu_port: 2112
+          - name: PPD1CAN => PpdPpd1canFrame29 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0042
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame25 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0100
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame25 => HIA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0100
+            end_points:
+              - vcu_address: 198.19.4.46
+                vcu_port: 2112
+          - name: PPD1CAN => PpdPpd1canFrame24 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0110
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame01 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0200
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame02 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0210
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame03 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0220
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame04 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0230
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame05 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0240
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame06 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0250
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame07 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0260
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame08 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0270
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame09 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0280
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame10 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0290
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame11 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02A0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame12 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02B0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame13 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02C0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame14 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02D0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame15 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02E0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame16 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02F0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame17 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0300
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame18 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0310
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame19 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0320
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame20 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0330
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame21 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0340
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdPpd1canFrame22 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0350
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PPD1CAN => PpdToPpddpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0628
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: PPD
+            ecu_address: 0x1D21
+            frame_id_tx: 0x728
+            frame_id_rx: 0x628
+      - bus_type: 9
+        bus_name: CAN_3
+        viu_address: 198.19.4.16
+        viu_port: 5003
+        frame_routing:
+          - name: PSMP1CAN => PSMPCanFrame01 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x01AA
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMP1CAN => PSMPCanFrame02 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x02AA
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMP1CAN => PSMPCanFrame03 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x03AA
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMP1CAN => PSMPDevRespCanFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x03BF
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMP1CAN => PSMPCanFrame04 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x04AA
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMP1CAN => PSMPCanFrame05 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x04AB
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMP1CAN => PSMPCanFrame06 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x04AC
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMP1CAN => PSMPCanFrame08 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x04AD
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMP1CAN => PSMPCanFrame09 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x04AE
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMP1CAN => PsmpNmFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0506
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: PSMP1CAN => PsmpToPsmpdpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x061A
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: PSMP
+            ecu_address: 0x1A1A
+            frame_id_tx: 0x71A
+            frame_id_rx: 0x61A
+      - bus_type: 7
+        bus_name: CAN_6
+        viu_address: 198.19.4.16
+        viu_port: 5002
+        frame_routing:
+          - name: RML1CAN => RmlRml1canFrame01_10 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0025
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RML1CAN => RMLNMFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0502
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RML1CAN => RmlToRmldpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0616
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: RML
+            ecu_address: 0x1416
+            frame_id_tx: 0x716
+            frame_id_rx: 0x616
+      - bus_type: 9
+        bus_name: CAN_10
+        viu_address: 198.19.4.16
+        viu_port: 5004
+        frame_aggregation:
+          frame_id_head: 0x0050
+          frame_id_tail: 0x009E
+          agg_threshold: 19
+          end_points:
+            - vcu_address: 198.19.4.1
+              vcu_port: 2000
+            - vcu_address: 198.19.4.49
+              vcu_port: 2000
+        frame_routing:
+          - name: RSRL1CAN => RsrlRsrl1canFrame52 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B6
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame52 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B6
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame53 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B8
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame53 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00B8
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame54 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BA
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame54 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BA
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame55 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BC
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame55 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BC
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame56 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BE
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame56 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00BE
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame57 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame57 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C0
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame58 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C2
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame58 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C2
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame59 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C4
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame59 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C4
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame60 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C6
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame60 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C6
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame61 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C8
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame61 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00C8
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame62 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CA
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame62 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CA
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame63 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CC
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame63 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CC
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame64 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CE
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame64 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00CE
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame65 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame65 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D0
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame66 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D3
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame66 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D3
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame67 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D6
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlRsrl1canFrame67 => HPB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x00D6
+            end_points:
+              - vcu_address: 198.19.4.49
+                vcu_port: 2000
+          - name: RSRL1CAN => RsrlToRsrldpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x062E
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: RSRL
+            ecu_address: 0x1D22
+            frame_id_tx: 0x72E
+            frame_id_rx: 0x62E
+      - bus_type: 4
+        bus_name: LIN_3
+        viu_address: 198.19.4.13
+        viu_port: 3003
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0x00000000
+            frame_id_filter: 0x0000
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: SHFL
+            ecu_address: 0x0000
+            node_address: 0x0A
+          - ecu_name: SHRL
+            ecu_address: 0x0000
+            node_address: 0x39
+        lin_schedules:
+          - 1:
+              - operation: write
+                parameter: 0x02
+                delay: 95
+              - operation: read
+                parameter: 0x04
+                delay: 10
+          - 2:
+              - operation: MasterReq
+                delay: 10
+          - 3:
+              - operation: SlaveRsp
+                delay: 10
+          - 4:
+              - operation: write
+                parameter: 0x02
+                delay: 95
+              - operation: read
+                parameter: 0x04
+                delay: 10
+              - operation: write
+                parameter: 0x03
+                delay: 95
+              - operation: read
+                parameter: 0x05
+                delay: 10
+          - 5:
+              - operation: write
+                parameter: 0x03
+                delay: 95
+              - operation: read
+                parameter: 0x05
+                delay: 10
+        lin_frames:
+          - frame_id: 0x02
+            size: 5
+          - frame_id: 0x03
+            size: 5
+          - frame_id: 0x04
+            size: 2
+          - frame_id: 0x05
+            size: 2
+      - bus_type: 9
+        bus_name: CAN_15
+        viu_address: 198.19.4.14
+        viu_port: 5007
+        frame_routing:
+          - name: SRSMainCAN => SrsSrsMainCanFrame20 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0130
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsSrsMainCanFrame21 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0140
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsSrsMainCanFrame21 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0140
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2214
+          - name: SRSMainCAN => SrsSrsMainCanFrame06 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0150
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsSrsMainCanFrame06 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0150
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2214
+          - name: SRSMainCAN => SrsSrsMainCanFrame23 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0151
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsSrsMainCanFrame09 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0160
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsSrsMainCanFrame24 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0161
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsSrsMainCanFrame25 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0163
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsSrsMainCanFrameSporadic23 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0165
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsSrsMainCanFrameSporadic23 => HIA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0165
+            end_points:
+              - vcu_address: 198.19.4.46
+                vcu_port: 2115
+          - name: SRSMainCAN => SrsSrsMainCanFrameSporadic23 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0165
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2214
+          - name: SRSMainCAN => SrsSrsMainCanFrameSporadic25 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0190
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsSrsMainCanFrame11 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x01A0
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2214
+          - name: SRSMainCAN => SrsSrsMainCanFrame12 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x01B0
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsSrsMainCanFrame12 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x01B0
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2214
+          - name: SRSMainCAN => SrsSrsMainCanFrame03 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0240
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsSrsMainCanFrame07 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0300
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsSrsMainCanFrame04 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0440
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsSrsMainCanFrame05 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0480
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsSrsMainCanFrame19 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0485
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsNmFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0502
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: SRSMainCAN => SrsToSrsdpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0601
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: SRS
+            ecu_address: 0x1C01
+            frame_id_tx: 0x701
+            frame_id_rx: 0x601
+            uudt_frame_id_rx:
+              - 0x6E0
+      - bus_type: 9
+        bus_name: CAN_11
+        viu_address: 198.19.4.16
+        viu_port: 5005
+        frame_routing:
+          - name: TVRL1CAN => TvrlTvrl1canFrame01 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0020
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: TVRL1CAN => TvrlTvrl1canFrame02 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0022
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2111
+          - name: TVRL1CAN => TvrltoHiTvrl1canFrame02 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0025
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2111
+          - name: TVRL1CAN => TvrlTvrl1canFrame03 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0040
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: TVRL1CAN => TvrlToTvrldpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x063C
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: TVRL
+            ecu_address: 0x1D75
+            frame_id_tx: 0x73C
+            frame_id_rx: 0x63C
+            uudt_frame_id_rx:
+              - 0x6E0
+              - 0x6E1
+              - 0x6E2
+              - 0x6E3
+      - bus_type: 9
+        bus_name: CAN_13
+        viu_address: 198.19.4.16
+        viu_port: 5007
+        frame_routing:
+          - name: TVRR1CAN => TvrrTvrr1canFrame01 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0021
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: TVRR1CAN => TvrrTvrr1canFrame02 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0023
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2113
+          - name: TVRR1CAN => TvrrtoHiTvrr1canFrame02 => HIB
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0026
+            end_points:
+              - vcu_address: 198.19.4.47
+                vcu_port: 2113
+          - name: TVRR1CAN => TvrrTvrr1canFrame03 => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0036
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+          - name: TVRR1CAN => TvrrToTvrrdpUdsDiagResponseFrame => HPA
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x063D
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2000
+        diagnostic_routing:
+          - ecu_name: TVRR
+            ecu_address: 0x1D76
+            frame_id_tx: 0x73D
+            frame_id_rx: 0x63D
+            uudt_frame_id_rx:
+              - 0x6E8
+              - 0x6E9
+              - 0x6EA
+              - 0x6EB
+      - bus_type: 4
+        bus_name: LIN_7
+        viu_address: 198.19.4.15
+        viu_port: 3001
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0100
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: Dummy LIN ECU
+            ecu_address: 0x0000
+            node_address: 0x30
+        lin_schedules:
+          - 1:
+              - operation: MasterReq
+                delay: 15
+          - 2:
+              - operation: SlaveRsp
+                delay: 15
+          - 3:
+              - operation: read
+                parameter: 0x24
+                delay: 10
+        lin_frames:
+          - frame_id: 0x24
+            size: 1
+  - connector_key: TGWM
+    mcu0:
+      gateway:
+        ip_address: 198.19.4.34
+        mac_address: 02:00:00:00:00:0E
+      house_keeping:
+        ip_address: 198.19.4.33
+        mac_address: 02:00:00:00:00:0D
+        ecu_address: 0x1D2B
+    mcu1:
+      gateway:
+        ip_address: 198.19.4.36
+        mac_address: 02:00:00:00:00:10
+      house_keeping:
+        ip_address: 198.19.4.35
+        mac_address: 02:00:00:00:00:0F
+        ecu_address: 0x1D1C
+    bus:
+      - bus_type: 4
+        bus_name: LIN_1
+        viu_address: 198.19.4.33
+        viu_port: 3001
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0100
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: Dummy LIN ECU
+            ecu_address: 0x0000
+            node_address: 0x30
+        lin_schedules:
+          - 1:
+              - operation: MasterReq
+                delay: 15
+          - 2:
+              - operation: SlaveRsp
+                delay: 15
+          - 3:
+              - operation: read
+                parameter: 0x24
+                delay: 10
+        lin_frames:
+          - frame_id: 0x24
+            size: 1
+      - bus_type: 4
+        bus_name: LIN_7
+        viu_address: 198.19.4.33
+        viu_port: 3001
+        frame_routing:
+          - name: LIN routing
+            frame_id_mask: 0xFFFFFFFF
+            frame_id_filter: 0x0100
+            end_points:
+              - vcu_address: 198.19.4.1
+                vcu_port: 2050
+        diagnostic_routing:
+          - ecu_name: Dummy LIN ECU
+            ecu_address: 0x0000
+            node_address: 0x30
+        lin_schedules:
+          - 1:
+              - operation: MasterReq
+                delay: 15
+          - 2:
+              - operation: SlaveRsp
+                delay: 15
+          - 3:
+              - operation: read
+                parameter: 0x24
+                delay: 10
+        lin_frames:
+          - frame_id: 0x24
+            size: 1

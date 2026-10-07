@@ -1,0 +1,2 @@
+-r mrc_decoder/requirements-frozen.txt
+streamlit==1.60.0

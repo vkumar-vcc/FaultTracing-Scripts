@@ -1,0 +1,15 @@
+name: DhuFaultProxyService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: StoreTestReport
+    id: 4096
+
+payload_proto: dhu_fault_proxy  # Name of proto file supplied for dhu fault proxy
+parent_proto_messages:          # Parent messages defined in proto file for dhu fault proxy
+  - TestReport

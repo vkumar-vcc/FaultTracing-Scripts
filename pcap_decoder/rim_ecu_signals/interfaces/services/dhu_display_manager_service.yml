@@ -1,0 +1,41 @@
+name: DhuDisplayManagerService
+type: service
+platform: qnx
+api_version_major: 0
+api_version_minor: 0
+service_provider: DHU
+service_consumers: HPA
+
+methods:
+  # Request the DHU display manager service to turn the CSD on or off.
+  # Note that this is different from the display being powered.
+  # Message: RequestedDisplayState
+  - name: CsdDisplayStateRequest
+    id: 1
+
+  # Request the DHU display manager service to turn the DIM on or off.
+  # Note that this is different from the display being powered.
+  # Message: RequestedDisplayState
+  - name: DimDisplayStateRequest
+    id: 2
+
+  # Request the DHU display manager service to turn the HUD on or off.
+  # Note that this is different from the display being powered.
+  # Message: RequestedDisplayState
+  - name: HudDisplayStateRequest
+    id: 3
+
+  # Report the DIM power status to the DHU display manager service.
+  # Message: ReportedPowerStatus
+  - name: ReportDimPowerStatus
+    id: 4
+
+  # Report the HUD power status to the DHU display manager service.
+  # Message: ReportedPowerStatus
+  - name: ReportHudPowerStatus
+    id: 5
+
+payload_proto: dhu_display_manager_service # Name of proto file supplied
+parent_proto_messages: # Parent messages defined in proto file supplied
+  - RequestedDisplayState
+  - ReportedPowerStatus

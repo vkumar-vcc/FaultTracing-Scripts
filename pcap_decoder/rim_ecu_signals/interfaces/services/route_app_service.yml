@@ -1,0 +1,29 @@
+name: RouteAppService
+type: service
+platform: android
+api_version_major: 0
+api_version_minor: 0
+service_provider: DHU
+service_consumers: HPA
+
+event_groups:
+  - name: NavigationRouteUpdate
+    id: 1
+    events:
+      - name: Route
+        id: 1
+      - name: MapMatchedPosition
+        id: 2
+      - name: MatchedRoutes
+        id: 3
+      - name: DynamicEvents
+        id: 4
+      - name: RouteStatus
+        id: 5
+
+payload_proto: route_app_service
+parent_proto_messages:
+  - NavigationDataParcel
+  - MapMatchedPosition
+  - DynamicEvents
+  - RouteStatus

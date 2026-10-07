@@ -1,0 +1,21 @@
+name: DhuSensorService
+type: service
+platform: android
+api_version_major: 0
+api_version_minor: 0
+service_provider: DHU
+service_consumers: TCAM
+
+event_groups:
+  - name: MotionSensorEventGroup
+    id: 100
+    events:
+      - name: GyroscopeEvent
+        id: 101
+      - name: AccelerometerEvent
+        id: 102
+
+payload_proto: dhu_sensor_service
+parent_proto_messages:
+  - dhu_sensors_Gyroscope
+  - dhu_sensors_Accelerometer

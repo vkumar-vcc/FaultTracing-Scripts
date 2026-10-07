@@ -1,0 +1,165 @@
+name: AssistCallSomeipService
+type: service
+platform: csp
+service_id: 262
+api_version_major: 1
+api_version_minor: 1
+service_provider: HPA
+service_consumers: TCAM
+methods:
+  - name: GetSrsData
+    id: 1
+    payload:
+      response: e_call.GetSrsDataResp
+  - name: RequestPrivacyConsentNotification
+    id: 2
+    payload:
+      response: e_call.RequestPrivacyConsentNotification
+  - name: GetOccupantPresence
+    id: 3
+    payload:
+      response: e_call.OccupantPresence
+  - name: GetInteriorTemperature
+    id: 4
+    payload:
+      response: e_call.InteriorTemperature
+  - name: SendTelematicsStatus
+    id: 32785
+    payload:
+      request: e_call.SendTelematicsStatus
+  - name: SendKeepAwakeRequest
+    id: 32787
+    payload:
+      request: e_call.SendKeepAwakeRequest
+  - name: RequestAssistanceCallAck
+    id: 32798
+    payload:
+      request: e_call.RequestAssistanceCallAck
+event_groups:
+  - name: CrashModeEventGroup
+    id: 1
+    events:
+      - name: CrashModeIsActivated
+        id: 32771
+  - name: UsageModeAwakeEventGroup
+    id: 2
+    events:
+      - name: UsageModeAwakeIsActivated
+        id: 32772
+  - name: UsageModeAvailableEventGroup
+    id: 3
+    events:
+      - name: UsageModeAvailableIsActivated
+        id: 32778
+  - name: UsageModeConvenienceEventGroup
+    id: 4
+    events:
+      - name: UsageModeConvenienceIsActivated
+        id: 32779
+  - name: UsageModeMovableEventGroup
+    id: 5
+    events:
+      - name: UsageModeMovableIsActivated
+        id: 32780
+  - name: UsageModeDrivingEventGroup
+    id: 6
+    events:
+      - name: UsageModeDrivingIsActivated
+        id: 32781
+  - name: UsageModeResponsiveEventGroup
+    id: 7
+    events:
+      - name: UsageModeResponsiveIsActivated
+        id: 32782
+  - name: CarModeEventGroup
+    id: 15
+    events:
+      - name: CarModeAssistCall
+        id: 32784
+  - name: VehicleStaticEventGroup
+    id: 17
+    events:
+      - name: VehicleStaticData
+        id: 32786
+  - name: InteriorTemperatureEventGroup
+    id: 18
+    events:
+      - name: InteriorTemperature
+        id: 32787
+  - name: BuckledBeltsEventGroup
+    id: 19
+    events:
+      - name: NumberOfBuckledBelts
+        id: 32788
+  - name: ECallEventGroup
+    id: 20
+    events:
+      - name: AutomaticECallIsRequested
+        id: 32789
+  - name: CrashSensorEventGroup
+    id: 21
+    events:
+      - name: CrashSensorFault
+        id: 32790
+  - name: AdvancedEcallEventGroup
+    id: 22
+    events:
+      - name: AdvancedEcallAdditionalData
+        id: 32791
+  - name: BuckleStatusEventGroup
+    id: 23
+    events:
+      - name: BuckleStatus
+        id: 32792
+  - name: PrivacyConsentSettingsEventGroup
+    id: 24
+    events:
+      - name: PrivacyConsentSettings
+        id: 32793
+  - name: OccupantPresenceEventGroup
+    id: 25
+    events:
+      - name: OccupantPresence
+        id: 32794
+  - name: CollisionClassificationsEventGroup
+    id: 26
+    events:
+      - name: CollisionClassifications
+        id: 32795
+  - name: VehicleOrientationEventGroup
+    id: 27
+    events:
+      - name: VehicleOrientation
+        id: 32796
+  - name : RequestAssistanceCallEventGroup
+    id: 28
+    events:
+      - name: RequestAssistanceCall
+        id: 32797
+
+payload_proto: assistance_call_service
+parent_proto_messages:
+  - e_call_UsageModeConvenienceIsActivated
+  - e_call_UsageModeResponsiveIsActivated
+  - e_call_UsageModeAvailableIsActivated
+  - e_call_UsageModeDrivingIsActivated
+  - e_call_UsageModeAwakeIsActivated
+  - e_call_UsageModeMovableIsActivated
+  - e_call_CarModeAssistCall
+  - e_call_CrashModeIsActivated
+  - e_call_VehicleStaticData
+  - e_call_InteriorTemperature
+  - e_call_AutomaticEcallIsRequested
+  - e_call_NumberOfBuckledBelts
+  - e_call_CrashSensorFault
+  - e_call_AdvancedEcallAdditionalData
+  - e_call_BuckleStatus
+  - e_call_PrivacyConsentSettings
+  - e_call_GetSrsDataResp
+  - e_call_OccupantPresence
+  - e_call_CollisionClassifications
+  - e_call_VehicleOrientationStatus
+  - e_call_SendTelematicsStatus
+  - e_call_SendKeepAwakeRequest
+  - e_call_RequestAssistanceCall
+  - e_call_RequestAssistanceCallAck

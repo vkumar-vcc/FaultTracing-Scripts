@@ -1,0 +1,23 @@
+type: vsomeip_common
+platform: csp
+
+unicast: 198.19.0.1
+diagnosis: 0x13 # Defines client_id prefix
+
+applications:
+  - name: exposed_vsomeipd
+
+routing: exposed_vsomeipd
+
+service-discovery:
+  enable: true
+  multicast: 239.255.0.6
+  port: 30490
+  protocol: udp
+  initial_delay_min: 10
+  initial_delay_max: 100
+  repetitions_base_delay: 300
+  repetitions_max: 3
+  ttl: 6
+  cyclic_offer_delay: 2000
+  request_response_delay: 1000

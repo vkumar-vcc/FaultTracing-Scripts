@@ -1,0 +1,123 @@
+name: VehicleChargingService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: GetBatteryChargingData
+    id: 4996
+  - name: SetBatteryChargingTarget
+    id: 4997
+  - name: SetChargingCableLock
+    id: 4998
+  - name: SetChargingLocation
+    id: 4999
+  - name: GetChargingLocationData
+    id: 5000
+  - name: SetPlugAndChargeData
+    id: 5001
+  - name: SetChargingCableLockRequest
+    id: 5002
+  - name: SetDischargeMinimumStateOfCharge
+    id: 5003
+  - name: GetManualPreconditioning
+    id: 5004
+  - name: RequestManualPreconditioningButtonStateChange
+    id: 5005
+
+event_groups:
+  - name: VFChargingEventGroup
+    id: 511
+    events:
+      - name: BatteryChargingDataUpdate # deprecated, use more specific events
+        id: 257
+      - name: ChargingLocationActual
+        id: 258
+      - name: ChargingLocationSetting # deprecated, use ChargingLocationSettingV2 instead
+        id: 259
+      - name: ChargingCableStatus  # Lock/Unlock/used status, anim, draw cable in HMI.
+        id: 260
+      - name: BatteryChargingTargetData  # Target daily, long drive, custom
+        id: 261
+      - name: CurrentLimitRange  # Amps Min/Max
+        id: 262
+      - name: ChargingLocationSettingV2
+        id: 263
+      - name: PlugAndChargeSetting
+        id: 264
+      - name: ActualChargingPower
+        id: 265
+      - name: ChargingPortStatus
+        id: 266
+      - name: AmpLimitSettingStatus
+        id: 267
+      - name: ChargeNowSettingStatus
+        id: 268
+      - name: MinSocLimitSettingStatus
+        id: 269
+      - name: SchedulesSettingStatus
+        id: 270
+      - name: TargetSocSettingStatus
+        id: 271
+      - name: TransferLimitSettingStatus
+        id: 272
+      - name: UnlockCableSettingStatus
+        id: 273
+      - name: ManualPreconditioning
+        id: 274
+      - name: CurrentBatteryCapacity
+        id: 275
+      - name: ChargerType
+        id: 276
+      - name: ConnectionStatus
+        id: 277
+      - name: ChargingStatus
+        id: 278
+      - name: ChargingTimers
+        id: 279
+      - name: ChargingPowerActual
+        id: 280
+      - name: ChargingCurrentActual
+        id: 281
+      - name: DepartureTime
+        id: 282
+      - name: DischargeMinimumStateOfCharge
+        id: 283
+      - name: ChargingLevelSettingType
+        id: 284
+      - name: UserChargingLevelTargetSetting
+        id: 285
+
+payload_proto: vehicle_charging_service  # Name of proto file supplied for vehicle charging
+parent_proto_messages:          # Parent messages defined in proto file for vehicle charging
+  - vcs_BatteryChargingDataMessage
+  - vcs_BatteryChargingTargetRequest
+  - vcs_ChargingCableLockRequest
+  - vcs_UpdateChargingLocation
+  - vcs_UpdateChargingLocationV2
+  - vcs_ChargingLocationSettingType
+  - vcs_ChargingLocationSetting
+  - vcs_ChargingLocationSettingV2
+  - vcs_ChargingCableStatus
+  - vcs_CurrentLimitRange
+  - vcs_PlugAndChargeSetting
+  - vcs_ChargeCableLockRequest
+  - vcs_ActualChargingPower
+  - vcs_ChargingPortStatus
+  - vcs_DischargeMinimumStateOfCharge
+  - vcs_ChargingSettings
+  - vcs_ManualPreconditioning
+  - vcs_RequestManualPreconditioningButtonStateChange
+  - vcs_CurrentBatteryCapacity
+  - vcs_ChargerType
+  - vcs_ConnectionStatus
+  - vcs_ChargingStatusV1
+  - vcs_ChargingTimers
+  - vcs_ChargingPowerActual
+  - vcs_ChargingCurrentActual
+  - vcs_OptimisedChargingDepartureTime
+  - vcs_ChargingLevelSettingType
+  - vcs_UserChargingLevelTargetSetting

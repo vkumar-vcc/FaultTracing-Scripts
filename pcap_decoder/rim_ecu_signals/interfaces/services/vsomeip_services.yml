@@ -1,0 +1,414 @@
+type: vsomeip_services
+android:
+  DhuSensorService:
+    service_id: 450
+    instance_id: 1
+    reliable:
+      port: 31530
+      enable-magic-cookies: false
+  RouteAppService:
+    service_id: 451
+    instance_id: 1
+    reliable:
+      port: 31531
+      enable-magic-cookies: false
+  LongHorizonService:
+    service_id: 452
+    instance_id: 1
+    reliable:
+      port: 31532
+      enable-magic-cookies: false
+  MapcompilerSomeipservice:
+    service_id: 261
+    instance_id: 17475
+    reliable:
+      port: 31505
+  ShiftedTcamPositioningService:
+    service_id: 453
+    instance_id: 1
+    reliable:
+      port: 31533
+  DiagnosticWifiService:
+    service_id: 455
+    instance_id: 1
+    reliable:
+      port: 31543
+  DHUWSWiFiService:
+    service_id: 456
+    instance_id: 1
+    reliable:
+      port: 31545
+  ResetManagerService:
+    service_id: 457
+    instance_id: 1
+    reliable:
+      port: 31547
+
+csp:
+  ClimateControlService:
+    service_id: 256
+    instance_id: 22136
+    reliable:
+      port: 31501
+      enable-magic-cookies: false
+  RvdControlService:
+    service_id: 259
+    instance_id: 22136
+    reliable:
+      port: 31534
+      enable-magic-cookies: false
+  ParkingClimateService:
+    service_id: 270
+    instance_id: 22136
+    reliable:
+      port: 31535
+      enable-magic-cookies: false
+  AirQualityInCarService:
+    service_id: 271
+    instance_id: 22136
+    reliable:
+      port: 31536
+      enable-magic-cookies: false
+  DhuFaultProxyService:
+    service_id: 258
+    instance_id: 1
+    reliable:
+      port: 31500
+      enable-magic-cookies: false
+  DriverCoachService:
+    service_id: 287
+    instance_id: 22136
+    reliable:
+      port: 31541
+      enable-magic-cookies: false
+  VehicleCommonDataService:
+    service_id: 333
+    instance_id: 1
+    reliable:
+      port: 31555
+      enable-magic-cookies: false
+  DisplayControlDataService:
+    service_id: 288
+    instance_id: 1
+    reliable:
+      port: 31537
+      enable-magic-cookies: false
+  VehicleFunctionService:
+    service_id: 260
+    instance_id: 22136
+    reliable:
+      port: 31502
+      enable-magic-cookies: false
+  ErgonomicsControlService:
+    service_id: 269
+    instance_id: 22136
+    reliable:
+      port: 31518
+      enable-magic-cookies: false
+  VehicleChargingService:
+    service_id: 267
+    instance_id: 22136
+    reliable:
+      port: 31514
+      enable-magic-cookies: false
+  VehicleStatusService:
+    service_id: 285
+    instance_id: 22136
+    reliable:
+      port: 31516
+      enable-magic-cookies: false
+  EtcManagerService:
+    service_id: 257
+    instance_id: 1
+    reliable:
+      port: 31504
+      enable-magic-cookies: false
+  DriverInformationAsilDataService:
+    service_id: 300
+    instance_id: 1
+    reliable:
+      port: 31510
+      enable-magic-cookies: false
+  InstallationMasterService:
+    service_id: 351
+    instance_id: 1
+    reliable:
+      port: 31522
+      enable-magic-cookies: false
+  OtaManagerService:
+    service_id: 352
+    instance_id: 1
+    reliable:
+      port: 31523
+      enable-magic-cookies: false
+  AssistCallSomeipService:
+    service_id: 262
+    instance_id: 1
+    reliable:
+      port: 31540
+      enable-magic-cookies: false
+  AssistCallServiceStatusClient:
+    service_id: 265
+    instance_id: 1
+    reliable:
+      port: 31570
+      enable-magic-cookies: false
+  AssistanceCallAdapterService:
+    service_id: 266
+    instance_id: 1
+    reliable:
+      port: 31590
+      enable-magic-cookies: false
+  UserManagerService:
+    service_id: 268
+    instance_id: 1
+    reliable:
+      port: 31595
+      enable-magic-cookies: false
+  TcamClimatizationControlService:
+    service_id: 301
+    instance_id: 1
+    reliable:
+      port: 31524
+  TcamCloudService:
+    service_id: 330
+    instance_id: 1
+    reliable:
+      port: 31544
+      enable-magic-cookies: false
+  TcamHonkCarLocatorService:
+    service_id: 317
+    instance_id: 1
+    reliable:
+      port: 31558
+      enable-magic-cookies: false
+  TcamPreCleaningControlService:
+    service_id: 331
+    instance_id: 1
+    reliable:
+      port: 31546
+      enable-magic-cookies: false
+  TcamPreVentilationControlService:
+    service_id: 353
+    instance_id: 1
+    reliable:
+      port: 31549
+      enable-magic-cookies: false
+  TcamRemoteVehicleImmobilizationService:
+    service_id: 335
+    instance_id: 1
+    reliable:
+      port: 31589
+      enable-magic-cookies: false
+  TcamServiceAndWarningsService:
+    service_id: 334
+    instance_id: 1
+    reliable:
+      port: 31577
+      enable-magic-cookies: false
+  LSAService:
+    service_id: 307
+    instance_id: 1
+    reliable:
+      port: 31593
+      enable-magic-cookies: false
+  RmsGatewayService:
+    service_id: 302
+    instance_id: 1
+    reliable:
+      port: 31597
+      enable-magic-cookies: false
+  TcamChargingService:
+    service_id: 303
+    instance_id: 1
+    reliable:
+      port: 31525
+      enable-magic-cookies: false
+  LocalTimeSyncService:
+    service_id: 304
+    instance_id: 1
+    reliable:
+      port: 31596
+      enable-magic-cookies: false
+  MediaSwitchService:
+    service_id: 305
+    instance_id: 1
+    reliable:
+      port: 31526
+      enable-magic-cookies: false
+  GoogleMapContribProviderService:
+    service_id: 306
+    instance_id: 9700
+    reliable:
+      port: 31527
+      enable-magic-cookies: false
+  WheelTickService:
+    service_id: 308
+    instance_id: 1
+    reliable:
+      port: 31528
+      enable-magic-cookies: false
+  MapEnergyAdapter:
+    service_id: 309
+    instance_id: 1
+    reliable:
+      port: 31529
+      enable-magic-cookies: false
+  DriverSupportService:
+    service_id: 286
+    instance_id: 1
+    reliable:
+      port: 31521
+      enable-magic-cookies: false
+  CarconfigAdapterService:
+    service_id: 289
+    instance_id: 1
+    reliable:
+      port: 31583
+  HUDAsilDataService:
+    service_id: 311
+    instance_id: 1
+    reliable:
+      port: 31551
+      enable-magic-cookies: false
+  DiDataService:
+    service_id: 312
+    instance_id: 1
+    reliable:
+      port: 31552
+      enable-magic-cookies: false
+  VehicleNotificationService:
+    service_id: 313
+    instance_id: 1
+    reliable:
+      port: 31553
+      enable-magic-cookies: false
+  TcamOccupantPresenceService:
+    service_id: 314
+    instance_id: 1
+    reliable:
+      port: 31539
+      enable-magic-cookies: false
+  RequestDhuColdBootService:
+    service_id: 315
+    instance_id: 1
+    reliable:
+      port: 31542
+      enable-magic-cookies: false
+  TcamRpapService:
+    service_id: 316
+    instance_id: 1
+    reliable:
+      port: 31556
+      enable-magic-cookies: false
+  SceneControllerService:
+    service_id: 444
+    instance_id: 1
+    reliable:
+      port: 31554
+      enable-magic-cookies: false
+  AudioDataService:
+    service_id: 458
+    instance_id: 1
+    reliable:
+      port: 31548
+      enable-magic-cookies: false
+  AdasDataService:
+    service_id: 332
+    instance_id: 1
+    reliable:
+      port: 31557
+      enable-magic-cookies: false
+  HpaSensorService:
+    service_id: 459
+    instance_id: 1
+    reliable:
+      port: 31561
+      enable-magic-cookies: false
+fce:
+  RvaPushOffloaderService:
+    service_id: 510
+    instance_id: 1
+    reliable:
+      port: 31515
+      enable-magic-cookies: false
+host:
+  VSOMEIPTest:
+    service_id: 511
+    instance_id: 1
+    reliable:
+      port: 31598
+      enable-magic-cookies: false
+qnx:
+  PowerdaemonSomeipservice:
+    service_id: 404
+    instance_id: 42
+    reliable:
+      port: 31599
+      enable-magic-cookies: false
+  VehicleChimesVsomeipServer:
+    service_id: 272
+    instance_id: 8481
+    reliable:
+      port: 31507
+  DhuPowerManagerService:
+    service_id: 273
+    instance_id: 8481
+    reliable:
+      port: 31508
+      enable-magic-cookies: false
+  DhuDisplayManagerService:
+    service_id: 274
+    instance_id: 8481
+    reliable:
+      port: 31509
+      enable-magic-cookies: false
+  DhuUnconfigDataService:
+    service_id: 275
+    instance_id: 8481
+    reliable:
+      port: 31511
+      enable-magic-cookies: false
+  AudioResourcesCheckService:
+    service_id: 276
+    instance_id: 8481
+    reliable:
+      port: 31519
+      enable-magic-cookies: false
+  OdometerBackupService:
+    service_id: 277
+    instance_id: 1
+    reliable:
+      port: 31520
+      enable-magic-cookies: false
+tcam:
+  CertificateProvisioningService:
+    service_id: 290
+    instance_id: 1
+    reliable:
+      port: 31580
+      enable-magic-cookies: false
+  TcamPositioningService:
+    service_id: 291
+    instance_id: 1
+    reliable:
+      port: 31581
+      enable-magic-cookies: false
+  AssistanceCallStatusService:
+    service_id: 380
+    instance_id: 1
+    reliable:
+      port: 31575
+      enable-magic-cookies: false
+  SignalingManager:
+    service_id: 507
+    instance_id: 26248
+    reliable:
+      port: 31582
+      enable-magic-cookies: false
+  TcamSystemManagerService:
+    service_id: 278
+    instance_id: 1
+    reliable:
+      port: 31584
+      enable-magic-cookies: false

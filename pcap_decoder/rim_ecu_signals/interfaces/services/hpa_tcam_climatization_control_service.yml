@@ -1,0 +1,45 @@
+name: TcamClimatizationControlService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: TCAM
+
+methods:
+  - name: ParkingClimatizationStart
+    id: 4096
+  - name: ParkingClimatizationStop
+    id: 4097
+  - name: ParkingClimatizationStatus
+    id: 4098
+  - name: SetClimateTimerList
+    id: 4099
+  - name: GetClimateTimerList
+    id: 4100
+
+event_groups:
+  - name: ParkingClimatizationStatusEventGroup
+    id: 256
+    events:
+      - name: ParkingClimatizationStatus
+        id: 257
+      - name: ClimateTimerListUpdate
+        id: 258
+      - name: MainClimateStatusUpdate
+        id: 259
+
+payload_proto: tcam_climatization_control   # Name of proto file supplied for climate control
+parent_proto_messages:                # Parent messages defined in proto file for climate control
+  - ParkingClimatizationStartRequest
+  - ParkingClimatizationStopRequest
+  - ParkingClimatizationHPAResponse
+  - ParkingClimatizationHPAStatusUpdate
+  - ParkingClimatizationHPAStatusRequest
+  - ParkingClimatizationHPAStatusResponse
+  - SetClimateTimerListRequest
+  - SetClimateTimerListHPAResponse
+  - ClimateTimerListHPAUpdate
+  - GetClimateTimerListRequest
+  - GetClimateTimerListResponse
+  - MainClimateHPAStatusUpdate

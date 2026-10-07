@@ -1,0 +1,91 @@
+name: AssistCallServiceStatusClient
+type: service
+platform: csp
+service_id: 265
+api_version_major: 1
+api_version_minor: 0
+service_provider: TCAM
+service_consumers: HPA
+
+methods:
+  - name: GetPrioTPSeCallV2
+    id: 9
+
+  - name: SetPrioTPSeCallV2
+    id: 10
+
+  - name: SetRequestCallHandlingV2
+    id: 14
+
+  - name: RequestAssistanceCall
+    id: 15
+
+  - name: RequestAssistanceCallAck
+    id: 17
+
+  - name: ServiceDelayTimeAssistanceCall
+    id: 19
+
+  - name: SetDtmfTone
+    id: 20
+
+event_groups:
+  - name: PrioTPSeCallStatusEventGroup
+    id: 11
+    events:
+      - name: PrioTPSeCallStatusV2
+        id: 32780
+
+  - name: AssistanceCallServiceStatusEventGroup
+    id: 13
+    events:
+      - name: AssistanceCallServiceStatus
+        id: 32783
+
+  - name: TelematicsStatusEventGroup
+    id: 16
+    events:
+      - name: TelematicsStatusV2
+        id: 32785
+
+  - name: KeepAwakeStatusEventGroup
+    id: 18
+    events:
+      - name: KeepAwake
+        id: 32787
+  - name: SafetyCallServiceDelayTimeEventGroup
+    id: 21
+    events:
+      - name: SafetyCallDelayTime
+        id: 32800
+
+  - name: AudioMuteUnmuteEventGroup
+    id: 14
+    events:
+      - name: AudioMuteUnmuteEvent
+        id: 32788
+
+  - name: DialpadStatusEventGroup
+    id: 22
+    events:
+      - name: DialpadStatus
+        id: 32801
+
+payload_proto: assistance_call_service_status_client
+parent_proto_messages:
+  - eCall_PrioTPSeCallStatusV2
+  - eCall_AssistanceCallServiceStatus
+  - eCall_TelematicsStatusV2
+  - eCall_KeepAwakeStatus
+  - eCall_GetPrioTPSeCallV2
+  - eCall_GetPrioTPSeCallV2Resp
+  - eCall_SetPrioTPSeCallV2
+  - eCall_SetPrioTPSeCallV2Resp
+  - eCall_SetRequestCallHandlingV2
+  - eCall_SetRequestCallHandlingV2Resp
+  - eCall_RequestAssistanceCall
+  - eCall_RequestAssistanceCallAck
+  - eCall_ServiceDelayTimeAssistanceCall
+  - eCall_PremiumAudioStatus
+  - eCall_DialpadStatus
+  - eCall_SetDtmfTone

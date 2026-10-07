@@ -1,0 +1,181 @@
+name: DriverSupportService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: GetAllData
+    id: 1
+  - name: GetSurroundingObjects
+    id: 2
+    payload:
+      response: drsu.SurroundingObjects
+  - name: GetLaneMarkers
+    id: 3
+    payload:
+      response: drsu.LaneMarkers
+  - name: GetPilotAssist
+    id: 4
+    payload:
+      response: drsu.PilotAssist
+  - name: GetRidePilot
+    id: 5
+    payload:
+      response: drsu.RidePilot
+  - name: GetSetSpeed
+    id: 6
+    payload:
+      response: drsu.SetSpeed
+  - name: GetForwardCollisionWarning
+    id: 7
+    payload:
+      response: drsu.PilotAssist
+  - name: GetRoadSignInformation
+    id: 8
+    payload:
+      response: drsu.RoadSignInformation
+  - name: GetLaneKeepingAid
+    id: 9
+    payload:
+      response: drsu.LaneKeepingAid
+  - name: GetBlindSpotAlert
+    id: 10
+    payload:
+      response: drsu.BlindSpotAlert
+  - name: GetAutoPilotHmiStatus
+    id: 11
+    payload:
+      response: drsu.AutoPilotHmiStatus
+  - name: GetAutoPilotButtonState
+    id: 12
+    payload:
+      response: drsu.AutoPilotButtonState
+  - name: GetResumeButtonState
+    id: 13
+    payload:
+      response: drsu.ResumeButtonState
+  - name: GetSetSpeedButtonState
+    id: 14
+    payload:
+      response: drsu.SetSpeedButtonState
+  - name: GetSteeringAssistButtonState
+    id: 15
+    payload:
+      response: drsu.SteeringAssistButtonState
+  - name: GetRoadSignInformationActiveState
+    id: 16
+    payload:
+      response: drsu.RoadSignInformationActiveState
+  - name: GetDriverSupportButtonState
+    id: 17
+    payload:
+      response: drsu.DriverSupportButtonState
+  - name: GetEgoTrajectoryCoors
+    id: 18
+    payload:
+      response: drsu.EgoTrajectoryCoors
+  - name: GetTimeGap
+    id: 19
+    payload:
+      response: drsu.TimeGap
+
+event_groups:
+  - name: DriverSupport
+    id: 17511
+    events:
+      - name: drsu_SurroundingObjects
+        id: 42000
+        payload:
+          notification: drsu.SurroundingObjects
+      - name: drsu_LaneMarkers
+        id: 42001
+        payload:
+          notification: drsu.LaneMarkers
+      - name: drsu_PilotAssist
+        id: 42002
+        payload:
+          notification: drsu.PilotAssist
+      - name: drsu_RidePilot
+        id: 42003
+        payload:
+          notification: drsu.RidePilot
+      - name: drsu_SetSpeed
+        id: 42004
+        payload:
+          notification: drsu.SetSpeed
+      - name: drsu_ForwardCollisionWarning
+        id: 42005
+        payload:
+          notification: drsu.ForwardCollisionWarning
+      - name: drsu_RoadSignInformation
+        id: 42006
+        payload:
+          notification: drsu.RoadSignInformation
+      - name: drsu_LaneKeepingAid
+        id: 42007
+        payload:
+          notification: drsu.LaneKeepingAid
+      - name: drsu_BlindSpotAlert
+        id: 42008
+        payload:
+          notification: drsu.BlindSpotAlert
+      - name: drsu_AutoPilotHmiStatus
+        id: 42009
+        payload:
+          notification: drsu.AutoPilotHmiStatus
+      - name: drsu_AutoPilotButtonState
+        id: 42010
+        payload:
+          notification: drsu.AutoPilotButtonState
+      - name: drsu_ResumeButtonState
+        id: 42011
+        payload:
+          notification: drsu.ResumeButtonState
+      - name: drsu_SetSpeedButtonState
+        id: 42012
+        payload:
+          notification: drsu.SetSpeedButtonState
+      - name: drsu_SteeringAssistButtonState
+        id: 42013
+        payload:
+          notification: drsu.SteeringAssistButtonState
+      - name: drsu_RoadSignInformationActiveState
+        id: 42014
+        payload:
+          notification: drsu.RoadSignInformationActiveState
+      - name: drsu_DriverSupportButtonState
+        id: 42015
+        payload:
+          notification: drsu.DriverSupportButtonState
+      - name: drsu_EgoTrajectoryCoors
+        id: 42016
+        payload:
+          notification: drsu.EgoTrajectoryCoors
+      - name: drsu_TimeGap
+        id: 42017
+        payload:
+          notification: drsu.TimeGap
+
+payload_proto: driver_support # Name of proto file supplied
+parent_proto_messages: # Parent messages defined in proto file supplied
+  - drsu_SurroundingObjects
+  - drsu_LaneMarkers
+  - drsu_PilotAssist
+  - drsu_RidePilot
+  - drsu_SetSpeed
+  - drsu_ForwardCollisionWarning
+  - drsu_RoadSignInformation
+  - drsu_LaneKeepingAid
+  - drsu_BlindSpotAlert
+  - drsu_AutoPilotHmiStatus
+  - drsu_AutoPilotButtonState
+  - drsu_ResumeButtonState
+  - drsu_SetSpeedButtonState
+  - drsu_SteeringAssistButtonState
+  - drsu_RoadSignInformationActiveState
+  - drsu_DriverSupportButtonState
+  - drsu_EgoTrajectoryCoors
+  - drsu_TimeGap

@@ -1,0 +1,54 @@
+name: OtaManagerService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: DownloadFiles
+    id: 4094
+  - name: AbortDownload
+    id: 4095
+  - name: SendInstallationReport
+    id: 4096
+  - name: RemoveDownloadReport
+    id: 4097
+  - name: RemoveAssignments
+    id: 4098
+  - name: ResetFileStorage
+    id: 4099
+  - name: RequestKeepAwakeOtaDownload
+    id: 5000
+  - name: ReleaseKeepAwakeOtaDownload
+    id: 5001
+
+event_groups:
+  - name: OtaManagerEventGroup
+    id: 32768
+    events:
+      - name: DownloadStarted
+        id: 32769
+      - name: DownloadComplete
+        id: 32770
+      - name: DownloadFailed
+        id: 32771
+      - name: DownloadFailedCritical
+        id: 32772
+      - name: AbortDownloadResponse
+        id: 32773
+      - name: SendInstallationReportResponse
+        id: 32774
+
+payload_proto: ota_manager # Name of proto file supplied for ota manager control
+parent_proto_messages:
+  - DownloadData
+  - DownloadStatusData
+  - DownloadFailedData
+  - ReportData
+  - ReportResponseData
+  - RemoveDownloadReportData
+  - ResetFileStorageResponseData
+  - KeepAwakeOtaDownloadRequestData
+  - KeepAwakeOtaDownloadResponseData

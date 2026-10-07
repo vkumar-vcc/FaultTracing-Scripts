@@ -1,0 +1,30 @@
+name: AdasDataService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+event_groups:
+  - name: AdasDataGroup
+    id: 1
+    events:
+      - name: Manoeuvre
+        id: 40960
+      - name: LaneModel
+        id: 40961
+      - name: RoadModel
+        id: 40962
+      - name: SurroundingObjects
+        id: 40963
+      - name: LaneHighlight
+        id: 40964
+
+payload_proto: adas_data # Name of proto file supplied
+parent_proto_messages: # Parent messages defined in proto file supplied
+  - adda_Manoeuvre
+  - adda_LaneModel
+  - adda_RoadModel
+  - adda_SurroundingObjects
+  - adda_LaneHighlight

@@ -9,6 +9,7 @@ dependencies = [
     "azure-identity",
     "azure-storage-blob",
     "keyring",
+    "pillow>=12.3.0",
     "pydlt",
     "requests",
     "smbprotocol",

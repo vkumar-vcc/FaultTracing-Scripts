@@ -1,0 +1,5 @@
+name: PowerdaemonSomeipservice
+type: service
+platform: qnx
+api_version_major: 0
+api_version_minor: 0

@@ -1,0 +1,29 @@
+name: RvdControlService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: TCAM & DHU
+methods:
+  - name: SetHvacRearVisionDefroster
+    id: 4104
+  - name: GetHvacRearVisonDefrosterState
+    id: 4105
+  - name: SetAutostartRearVisonDefrosterSetting
+    id: 4106
+  - name: GetAutostartRearVisonDefrosterSetting
+    id: 4107
+event_groups:
+  - name: RvdEventGroup
+    id: 256
+    events:
+      - name: HvacRearVisionDefrosterState
+        id: 262
+      - name: AutostartRearVisonDefrosterSettingEvent
+        id: 263
+payload_proto: rear_vision_defroster_service  # Name of proto file supplied for climate control
+parent_proto_messages:          # Parent messages defined in proto file for climate control
+  - rvd_RearVisionDefrosterRequest
+  - rvd_RearVisionDefrosterState
+  - rvd_AutostartRearDefrosterSetting

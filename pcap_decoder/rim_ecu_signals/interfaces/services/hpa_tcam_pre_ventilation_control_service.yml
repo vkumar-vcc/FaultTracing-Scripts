@@ -1,0 +1,29 @@
+name: TcamPreVentilationControlService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: TCAM
+
+methods:
+  - name: PreVentilationStart
+    id: 4096
+  - name: PreVentilationStop
+    id: 4097
+  - name: PreVentilationStatus
+    id: 4098
+
+event_groups:
+  - name: PreVentilationStatusEventGroup
+    id: 256
+    events:
+      - name: PreVentilationStatus
+        id: 257
+
+payload_proto: tcam_pre_ventilation_control   # Name of proto file supplied for preventilation control
+parent_proto_messages:                # Parent messages defined in proto file for preventilation control
+  - pre_ventilation_HPAStatusUpdate
+  - pre_ventilation_StartRequest
+  - pre_ventilation_StopRequest
+  - pre_ventilation_StartStopResponse

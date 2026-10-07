@@ -1,0 +1,22 @@
+name: CarconfigAdapterService
+type: service
+platform: csp
+service_id: 289
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: TCAM
+
+methods:
+  - name: ReadCarConfigParameters
+    id: 0
+
+  - name: ReadVehicleIdentificationInformation
+    id: 1
+
+payload_proto: carconfig_adapter_service
+parent_proto_messages:
+  - eCall_ReadCarConfigParameters
+  - eCall_ReadCarConfigParametersResp
+  - eCall_ReadVehicleIdentificationInformation
+  - eCall_ReadVehicleIdentificationInformationResp

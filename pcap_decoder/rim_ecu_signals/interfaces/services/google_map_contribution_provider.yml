@@ -1,0 +1,27 @@
+name: GoogleMapContribProviderService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+event_groups:
+  - name: GoogleMapContribProviderEventGroup
+    id: 9720
+    events:
+      - name: LaneMarkerData
+        id: 9730
+      - name: RoadSignData
+        id: 9731
+      - name: VehiclePoseData
+        id: 9732
+      - name: LaneMarkerDataV2
+        id: 9733
+
+payload_proto: google_map_contribution_provider
+parent_proto_messages:
+  - LaneMarkers
+  - LaneMarkersV2
+  - Signs
+  - VehiclePoseDelta

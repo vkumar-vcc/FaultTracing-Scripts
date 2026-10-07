@@ -1,0 +1,35 @@
+name: DhuPowerManagerService
+type: service
+platform: qnx
+api_version_major: 0
+api_version_minor: 0
+service_provider: DHU
+service_consumers: HPA
+
+methods:
+  - name: PowerStateRequest
+    id: 1
+
+event_groups:
+  - name: DhuPowerManagerEventGroup
+    id: 32768
+    events:
+      # ShutdownGranted is emitted when the power manager reach PowerState::Off
+      # or PowerState::Str. The event carries no payload.
+      - name: ShutdownGranted
+        id: 32769
+      # StartupGranted is emitted when the power manager reach PowerState::On.
+      # The event carries no payload.
+      - name: StartupGranted
+        id: 32770
+      # ThermalShutdownStarted is emitted when shutdown has been started
+      # due to thermal conditions. The event carries no payload.
+      #
+      # Note: The DHU may power off without emitting ShutdownGranted.
+      #
+      - name: ThermalShutdownStarted
+        id: 32771
+
+payload_proto: dhu_power_manager_service # Name of proto file supplied
+parent_proto_messages: # Parent messages defined in proto file supplied
+  - RequestedPowerState

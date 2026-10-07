@@ -1,0 +1,900 @@
+name: VehicleFunctionService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: StorePressure
+    id: 4996
+  - name: FetchTPMSData
+    id: 4997
+  - name: SetSteeringAssist
+    id: 4998
+  - name: SetLaneChangeAssist
+    id: 4999
+  - name: SetBlindSpotInfo
+    id: 5001
+  - name: SetOffRoadState
+    id: 5003
+  - name: GetOffRoadState
+    id: 5004
+  - name: SetDistanceKeeping
+    id: 5005
+  - name: GetAvailableBeamModeData
+    id: 5006
+  - name: GetActiveBeamMode
+    id: 5007
+  - name: SetActiveBeamMode
+    id: 5008
+  - name: SetStabilityState
+    id: 5009
+  - name: GetStabilityState
+    id: 5010
+  - name: SetOnePedalDriveState
+    id: 5011
+  - name: GetOnePedalDriveState
+    id: 5012
+  - name: SetPerformanceMode
+    id: 5013
+  - name: GetPerformanceMode
+    id: 5014
+  - name: SetCreepMode
+    id: 5015
+  - name: GetCreepMode
+    id: 5016
+  - name: SetTouristLightState
+    id: 5017
+  - name: GetTouristLightState
+    id: 5018
+  - name: SetHazardLightState
+    id: 5019
+  - name: GetHazardLightState
+    id: 5020
+  - name: SetDriverAlert
+    id: 5021
+  - name: GetAdjustDisplayBrightness
+    id: 5023
+  - name: SetAdjustDisplayBrightness
+    id: 5024
+  - name: SetLaneKeepingAid
+    id: 5025
+  - name: SetNewSpeedLimitAudioFeedback
+    id: 5027
+  - name: SetSteeringFeelState
+    id: 5029
+  - name: GetSteeringFeelState
+    id: 5030
+  - name: SetFogLightState
+    id: 5031
+  - name: GetFogLightState
+    id: 5032
+  - name: GetReducedAlarmMode
+    id: 5033
+  - name: SetReducedAlarmMode
+    id: 5034
+  - name: SetChildLockState
+    id: 5035
+  - name: SetSpeedLimitFunction
+    id: 5036
+  - name: SetRoadSignInformationOverSpeedWarning
+    id: 5039
+  - name: SetGloveBoxOpen
+    id: 5045
+  - name: GetInitialData
+    id: 5046
+  - name: GetGloveBoxState
+    id: 5047
+  - name: OpenGloveBox
+    id: 5048
+  - name: GetSpeedUnit
+    id: 5049
+  - name: SetSpeedUnit
+    id: 5050
+  - name: GetDistanceUnit
+    id: 5051
+  - name: SetDistanceUnit
+    id: 5052
+  - name: GetTemperatureUnit
+    id: 5053
+  - name: SetTemperatureUnit
+    id: 5054
+  - name: GetPressureUnit
+    id: 5055
+  - name: SetPressureUnit
+    id: 5056
+  - name: GetEnergyConsumptionUnit
+    id: 5057
+  - name: SetEnergyConsumptionUnit
+    id: 5058
+  - name: GetUnitSettingsData
+    id: 5059
+  - name: GetWiperServicePosition
+    id: 5060
+  - name: SetWiperServicePosition
+    id: 5061
+  - name: GetSuspensionFeelMode
+    id: 5062
+  - name: SetSuspensionFeelMode
+    id: 5063
+  - name: GetIsManualFoldEnabled
+    id: 5064
+  - name: GetIsAutomaticFoldEnabled
+    id: 5065
+  - name: GetMirrorFoldState
+    id: 5066
+  - name: SetAutomaticFold
+    id: 5067
+  - name: SetManualFold
+    id: 5068
+  - name: GetOccupantLockingState
+    id: 5069
+  - name: SetOccupantLocking
+    id: 5070
+  - name: SetJackMode
+    id: 5071
+  - name: GetJackMode
+    id: 5072
+  - name: SetCarModeDynoState
+    id: 5073
+  - name: SetWpcState
+    id: 5074
+  - name: SetDriverSupportFunctionSelection
+    id: 5075
+  - name: GetAdjustmentViewType
+    id: 5076
+  - name: SetAdjustmentViewType
+    id: 5077
+  - name: GetInteriorLightBrightness
+    id: 5078
+  - name: SetInteriorLightBrightness
+    id: 5079
+  - name: GetPassiveArmingMode
+    id: 5080
+  - name: SetPassiveArmingMode
+    id: 5081
+  - name: UpdateLockSetting
+    id: 5082
+  - name: SetUndertakePrevention
+    id: 5083
+  - name: SetHudSetting
+    id: 5084
+  - name: GetHudSetting
+    id: 5085
+  - name: SetWarningCancelation
+    id: 5086
+  - name: GetTailgateAvailability
+    id: 5087
+  - name: GetTailgateStatus
+    id: 5088
+  - name: SetTailgateStatus
+    id: 5089
+  - name: SetRoadSignInformation
+    id: 5090
+  - name: SetSpeedWarnOffset
+    id: 5091
+  - name: SetGreetingIlluminationMode
+    id: 5093
+  - name: GetManualShutdownAvailable
+    id: 5094
+  - name: SetManualShutdownRequest
+    id: 5095
+  - name: GetGreetingIlluminationMode
+    id: 5096
+  - name: FoldSideMirrorsOnLock
+    id: 5097
+  - name: SetGoldenDecorLineColor
+    id: 5098
+  - name: SetRainSensorSensitivity
+    id: 5099
+  - name: SetISAMasterSwitch
+    id: 5100
+  - name: SetPilotAssistSubFunctions
+    id: 5101
+  - name: SetLKASubFunction
+    id: 5102
+  - name: SetSmartOnePedalDriveState
+    id: 5103
+  - name: SetNavigatedPilotAssistStyle
+    id: 5104
+  - name: SetNavigatedPilotAssistVoiceRemindingMode
+    id: 5105
+  - name: SetNavigatedPilotAssistLaneChangeConfirmationType
+    id: 5106
+  - name: SetSpeedingCameraAudioFeedback
+    id: 5107
+  - name: SetActiveGlassRoofShadingState
+    id: 5108
+  - name: SetEnableRequestReadyToDrive
+    id: 5109
+  - name: AdjustTheme
+    id: 5110
+  - name: SetClockFormat
+    id: 5111
+  - name: SetDistanceKeepingTimeGapDriverSetting
+    id: 5112
+  - name: ActivateHeadlightAdjustment
+    id: 5113
+  - name: DeactivateHeadlightAdjustment
+    id: 5114
+  - name: ChangeHeadlightAdjustmentSide
+    id: 5115
+  - name: MoveUp
+    id: 5116
+  - name: MoveDown
+    id: 5117
+  - name: MoveLeft
+    id: 5118
+  - name: MoveRight
+    id: 5119
+  - name: SaveLightAimingOffset
+    id: 5120
+  - name: RestoreLightAimingOffset
+    id: 5121
+  - name: ResetToFactoryLightAimingOffset
+    id: 5122
+  - name: RequestDriveMode
+    id: 5123
+  - name: EnableGloveBoxPrivateLocking
+    id: 5124
+  - name: SaveGloveBoxPin
+    id: 5125
+  - name: VerifyGloveBoxPin
+    id: 5126
+  - name: SearchForValidKeysAvailable
+    id: 5127
+  - name: LockGloveBox
+    id: 5128
+  - name: UnlockGloveBox
+    id: 5129
+  - name: RequestPilotAssistPlusActivationByDriver
+    id: 5130
+  - name: HomeLinkProgramChannel
+    id: 5131
+  - name: HomeLinkAbortRequest
+    id: 5132
+  - name: HomeLinkConfirmChannel
+    id: 5133
+  - name: HomeLinkDeleteChannel
+    id: 5134
+  - name: HomeLinkRenameChannel
+    id: 5135
+  - name: HomeLinkTransmitChannel
+    id: 5136
+  - name: AdjustAllOnIlluminationMode
+    id: 5137
+  - name: AdjustAutoOffIlluminationMode
+    id: 5138
+  - name: RequestDriveSettingOnePedalDriveV2
+    id: 5139
+  - name: RequestVehicleModes
+    id: 5140
+  - name: SetPilotAssistPlusLaneChangeSetting
+    id: 5141
+  - name: SetPilotAssistPlusDriverEducationMaterialRead
+    id: 5142
+  - name: GetAllOnSwitchStatus
+    id: 5143
+  - name: GetAutoOffSwitchStatus
+    id: 5144
+  - name: GetChildLockStatus
+    id: 5145
+  - name: GetSliderSettingSavedValue
+    id: 5146
+  - name: GetAutomaticReverseTilting
+    id: 5147
+  - name: SetAutomaticReverseTilting
+    id: 5148
+  - name: GetDirectionIndicatorActiveSide
+    id: 5149
+  - name: GetSteeringAssist
+    id: 5150
+  - name: GetLaneChangeAssist
+    id: 5151
+  - name: GetBlindSpotInfo
+    id: 5152
+  - name: GetDistanceKeepingActiveState
+    id: 5153
+  - name: GetDriverAlert
+    id: 5154
+  - name: GetLaneKeepingAid
+    id: 5155
+  - name: GetNewSpeedLimitAudioFeedback
+    id: 5156
+  - name: GetSpeedLimitFunction
+    id: 5157
+  - name: GetPilotAssist
+    id: 5158
+  - name: GetCarModeDynoState
+    id: 5159
+  - name: GetDriveModeState
+    id: 5160
+  - name: GetDriverSupportFunction
+    id: 5161
+  - name: GetUndertakePrevention
+    id: 5162
+  - name: GetOverspeedingResponse
+    id: 5163
+  - name: GetRoadSignInformationActiveStatus
+    id: 5164
+  - name: GetOverspeedWarningOffset
+    id: 5165
+  - name: GetOnePedalDriveV2State
+    id: 5166
+  - name: GetPilotAssistSubFunctions
+    id: 5167
+  - name: GetLKASubFunction
+    id: 5168
+  - name: GetSmartOnePedalDriveState
+    id: 5169
+  - name: GetNavigatedPilotAssistStyle
+    id: 5170
+  - name: GetNavigatedPilotAssistVoiceRemindingMode
+    id: 5171
+  - name: GetNavigationPilotAssistLaneChangeConfirmationType
+    id: 5172
+  - name: GetSpeedingCameraAudioFeedback
+    id: 5173
+  - name: GetReadyToDriveNotificationData
+    id: 5174
+  - name: GetClockFormat
+    id: 5175
+  - name: GetDistanceKeepingTimeGapSetting
+    id: 5176
+  - name: GetPilotAssistPlusLaneChangeSetting
+    id: 5177
+  - name: GetPilotAssistPlusEducationReminder
+    id: 5178
+  - name: GetTyrePressureState
+    id: 5179
+  - name: GetIsCalibrationPossible
+    id: 5180
+  - name: GetCalibrationStatus
+    id: 5181
+  - name: GetSystemStatusFromProxy
+    id: 5182
+  - name: GetDriveSettingOnePedalDriveV2
+    id: 5183
+  - name: GetTyreTemperatureState
+    id: 5184
+  - name: GetSuspensionProfileAvailability
+    id: 5185
+  - name: GetDeactivateSuspensionAvailability
+    id: 5186
+  - name: GetPowerOffState
+    id: 5187
+  - name: GetManualDisableDrivingAvailable
+    id: 5188
+  - name: GetIsChargerButtonEnabled
+    id: 5189
+  - name: GetWirelessPhoneChargerStatus
+    id: 5190
+  - name: GetCarMode
+    id: 5191
+  - name: GetAssistanceEffortStatus
+    id: 5192
+  - name: GetSpeedControlFunctionStatus
+    id: 5193
+  - name: GetSpeedControlFunctionStatusV2
+    id: 5194
+  - name: GetAdjustableSpeedLimitFunctionStatus
+    id: 5195
+  - name: GetAutomaticVehicleSpeedLimitFunctionStatus
+    id: 5196
+  - name: GetPilotAssistPlus
+    id: 5197
+  - name: GetOverspeedingWarningMarketMessage
+    id: 5198
+  - name: GetNavigationPilotAssistState
+    id: 5199
+  - name: GetCurveSpeedAssistActiveState
+    id: 5200
+  - name: GetCruiseControlState
+    id: 5201
+  - name: GetSpeedLimitAssistActiveState
+    id: 5202
+  - name: GetReferenceTyrePressure
+    id: 5203
+  - name: GetTyrePressureStatus
+    id: 5204
+  - name: GetInteriorLightBrightnessValue
+    id: 5205
+  - name: GetLockSettingsStatus
+    id: 5206
+  - name: GetMirrorFoldOnLockStatus
+    id: 5207
+  - name: RequestReverseTilting
+    id: 5208
+  - name: GetLeftMirrorReverseTiltState
+    id: 5209
+  - name: GetRightMirrorReverseTiltState
+    id: 5210
+  - name: SecondRowHeadRestFoldRequest
+    id: 5211
+  - name: GetSecondRowHeadRestFoldStatus
+    id: 5212
+  - name: GetTrailerState
+    id: 5213
+  - name: RequestTrailerLampCheck
+    id: 5214
+  - name: GetIsGloveBoxPrivateLockingEnabled
+    id: 5215
+  - name: GetIsGloveBoxUnlocked
+    id: 5216
+  - name: GetTrailerLightsCheckAvailability
+    id: 5217
+  - name: GetIsGloveBoxPinSaved
+    id: 5218
+  - name: GetAmbientTheme
+    id: 5219
+  - name: GetAmbientThemeState
+    id: 5220
+  - name: GetActiveGlassRoofShadingState
+    id: 5221
+  - name: GetActiveGlassRoofAvailability
+    id: 5222
+  - name: GetGoldenDecorLineColor
+    id: 5223
+  - name: GetHeadlightAdjustmentState
+    id: 5224
+  - name: GetHeadlightAdjustmentAvailability
+    id: 5225
+  - name: GetHeadlightAdjustmentInterfaceAvailability
+    id: 5226
+  - name: GetVehicleHeadlampAimingDevice
+    id: 5227
+  - name: GetHighBeamLightState
+    id: 5228
+  - name: GetHomelinkState
+    id: 5229
+  - name: GetHomelinkAvailabilityState
+    id: 5230
+  - name: GetConfigurationData
+    id: 5231
+  - name: GetRainSensorSensitivity
+    id: 5232
+  - name: GetRainSensorSensitivityStatus
+    id: 5233
+  - name: GetWindshieldWiperMode
+    id: 5234
+  - name: GetSeatOccupantState
+    id: 5235
+  - name: GetBeltSlackReductionStatus
+    id: 5236
+  - name: GetBeltSlackReductionValue
+    id: 5237
+  - name: BeltSlackReductionSetValue
+    id: 5238
+  - name: SetSpeedLimitAssistDriverSettingRequest
+    id: 5239
+  - name: GetSpeedLimitAssistActivationStateV2
+    id: 5240
+  - name: GetSpeedLimitAssistSetSpeedSetting
+    id: 5241
+  - name: SeatCalibrationRequest
+    id: 5242
+  - name: PassengerAirbagApplyExternalSelection
+    id: 5243
+
+event_groups:
+  - name: VehicleFunctionEventGroup
+    id: 510
+    events:
+      - name: TpmsData
+        id: 267
+      - name: PilotAssist
+        id: 268
+      - name: BlindSpotInfo
+        id: 269
+      - name: OffRoadUpdate
+        id: 270
+      - name: AvailableBeamModes
+        id: 271
+      - name: ActiveBeamMode
+        id: 272
+      - name: StabilityUpdate
+        id: 273
+      - name: OnePedalDriveUpdate
+        id: 274
+      - name: PerformanceModeUpdate
+        id: 275
+      - name: CreepModeUpdate
+        id: 276
+      - name: TouristLightUpdate
+        id: 277
+      - name: HazardLightStateUpdate
+        id: 278
+      - name: HazardLightIndicationUpdate
+        id: 279
+      - name: DriverAlert
+        id: 280
+      - name: SliderSettingSavedValueUpdate
+        id: 281
+      - name: LaneKeepingAid
+        id: 282
+      - name: NewSpeedLimitAudioFeedback
+        id: 283
+      - name: SteeringFeelUpdate
+        id: 284
+      - name: FogLightStateUpdate
+        id: 285
+      - name: ReducedAlarmodeUpdate
+        id: 286
+      - name: SpeedLimitFunction
+        id: 287
+      - name: RoadSignInformation
+        id: 288
+      - name: SpeedControlFunction
+        id: 289
+      - name: DistanceKeeping
+        id: 290
+      - name: SteeringAssist
+        id: 291
+      - name: LaneChangeAssist
+        id: 292
+      - name: OverspeedingWarningMarket
+        id: 293
+      - name: GloveBoxStateUpdate
+        id: 294
+      - name: SpeedUnitStatus
+        id: 295
+      - name: DistanceUnitStatus
+        id: 296
+      - name: TemperatureUnitStatus
+        id: 297
+      - name: PressureUnitStatus
+        id: 298
+      - name: EnergyConsumptionUnitStatus
+        id: 299
+      - name: WiperServicePositionUpdate
+        id: 300
+      - name: SuspensionFeelModeUpdate
+        id: 301
+      - name: SideMirrorManeuveringControlUpdate
+        id: 302
+      - name: OccupantLockingUpdate
+        id: 303
+      - name: JackModeUpdate
+        id: 304
+      - name: CarModeDynoUpdate
+        id: 305
+      - name: JackModeState
+        id: 306
+      - name: JackModeAvailability
+        id: 307
+      - name: SuspensionFeelModeAvailability
+        id: 308
+      - name: WpcUpdate
+        id: 309
+      - name: DriverSupportFunction
+        id: 310
+      - name: AdjustmentSettings
+        id: 311
+      - name: InteriorBrightnessUpdate
+        id: 312
+      - name: PassiveArmingModeUpdate
+        id: 313
+      - name: LockSettingsStatusUpdate
+        id: 314
+      - name: WCStatusUpdate
+        id: 315
+      - name: UndertakePrevention
+        id: 316
+      - name: HudActivationUpdate
+        id: 317
+      - name: TailgateStatusUpdate
+        id: 319
+      - name: SpeedWarningOffset
+        id: 320
+      - name: GreetingIlluminationUpdate
+        id: 322
+      - name: InteriorBrightnessStatusUpdate
+        id: 323
+      - name: ManualShutdownAvailabilityUpdate
+        id: 324
+      - name: SideMirrorFoldOnLockEnabled
+        id: 325
+      - name: GoldenDecorLineColorUpdate
+        id: 326
+      - name: TailgateLatchStatusUpdate
+        id: 327
+      - name: ChildLockAvailabilityUpdate
+        id: 328
+      - name: SteeringFeelAvailability
+        id: 329
+      - name: ManualDisableDrivingAvailableUpdate
+        id: 330
+      - name: RainSensorSensitivity
+        id: 331
+      - name: RainSensorSensitivityStatus
+        id: 332
+      - name: WindshieldWiperMode
+        id: 333
+      - name: ISAMasterSwitch
+        id: 334
+      - name: PilotAssistSubFunctionsUpdate
+        id: 335
+      - name: TPMSInterfaceStatus
+        id: 336
+      - name: ADASInterfaceStatus
+        id: 337
+      - name: FrontBeamInterfaceStatus
+        id: 338
+      - name: IndicationInterfaceStatus
+        id: 339
+      - name: DirectionIndicatorInterfaceStatus
+        id: 340
+      - name: ExteriorLightInterfaceStatus
+        id: 341
+      - name: BrakeControlInterfaceStatus
+        id: 342
+      - name: BrakeWarningInterfaceStatus
+        id: 343
+      - name: AdaptiveFrontLightInterfaceStatus
+        id: 344
+      - name: BasicIlluminationInterfaceStatus
+        id: 345
+      - name: SwitchDisplayIlluminationInterfaceStatus
+        id: 346
+      - name: PowerSteeringInterfaceStatus
+        id: 347
+      - name: LVCInterfaceStatus
+        id: 348
+      - name: LockingInterfaceStatus
+        id: 349
+      - name: AlarmInterfaceStatus
+        id: 350
+      - name: UnitsInterfaceStatus
+        id: 351
+      - name: WiperWasherInterfaceStatus
+        id: 352
+      - name: DSFCInterfaceStatus
+        id: 353
+      - name: COMMSUMInterfaceStatus
+        id: 354
+      - name: OccupantForgottenInterfaceStatus
+        id: 355
+      - name: VehicleModeInterfaceStatus
+        id: 356
+      - name: DirectionIndicatorControlInterfaceStatus
+        id: 357
+      - name: WirelessPhoneInterfaceStatus
+        id: 358
+      - name: DriverInputInterfaceStatus
+        id: 359
+      - name: InteriorLightInterfaceStatus
+        id: 360
+      - name: NotificationInterfaceStatus
+        id: 361
+      - name: HUDInterfaceStatus
+        id: 362
+      - name: StartManagerInterfaceStatus
+        id: 363
+      - name: LKASubFunctionsUpdate
+        id: 364
+      - name: NPAStyleUpdate
+        id: 365
+      - name: NPAVoiceModeUpdate
+        id: 366
+      - name: LKALaneChangeConfirmationUpdate
+        id: 367
+      - name: SmartOnePedalDriveUpdate
+        id: 368
+      - name: SpeedingCameraAudioFeedback
+        id: 369
+      - name: ActiveGlassRoofState
+        id: 370
+      - name: ActiveGlassRoofAvailability
+        id: 371
+      - name: ReadyToDriveNotification
+        id: 372
+      - name: SeatOccupantState
+        id: 373
+      - name: AmbientTheme
+        id: 374
+      - name: AmbientThemeState
+        id: 375
+      - name: ClockFormat
+        id: 376
+      - name: DistanceKeepingTimeGapSetting
+        id: 377
+      - name: HeadlightAdjustmentAvailability
+        id: 378
+      - name: HeadlightAdjustmentState
+        id: 379
+      - name: VehicleHeadlampAimingDevice
+        id: 380
+      - name: HeadlightAdjustmentInterfaceAvailability
+        id: 381
+      - name: DriveModeState
+        id: 382
+      - name: IsGloveBoxPrivateLockingEnabled
+        id: 383
+      - name: GloveBoxPinStorageStatus
+        id: 384
+      - name: PinResetKeyAvailabilityStatus
+        id: 385
+      - name: IsGloveBoxUnlocked
+        id: 386
+      - name: GloveBoxPinVerificationStatus
+        id: 387
+      - name: PilotAssistPlusActiveStateV2
+        id: 388
+      - name: RequestPilotAssistPlusActivationByDriver
+        id: 389
+      - name: HomeLinkStatusUpdate
+        id: 390
+      - name: HomeLinkConfigurationDataUpdate
+        id: 391
+      - name: DirectionIndicatorActiveSide
+        id: 392
+      - name: HighBeamLightState
+        id: 393
+      - name: AllOnSwitchStatus
+        id: 394
+      - name: AutoOffSwitchStatus
+        id: 395
+      - name: DriveSettingOnePedalDriveV2
+        id: 396
+      - name: CarMode
+        id: 397
+      - name: SpeedControlFunctionStatus
+        id: 398
+      - name: AdjustableSpeedLimitFunctionStatus
+        id: 399
+      - name: AutomaticVehicleSpeedLimitFunctionStatus
+        id: 400
+      - name: HomelinkState
+        id: 401
+      - name: HomelinkAvailabilityState
+        id: 402
+      - name: ConfigurationData
+        id: 403
+      - name: PilotAssistPlusLaneChangeSetting
+        id: 404
+      - name: PilotAssistPlusDriverEducation
+        id: 405
+      - name: AutomaticReverseTilting
+        id: 406
+      - name: LeftMirrorReverseTiltState
+        id: 407
+      - name: RightMirrorReverseTiltState
+        id: 408
+      - name: SecondRowHeadRestFoldStatus
+        id: 409
+      - name: TrailerState
+        id: 410
+      - name: TrailerLightsCheckAvailability
+        id: 411
+      - name: IsGloveBoxPinSaved
+        id: 412
+      - name: BeltSlackReductionValue
+        id: 413
+      - name: BeltSlackReductionStatus
+        id: 414
+      - name: SpeedLimitAssistActivationStateV2
+        id: 415
+      - name: SpeedLimitAssistSetSpeedSetting
+        id: 416
+
+payload_proto: vehicle_function  # Name of proto file supplied for vehicle function
+parent_proto_messages:          # Parent messages defined in proto file for vehicle function
+  - StorePressureRequest
+  - TPMSDataMessage
+  - FetchAllTPMSDataRequest
+  - PilotAssistMessage
+  - FunctionActiveStatus
+  - AvailableBeamModesMessage
+  - ActiveBeamModeRequest
+  - OnePedalDriveRequest
+  - FunctionEnableDisableRequest
+  - OnOffStatus
+  - HazardLightIndicationMessage
+  - SliderSettingSavedValueMessage
+  - TouristLightStatus
+  - SteeringFeelRequest
+  - SpeedLimitFunctionMessage
+  - SpeedControlFunctionStatus
+  - RoadSignInformationActiveStatus
+  - OverspeedWarningRequest
+  - OverspeedWarningMarketMessage
+  - GloveBoxStatus
+  - SpeedUnitSettings
+  - DistanceUnitSettings
+  - TemperatureUnitSettings
+  - PressureUnitSettings
+  - EnergyConsumptionUnitSettings
+  - UnitSettingsData
+  - SuspensionFeelModeRequest
+  - CarModeDynoMessage
+  - SuspensionFunctionActive
+  - SuspensionFunctionStatus
+  - DriverSupportFunctionSelection
+  - AdjustmentViewTypeMessage
+  - InteriorBrightnessMessage
+  - LockSetting
+  - LockSettingsStatus
+  - WirelessChargerStatus
+  - TailgateAvailabilityActionMessage
+  - SpeedWarningOffset
+  - ShutDownTypeMessage
+  - InteriorLightAvailabilityMessage
+  - FunctionStatusMessage
+  - GoldenDecorLineColorMessage
+  - TailgateLatchStatus
+  - ChildLockStatusMessage
+  - AssistanceEffortStatus
+  - WiperModeMessage
+  - RainSensorModeMessage
+  - PASubFunctionsMessage
+  - InterfaceStatus
+  - LKASubFunctionsMessage
+  - NavigationPilotAssistStyle
+  - NavigationPilotAssistVoiceMode
+  - NavigationPilotAssistLaneChangeConfirmationType
+  - ActiveGlassRoofShadingState
+  - ActiveGlassRoofAvailability
+  - SeatOccupantState
+  - AmbientTheme
+  - AmbientThemeState
+  - ReadyToDriveNotification
+  - ClockFormat
+  - DistanceKeepingTimeGapSetting
+  - ChangeHeadlightAdjustmentSide
+  - HeadlightAdjustmentAvailability
+  - HeadlightAdjustmentState
+  - VehicleHeadlampAimingDevice
+  - HeadlightAdjustmentInterfaceAvailability
+  - DriveModeState
+  - RequestDriveMode
+  - EnableGloveBoxPrivateLocking
+  - SaveGloveBoxPin
+  - VerifyGloveBoxPin
+  - IsGloveBoxPrivateLockingEnabled
+  - GloveBoxPinStorageStatus
+  - GloveBoxPinVerificationStatus
+  - PinResetKeyAvailabilityStatus
+  - IsGloveBoxUnlocked
+  - PilotAssistPlusActiveStateV2
+  - RequestPilotAssistPlusActivationByDriver
+  - HomeLinkChannelData
+  - HomeLinkProgramChannel
+  - HomeLinkConfirmChannel
+  - HomeLinkRenameChannel
+  - HomeLinkDeleteChannel
+  - HomeLinkTransmitChannel
+  - HomeLinkStatusUpdate # Deprecated - use HomelinkAvailabilityState instead
+  - HomeLinkConfigurationDataUpdate # Deprecated - use ConfigurationData instead
+  - DirectionIndicatorActiveSide
+  - HighBeamLightState
+  - AllOnSwitchStatus
+  - AutoOffSwitchStatus
+  - DriveSettingOnePedalDriveV2
+  - RequestDriveSettingOnePedalDriveV2
+  - CarMode
+  - RequestVehicleModes
+  - SpeedLimitFunctionStatus
+  - HomelinkState
+  - HomelinkAvailabilityState
+  - ConfigurationData
+  - SystemManagedLaneChangeActiveState
+  - SetPilotAssistPlusLaneChangeSetting
+  - SetPilotAssistPlusDriverEducationMaterialRead
+  - PilotAssistPlusEducationPeriodicReminder
+  - AutomaticReverseTilting
+  - ReverseTiltState
+  - RequestReverseTilting
+  - HeadRestFoldRequest
+  - SecondRowHeadRestFoldStatus
+  - TrailerState
+  - RequestTrailerLampCheck
+  - TrailerLightsCheckAvailability
+  - IsGloveBoxPinSaved
+  - BeltSlackReductionValue
+  - BeltSlackReductionStatus
+  - SpeedLimitAssistDriveSetting
+  - SpeedLimitAssistSetSpeedSetting
+  - SeatCalibrationRequest
+  - PassengerAirbagExternalSelection

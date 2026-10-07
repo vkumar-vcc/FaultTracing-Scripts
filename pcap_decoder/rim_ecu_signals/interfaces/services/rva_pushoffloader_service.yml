@@ -1,0 +1,22 @@
+name: RvaPushOffloaderService
+type: service
+platform: fce
+service_id: 510
+api_version_major: 1
+api_version_minor: 0
+service_provider: FCE
+service_consumers: DK & SDA & More to come
+
+methods:
+  - name: FilterOutAllowedOrigins
+    id: 1
+  - name: OffloadData
+    id: 2
+  - name: GetMatchingAllowedOriginsID
+    id: 3
+
+payload_proto: rva_pushoffloader_service # Name of proto file supplied
+parent_proto_messages: # Parent messages defined in proto file supplied
+  - OriginList
+  - OffloadDataRequest
+  - OffloadDataReply

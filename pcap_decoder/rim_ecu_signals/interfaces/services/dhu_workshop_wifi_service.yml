@@ -1,0 +1,29 @@
+name: DHUWSWiFiService
+type: service
+platform: android
+api_version_major: 1
+api_version_minor: 0
+service_provider: DHU
+service_consumers: HPA
+
+methods:
+  - name: RequestWorkshopWifi
+    id: 4097
+  - name: DoipGateStateUpdated
+    id: 4098
+
+event_groups:
+  - name: WorkshopWifiEventGroup
+    id: 1
+    events:
+      - name: WifiStatus
+        id: 32769
+      - name: StopWorkshopWifi
+        id: 32770
+
+payload_proto: dhu_workshop_wifi_service
+parent_proto_messages:
+  - RequestWorkshopWifi
+  - DoipGateStateUpdated
+  - WifiStatus
+  - StopWorkshopWifi

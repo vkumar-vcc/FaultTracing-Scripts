@@ -1,0 +1,48 @@
+name: AirQualityInCarService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: GetFineParticulateMatter
+    id: 4120
+  - name: GetCleanZone
+    id: 4121
+  - name: GetAdvancedAirCleaning
+    id: 4122
+  - name: GetFocusedAirCleaning
+    id: 4123
+  - name: SetFocusedAirCleaning
+    id: 4124
+  - name: GetFineParticulateMatterExterior
+    id: 4125
+  - name: GetAirFilterHealthStatus
+    id: 4126
+
+event_groups:
+  - name: AirQualityEventGroup
+    id: 256
+    events:
+      - name: FineParticulateMatter
+        id: 314
+      - name: CleanZone
+        id: 315
+      - name: AdvancedAirCleaning
+        id: 316
+      - name: FocusedAirCleaning
+        id: 317
+      - name: FineParticulateMatterExterior
+        id: 318
+      - name: AirFilterHealthStatus
+        id: 319
+
+payload_proto: cabin_air_quality_provider  # Name of proto file supplied for climate control
+parent_proto_messages:          # Parent messages defined in proto file for climate control
+  - caq_FineParticulateMatter
+  - caq_CleanZone
+  - caq_AdvancedAirCleaning
+  - caq_FocusedAirCleaning
+  - caq_AirFilterHealthStatus

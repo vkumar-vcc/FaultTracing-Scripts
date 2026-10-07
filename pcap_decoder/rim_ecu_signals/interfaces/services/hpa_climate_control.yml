@@ -1,0 +1,212 @@
+name: ClimateControlService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: TCAM & DHU
+
+methods:
+  - name: GetHvacMaxDefrostOn
+    id: 4096
+  - name: SetHvacMaxDefrostOn
+    id: 4097
+  - name: GetHvacTemperature
+    id: 4098
+  - name: SetHvacTemperature
+    id: 4099
+  - name: SetMainClimateMode
+    id: 4100
+  - name: GetMainClimateMode
+    id: 4101
+  - name: SetMainClimateAirFlowLevel
+    id: 4102
+  - name: GetMainClimateAirFlowLevel
+    id: 4103
+  - name: SetHvacAirConditioningState
+    id: 4106
+  - name: GetHvacAirConditioningState
+    id: 4107
+  - name: GetHvacAirDistributionState
+    id: 4108
+  - name: SetHvacAirDistribution
+    id: 4109
+  - name: SetSteeringWheelHeat
+    id: 4110
+  - name: GetSteeringWheelHeatState
+    id: 4111
+  - name: SetSeatHeatSettings
+    id: 4112
+  - name: GetSeatHeatSettings
+    id: 4113
+  - name: SetSeatVentSettings
+    id: 4114
+  - name: GetSeatVentSettings
+    id: 4115
+  - name: GetAirRecirculation
+    id: 4116
+  - name: SetAirRecirculation
+    id: 4117
+  - name: GetEcoClimate
+    id: 4118
+  - name: SetEcoClimate
+    id: 4119
+  - name: SetTemperatureSync
+    id: 4120
+  - name: GetHeaterState
+    id: 4121
+  - name: SetHeaterState
+    id: 4122
+  - name: GetAutostartSteeringWheelHeatingSetting
+    id: 4123
+  - name: SetAutostartSteeringWheelHeatingSetting
+    id: 4124
+  - name: GetAutostartDriverSeatHeatingSetting
+    id: 4125
+  - name: SetAutostartDriverSeatHeatingSetting
+    id: 4126
+  - name: GetAutostartPassengerSeatHeatingSetting
+    id: 4127
+  - name: SetAutostartPassengerSeatHeatingSetting
+    id: 4128
+  - name: GetFrontRowAirVent
+    id: 4129
+  - name: SetFrontRowAirVent
+    id: 4130
+  - name: GetThirdRowClimateState
+    id: 4131
+  - name: SetThirdRowClimateState
+    id: 4132
+  - name: SetAirflowDistributionModeLeft
+    id: 4133
+  - name: SetAirflowDistributionModeRight
+    id: 4134
+  - name: SetAirVentDirection
+    id: 4135
+  - name: GetAirVentDirectionFrontRowLeftWindow
+    id: 4136
+  - name: GetAirVentDirectionFrontRowLeftCenter
+    id: 4137
+  - name: GetAirVentDirectionFrontRowRightCenter
+    id: 4138
+  - name: GetAirVentDirectionFrontRowRightWindow
+    id: 4139
+  - name: GetFrontRowAirDistributionStateLeft
+    id: 4140
+  - name: GetFrontRowAirDistributionStateRight
+    id: 4141
+  - name: ActivateOutsideAir
+    id: 4142
+  - name: DeactivateOutsideAir
+    id: 4143
+  - name: GetOutsideAirState
+    id: 4144
+  - name: GetMaxAirConditioningState
+    id: 4145
+  - name: ActivateMaxAirConditioning
+    id: 4146
+  - name: DeactivateMaxAirConditioning
+    id: 4147
+  - name: ActivateQuickHeat
+    id: 4148
+  - name: DeactivateQuickHeat
+    id: 4149
+  - name: GetQuickHeatState
+    id: 4150
+
+event_groups:
+  - name: ClimateServiceEventGroup
+    id: 256
+    events:
+      - name: HvacMaxDefrostStatus
+        id: 257
+      - name: HvacTemperatureStatus
+        id: 258
+      - name: HvacAutoClimateStatus
+        id: 259
+      - name: HvacMainClimateStatus
+        id: 260
+      - name: HvacMainClimateFanLevelStatus
+        id: 261
+      - name: HvacAirConditioningStatus
+        id: 263
+      - name: HvacAirDistributionState
+        id: 264
+      - name: HvacSteeringWheelHeatingState
+        id: 265
+      - name: HvacSeatHeatStatus
+        id: 266
+      - name: HvacSeatVentStatus
+        id: 267
+      - name: HvacAirRecirculationEvent
+        id: 268
+      - name: HvacEcoClimateEvent
+        id: 269
+      - name: HvacHeaterStateEvent
+        id: 270
+      - name: AutostartSteeringWheelHeatingSettingEvent
+        id: 271
+      - name: AutostartDriverSeatHeatingSettingEvent
+        id: 272
+      - name: AutostartPassengerSeatHeatingSettingEvent
+        id: 273
+      - name: FrontRowAirVentEvent
+        id: 274
+      - name: ThirdRowClimateEvent
+        id: 275
+      - name: AirVentDirectionFrontRowLeftWindow
+        id: 276
+      - name: AirVentDirectionFrontRowLeftCenter
+        id: 277
+      - name: AirVentDirectionFrontRowRightCenter
+        id: 278
+      - name: AirVentDirectionFrontRowRightWindow
+        id: 279
+      - name: FrontRowAirDistributionStateLeft
+        id: 280
+      - name: FrontRowAirDistributionStateRight
+        id: 281
+      - name: OutsideAirState
+        id: 282
+      - name: MaxAirConditioningState
+        id: 283
+      - name: QuickHeatState
+        id: 284
+
+payload_proto: climate_control  # Name of proto file supplied for climate control
+parent_proto_messages:          # Parent messages defined in proto file for climate control
+  - MainClimateState
+  - MainClimateModeRequest
+  - MainClimateAirFlowLevelStatus
+  - MainClimateAirFlowLevelRequest
+  - MainClimateAirFlowLevelGetRequest
+  - MaxDefrostRequest
+  - MaxDefrostStatus
+  - MaxDefrostState
+  - SetTemperatureRequest
+  - TemperatureStatus
+  - AirConditionRequest
+  - AirConditionStatus
+  - SetAirDistribution
+  - AirDistributionState
+  - SteeringWheelHeating
+  - SeatSettings
+  - AirRecirculation
+  - EcoClimate
+  - TemperatureSync
+  - HeaterState
+  - AutostartMainClimateSetting
+  - FrontRowAirVents
+  - ThirdRowClimateState
+  - SetAirVentDirection
+  - SetAirflowDistributionModeLeft
+  - SetAirflowDistributionModeRight
+  - AirVentDirectionFrontRowLeftWindow
+  - AirVentDirectionFrontRowLeftCenter
+  - AirVentDirectionFrontRowRightCenter
+  - AirVentDirectionFrontRowRightWindow
+  - FrontRowAirDistributionStateLeft
+  - FrontRowAirDistributionStateRight
+  - OutsideAirState
+  - MaxAirConditioningState
+  - QuickHeatState

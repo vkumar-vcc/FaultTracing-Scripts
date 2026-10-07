@@ -1,0 +1,58 @@
+type: vsomeip_common
+platform: android
+
+unicast: 198.19.64.201
+diagnosis: 0xC9 # Defines client_id prefix
+
+logging:
+  level: debug
+  status_log_interval: 30
+  statistics:
+    min-frequency: 0
+    interval: 30000
+
+applications:
+  - name: SomeIp_Router
+  - name: vsomeip_test_basic_client
+  - name: vsomeip_test_basic_service
+  - name: ExternalTimeClient
+
+# Test service
+services:
+  - service: 511
+    instance: 1
+    reliable:
+      port: 31598
+      enable-magic-cookies: false
+    events:
+      - event: 3
+        is_reliable: true
+        is_field: false
+    eventgroups:
+      - eventgroup: 4
+        events:
+          - 3
+
+clients:
+  - reliable_remote_ports:
+      first: 0
+      last: 65535
+    reliable_client_ports:
+      first: 31600
+      last: 31699
+
+routing: SomeIp_Router
+network: vsomeip158
+
+service-discovery:
+  enable: true
+  multicast: 239.255.0.6
+  port: 30490
+  protocol: udp
+  initial_delay_min: 10
+  initial_delay_max: 100
+  repetitions_base_delay: 300
+  repetitions_max: 3
+  ttl: 6
+  cyclic_offer_delay: 2000
+  request_response_delay: 1000

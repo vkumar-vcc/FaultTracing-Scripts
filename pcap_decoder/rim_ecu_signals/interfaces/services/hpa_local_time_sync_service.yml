@@ -1,0 +1,15 @@
+name: LocalTimeSyncService
+type: service
+platform: csp
+api_version_major: 0
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: SyncLocalTime
+    id: 1
+
+payload_proto: hpa_local_time_sync_service # Name of proto file supplied
+parent_proto_messages: # Parent messages defined in proto file supplied
+  - TimeOffset

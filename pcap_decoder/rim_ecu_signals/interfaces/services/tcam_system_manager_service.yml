@@ -1,0 +1,11 @@
+name: TcamSystemManagerService
+type: service
+platform: tcam
+api_version_major: 1
+api_version_minor: 0
+service_provider: TCAM
+service_consumers: DHU
+
+methods:
+  - name: TriggerBugreport
+    id: 1

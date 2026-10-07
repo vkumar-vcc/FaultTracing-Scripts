@@ -1,0 +1,210 @@
+name: VehicleCommonDataService
+type: service
+platform: csp
+api_version_major: 1
+api_version_minor: 0
+service_provider: HPA
+service_consumers: DHU
+
+methods:
+  - name: GetCentralLockState
+    id: 1
+    payload:
+      response: veco.CentralLockState
+  - name: GetDoorState
+    id: 2
+    payload:
+      response: veco.DoorState
+  - name: GetElectricalLevelsStatus
+    id: 3
+    payload:
+      response: veco.ElectricalLevelsStatus
+  - name: GetGenericFast
+    id: 4
+    payload:
+      response: veco.GenericFast
+  - name: GetHoodState
+    id: 5
+    payload:
+      response: veco.HoodState
+  - name: GetKeyZone
+    id: 6
+    payload:
+      response: veco.KeyZone
+  - name: GetLifeCycleMode
+    id: 7
+    payload:
+      response: veco.LifeCycleMode
+  - name: GetLowVoltageBatteryAuxillaryStatus
+    id: 8
+    payload:
+      response: veco.LowVoltageBatteryAuxillaryStatus
+  - name: GetLowVoltageBatteryEssentialStatus
+    id: 9
+    payload:
+      response: veco.LowVoltageBatteryEssentialStatus
+  - name: GetMovingDirection
+    id: 10
+    payload:
+      response: veco.MovingDirection
+  - name: GetOdometer # DEPRECATED
+    id: 11
+    payload:
+      response: veco.Odometer
+  - name: GetOffsetTime
+    id: 12
+    payload:
+      response: veco.OffsetTime
+  - name: GetPropulsiveTorque
+    id: 13
+    payload:
+      response: veco.PropulsiveTorque
+  - name: GetSeatDetectionState
+    id: 14
+    payload:
+      response: veco.SeatDetectionState
+  - name: GetTailgateLatchState
+    id: 15
+    payload:
+      response: veco.TailgateLatchState
+  - name: GetUnits
+    id: 16
+    payload:
+      response: veco.Units
+  - name: GetUsageMode
+    id: 17
+    payload:
+      response: veco.UsageMode
+  - name: GetVehicleSpeed
+    id: 18
+    payload:
+      response: veco.VehicleSpeed
+  - name: GetAmbientTemperature
+    id: 19
+    payload:
+      response: veco.AmbientTemperature
+  - name: GetHpaPlatformState
+    id: 20
+    payload:
+      response: veco.HpaPlatformState
+  - name: GetWindowsState
+    id: 21
+    payload:
+      response: veco.WindowsState
+  - name: GetChargeLidState
+    id: 22
+    payload:
+      response: veco.ChargeLidState
+  - name: GetCustomizableButton
+    id: 23
+    payload:
+      response: veco.CustomizableButton
+  - name: SetCustomizableButton
+    id: 24
+    payload:
+      request: veco.CustomizableButton
+  - name: GetLaunchMode
+    id: 25
+    payload:
+      response: veco.LaunchMode
+  - name: GetBraking
+    id: 26
+    payload:
+      response: veco.Braking
+  - name: SetPhone
+    id: 27
+    payload:
+      request: veco.Phone
+  - name: FetchOdometerSigned
+    id: 28
+    payload:
+      request: veco.OdometerSigned
+      response: veco.OdometerSigned
+
+event_groups:
+  - name: VehicleCommonDataGroup
+    id: 1
+    events:
+      - name: CentralLockState
+        id: 40960
+      - name: DoorState
+        id: 40961
+      - name: ElectricalLevelsStatus
+        id: 40962
+      - name: GenericFast
+        id: 40963
+      - name: HoodState
+        id: 40964
+      - name: KeyZone
+        id: 40965
+      - name: LifeCycleMode
+        id: 40966
+      - name: LowVoltageBatteryAuxillaryStatus
+        id: 40967
+      - name: LowVoltageBatteryEssentialStatus
+        id: 40968
+      - name: MovingDirection
+        id: 40969
+      - name: Odometer # DEPRECATED
+        id: 40970
+      - name: OffsetTime
+        id: 40971
+      - name: PropulsiveTorque
+        id: 40972
+      - name: SeatDetectionState
+        id: 40973
+      - name: TailgateLatchState
+        id: 40974
+      - name: Units
+        id: 40975
+      - name: UsageMode
+        id: 40976
+      - name: VehicleSpeed
+        id: 40977
+      - name: AmbientTemperature
+        id: 40978
+      - name: HpaPlatformState
+        id: 40979
+      - name: WindowsState
+        id: 40980
+      - name: ChargeLidState
+        id: 40981
+      - name: CustomizableButton
+        id: 40982
+      - name: LaunchMode
+        id: 40983
+      - name: Braking
+        id: 40984
+      - name: OdometerSigned
+        id: 40985
+
+payload_proto: vehicle_common_data # Name of proto file supplied
+parent_proto_messages: # Parent messages defined in proto file supplied
+  - veco_CentralLockState
+  - veco_DoorState
+  - veco_ElectricalLevelsStatus
+  - veco_GenericFast
+  - veco_HoodState
+  - veco_KeyZone
+  - veco_LifeCycleMode
+  - veco_LowVoltageBatteryAuxillaryStatus
+  - veco_LowVoltageBatteryEssentialStatus
+  - veco_MovingDirection
+  - veco_Odometer # DEPRECATED
+  - veco_OffsetTime
+  - veco_PropulsiveTorque
+  - veco_SeatDetectionState
+  - veco_TailgateLatchState
+  - veco_Units
+  - veco_UsageMode
+  - veco_VehicleSpeed
+  - veco_AmbientTemperature
+  - veco_HpaPlatformState
+  - veco_WindowsState
+  - veco_ChargeLidState
+  - veco_CustomizableButton
+  - veco_LaunchMode
+  - veco_Braking
+  - veco_Phone
+  - veco_OdometerSigned
+  - veco_OdometerSigned_Value # INTERNAL: FOR GENERATOR ONLY
