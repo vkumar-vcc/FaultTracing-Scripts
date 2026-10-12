@@ -1,0 +1,17 @@
+# Local Python environment and caches
+.venv/
+__pycache__/
+*.py[cod]
+
+# Generated analyzer outputs and user-provided capture data
+*_someip_report/
+*_export.csv
+*.pcap
+*.pcapng
+*.pcap.zst
+*.pcapng.zst
+*.pcap.gz
+*.pcapng.gz
+
+# Local Streamlit secrets
+.streamlit/secrets.toml
