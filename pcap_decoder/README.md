@@ -108,6 +108,32 @@ MRC signal names are `CONNECTOR::Message::Signal`; SOME/IP are `Service::Event::
   .venv/bin/python -m unittest discover -s mrc_decoder/tests -p test_streamlit_ui.py -v
   ```
 
+## Docker (no WSL)
+For Windows users without WSL, run the app with Docker Desktop (Linux containers).
+The image builds the native engine inside the container, so nothing is compiled on
+Windows. Captures are provided through the browser **Upload** mode; results download
+from the UI.
+
+From the `pcap_decoder` directory:
+
+```powershell
+docker compose up --build
+```
+
+Open http://localhost:8501. Notes:
+- **Artifactory token:** set it once for SDB/PDU downloads (cached configs need none):
+  `($env:ARTIFACTORY_TOKEN="<token>"); docker compose up --build`. Or mount a
+  host `~/.netrc` (TokenUpdater) by uncommenting that line in `docker-compose.yml`.
+- **Persistence:** downloaded SDBs/PDU configs persist in the `sdb-cache` volume;
+  decode outputs also mirror to `./out`.
+- **Plain Docker** (no compose):
+  ```powershell
+  docker build -t pcap-decoder .
+  docker run --rm -p 8501:8501 -e ARTIFACTORY_TOKEN=$env:ARTIFACTORY_TOKEN pcap-decoder
+  ```
+- **Captures by folder instead of upload:** mount a host folder and use the
+  **Server path** mode pointing at it, e.g. `-v C:\logs:/data:ro` then enter `/data/<file>`.
+
 ## SPA3 PDU decoding
 Rebuild the native module after updating the sources:
 

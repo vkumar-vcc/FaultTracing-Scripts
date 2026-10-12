@@ -15,6 +15,7 @@ resolution-markers = [
 [manifest]
 members = [
     "faulttracing-scripts",
+    "pcap-decoder",
     "someip-comm-analyzer",
 ]
 
@@ -3065,6 +3066,11 @@ sdist = { url = "https://files.pythonhosted.org/packages/62/93/dcc25d52f49022ae6
 wheels = [
     { url = "https://files.pythonhosted.org/packages/82/5b/eadf6d45de38d30ab603f49393b6cd2cbe7e233af8cf90197e32782b68a9/paramiko-5.0.0-py3-none-any.whl", hash = "sha256:b7044611c30140d9a75261653210e2002977b71a0497ff3ba0d98d7edbf62f7c", size = 208919, upload-time = "2026-05-09T18:28:50.295Z" },
 ]
+
+[[package]]
+name = "pcap-decoder"
+version = "0.1.0"
+source = { virtual = "pcap_decoder" }
 
 [[package]]
 name = "pillow"

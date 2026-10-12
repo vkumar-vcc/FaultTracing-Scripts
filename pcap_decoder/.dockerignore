@@ -1,0 +1,32 @@
+# Keep the build context small and reproducible: ship source + scripts, rebuild the rest.
+.venv
+**/__pycache__/
+*.py[cod]
+
+# Prebuilt engine and CMake outputs (rebuilt inside the image)
+mrc_decoder/build/
+
+# Decode outputs, uploads, logs, and large captures
+out/
+pcap_ui_uploads/
+**/run_log.txt
+**/decode.log
+*.log
+*.pcap
+*.pcapng
+*.pcap.zst
+*.pcapng.zst
+*.zst
+*.mf4
+*.mdf
+*.dlt
+*.blf
+*.asc
+
+# Never ship secrets
+**/.streamlit/secrets.toml
+
+# Docker artifacts
+Dockerfile
+.dockerignore
+docker-compose.yml

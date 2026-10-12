@@ -1,0 +1,20 @@
+services:
+  pcap-decoder:
+    build: .
+    image: pcap-decoder:latest
+    ports:
+      - "8501:8501"
+    environment:
+      # Supply an Artifactory token for SDB/PDU downloads (optional; cached configs need none).
+      ARTIFACTORY_TOKEN: ${ARTIFACTORY_TOKEN:-}
+    volumes:
+      # Persist downloaded SDBs / generated PDU configs across restarts.
+      - sdb-cache:/root/.cache/mrc_decoder/sdb
+      # Persist decode outputs on the host (optional; results also download from the UI).
+      - ./out:/app/out
+      # Reuse a host-side TokenUpdater credential instead of ARTIFACTORY_TOKEN (optional):
+      # - ${HOME}/.netrc:/root/.netrc:ro
+    restart: unless-stopped
+
+volumes:
+  sdb-cache:
