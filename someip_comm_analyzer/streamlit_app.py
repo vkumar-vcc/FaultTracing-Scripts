@@ -16,9 +16,10 @@ SCRIPT = Path(__file__).resolve().parent / "someip_comm_analyzer.py"
 sys.path.insert(0, str(SCRIPT.parent))
 import someip_comm_analyzer as sca  # noqa: E402
 
-st.set_page_config(page_title="SOME/IP communication analyzer", page_icon=":material/lan:", layout="wide")
+st.set_page_config(page_title="SOME/IP communication analyzer", page_icon=":material/lan:", layout="wide",
+                   initial_sidebar_state="expanded")
 
-SEV_COLORS = alt.Scale(domain=["ERROR", "WARN", "STATE"], range=["#d62728", "#ff7f0e", "#2ca02c"])
+SEV_COLORS = alt.Scale(domain=["ERROR", "WARN", "STATE"], range=["#C74747", "#E59B27", "#40866A"])
 DEFAULTS = vars(sca.build_parser().parse_args(["_"]))
 
 
@@ -47,10 +48,22 @@ def parse_services(text: str) -> list[int] | None:
     return [int(v, 0) if v.lower().startswith("0x") else int(v, 16) for v in vals] or None
 
 
+def select_matching_ecus() -> None:
+    selected = st.session_state.get("selected_ecus", [])
+    matches = st.session_state.get("matching_ecu_names", [])
+    st.session_state["selected_ecus"] = sorted(set(selected) | set(matches))
+
+
+def clear_selected_ecus() -> None:
+    st.session_state["selected_ecus"] = []
+
+
 # ---------------------------------------------------------------- sidebar
 with st.sidebar:
-    st.header(":material/lan: SOME/IP analyzer")
+    st.markdown("## :material/lan: SOME/IP")
+    st.caption("Communication diagnostics")
     with st.form("run"):
+        st.markdown("**Capture setup**")
         path = st.text_input("Capture file", placeholder=r"C:\logs\capture.pcapng.zst",
                              help=".pcapng / .pcap, optionally .zst or .gz compressed")
         uploaded = st.file_uploader("Or upload a capture", type=["pcapng", "pcap", "zst", "gz"],
@@ -60,7 +73,7 @@ with st.sidebar:
                                index=list(sca.PROFILE_FILES).index(DEFAULTS["profile"]),
                                help="Select the bundled ECU name data for SPA2 or SPA3.")
         services = st.text_input("Service filter (hex, comma separated)", placeholder="0x00d8, 0x022b")
-        with st.expander("Thresholds", icon=":material/tune:"):
+        with st.expander("Analysis thresholds", icon=":material/tune:"):
             req_timeout = st.number_input("Request -> response timeout (s)", 0.01, 60.0, DEFAULTS["req_timeout"])
             sd_timeout = st.number_input("Subscribe -> ack timeout (s)", 0.01, 60.0, DEFAULTS["sd_timeout"])
             find_timeout = st.number_input("Find -> offer timeout (s)", 0.01, 60.0, DEFAULTS["find_timeout"])
@@ -96,11 +109,15 @@ if submitted:
                                                          ("min_gap", min_gap), ("host_gap", host_gap),
                                                          ("grace", grace), ("workers", workers)))
 
+st.markdown(":blue-badge[NETWORK DIAGNOSTICS]")
 st.title("SOME/IP communication analyzer")
+st.caption("Inspect service discovery, request health, ECU activity, and message-stream continuity.")
 cfg = st.session_state.get("run_cfg")
 if not cfg or not cfg["path"]:
-    st.info("Enter a capture path or upload a capture in the sidebar, then press **Analyse**.",
-            icon=":material/info:")
+    with st.container(border=True):
+        st.subheader(":material/radar: Start a capture analysis")
+        st.write("Enter a capture path or upload a `.pcapng`, `.pcap`, `.zst`, or `.gz` file in the sidebar.")
+        st.caption("Choose the SPA2 or SPA3 ECU profile, adjust thresholds if needed, then select **Analyse**.")
     st.stop()
 
 p = Path(cfg["path"])
@@ -130,26 +147,48 @@ if res["empty"]:
 s = res["stats"]
 ev: pd.DataFrame = res["events"]
 out: pd.DataFrame = res["outages"]
-st.caption(f"`{capture_name}` · {sca._utc(s['t_first'])} → {sca._utc(s['t_last'])} UTC · parsed in {s['parse_s']:.1f}s"
-           f" · ECU names: {res['profile']} bundled profile")
-
-with st.container(horizontal=True):
-    st.metric("Duration", f"{s['duration_s']:.1f} s", border=True)
-    st.metric("Frames", f"{s['frames']:,}", border=True)
-    st.metric("SOME/IP messages", f"{s.get('someip_msgs', 0):,}", border=True)
-    st.metric("SD messages", f"{s.get('sd_msgs', 0):,}", border=True)
-    st.metric("Errors", int((ev.severity == "ERROR").sum()), border=True)
-    st.metric("Warnings", int((ev.severity == "WARN").sum()), border=True)
-    st.metric("Unresolved outages", int((~out.resolved).sum()), border=True)
+error_count = int((ev.severity == "ERROR").sum())
+warning_count = int((ev.severity == "WARN").sum())
+unresolved_count = int((~out.resolved).sum())
+with st.container(border=True):
+    with st.container(horizontal=True, vertical_alignment="center"):
+        st.markdown(f"### :material/description: {capture_name}")
+        st.badge(f"{res['profile']} profile", color="blue", icon=":material/dns:")
+        st.badge("Analysis complete", color="green", icon=":material/check_circle:")
+    st.caption(f"{sca._utc(s['t_first'])} → {sca._utc(s['t_last'])} UTC · "
+               f"parsed in {s['parse_s']:.1f}s · {s['duration_s']:.1f}s capture duration")
+    with st.container(horizontal=True):
+        st.metric("Frames", f"{s['frames']:,}", border=True)
+        st.metric("SOME/IP messages", f"{s.get('someip_msgs', 0):,}", border=True)
+        st.metric("SD messages", f"{s.get('sd_msgs', 0):,}", border=True)
+        st.metric("Errors", f"{error_count:,}", border=True)
+    with st.container(horizontal=True):
+        st.metric("Warnings", f"{warning_count:,}", border=True)
+        st.metric("Unresolved outages", f"{unresolved_count:,}", border=True)
+        st.metric("ECUs observed", f"{int((res['hosts'].state != 'never seen').sum()):,}", border=True)
+        st.metric("Duration", f"{s['duration_s']:.1f} s", border=True)
 
 # ---------------------------------------------------------------- global filters
 ecus = sorted(set(ev.src_name[ev.src_name != ""]) | set(ev.dst_name[ev.dst_name != ""])
               | set(res["hosts"].name.dropna()[lambda x: x != ""]))
-with st.container(horizontal=True, vertical_alignment="bottom"):
-    sel_ecus = st.multiselect("ECU", ecus, placeholder="All ECUs", width=420)
-    svc_q = st.text_input("Service id contains", placeholder="e.g. 022b", width=200)
-    t_range = st.slider("Time window (s)", 0.0, max(float(s["duration_s"]), 0.001),
-                        (0.0, max(float(s["duration_s"]), 0.001)), width=500)
+st.session_state["selected_ecus"] = [name for name in st.session_state.get("selected_ecus", []) if name in ecus]
+with st.container(border=True):
+    st.markdown("#### :material/filter_alt: Explore this capture")
+    with st.container(horizontal=True, vertical_alignment="bottom"):
+        ecu_search = st.text_input("Find ECUs by name or VLAN", placeholder="e.g. 156")
+        svc_q = st.text_input("Service ID contains", placeholder="e.g. 022b")
+        t_range = st.slider("Time window (s)", 0.0, max(float(s["duration_s"]), 0.001),
+                            (0.0, max(float(s["duration_s"]), 0.001)))
+    matching_ecus = sca.matching_ecu_names(ecus, ecu_search)
+    st.session_state["matching_ecu_names"] = matching_ecus
+    with st.container(horizontal=True, vertical_alignment="center"):
+        sel_ecus = st.multiselect("ECUs", ecus, placeholder="All ECUs", key="selected_ecus",
+                                  help="Select one or more ECUs to filter the capture views.")
+        st.button(f"Select all {len(matching_ecus)} matches", disabled=not ecu_search.strip() or not matching_ecus,
+                  icon=":material/done_all:", on_click=select_matching_ecus)
+        st.button("Clear", disabled=not sel_ecus, icon=":material/close:", on_click=clear_selected_ecus)
+    if ecu_search.strip():
+        st.caption(f'{len(matching_ecus)} ECU(s) match "{ecu_search.strip()}".')
 
 
 def apply_filters(df: pd.DataFrame, t0: str, t1: str | None = None) -> pd.DataFrame:
@@ -206,7 +245,8 @@ def filtered_table(df: pd.DataFrame, key: str, alt_text: str, **kwargs) -> None:
 
 tab_sum, tab_ecu, tab_out, tab_ev, tab_svc, tab_str = st.tabs([
     ":material/description: Summary", ":material/memory: ECUs", ":material/timeline: Outages",
-    ":material/list: Events", ":material/hub: Services", ":material/stacked_line_chart: Streams"])
+    f":material/list: Events · {error_count} errors", ":material/hub: Services",
+    ":material/stacked_line_chart: Streams"])
 
 summary_md = sca.summary_markdown(res, capture_name)
 with tab_sum:
@@ -313,6 +353,9 @@ with tab_out:
                        column_config={"duration_s": st.column_config.NumberColumn("duration_s", format="%.3f")})
 
 with tab_ev:
+    st.markdown("#### Detected events")
+    st.caption(f"{error_count:,} errors and {warning_count:,} warnings in the full capture. "
+               "Use the severity and global filters below to narrow the event list.")
     sevs = ["ERROR", "WARN", "STATE"]
     with st.container(horizontal=True):
         sel_sev = st.pills("Severity", sevs, selection_mode="multi", default=["ERROR", "WARN"], key="sev")

@@ -1,3 +1,46 @@
 [server]
 maxUploadSize = 4096
 maxMessageSize = 4096
+
+[theme]
+base = "light"
+primaryColor = "#087E8B"
+backgroundColor = "#F4F7FA"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#172B3A"
+borderColor = "#D8E1E8"
+dataframeHeaderBackgroundColor = "#EAF1F5"
+dataframeHeaderTextColor = "#172B3A"
+chartCategoricalColors = ["#087E8B", "#2D6CDF", "#E59B27", "#C74747", "#7758B5", "#40866A"]
+
+[theme.sidebar]
+backgroundColor = "#EAF1F5"
+secondaryBackgroundColor = "#FFFFFF"
+
+[theme.light]
+primaryColor = "#087E8B"
+backgroundColor = "#F4F7FA"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#172B3A"
+borderColor = "#D8E1E8"
+dataframeHeaderBackgroundColor = "#EAF1F5"
+dataframeHeaderTextColor = "#172B3A"
+chartCategoricalColors = ["#087E8B", "#2D6CDF", "#E59B27", "#C74747", "#7758B5", "#40866A"]
+
+[theme.light.sidebar]
+backgroundColor = "#EAF1F5"
+secondaryBackgroundColor = "#FFFFFF"
+
+[theme.dark]
+primaryColor = "#43B6C2"
+backgroundColor = "#101820"
+secondaryBackgroundColor = "#192630"
+textColor = "#E7EEF3"
+borderColor = "#30414E"
+dataframeHeaderBackgroundColor = "#223440"
+dataframeHeaderTextColor = "#E7EEF3"
+chartCategoricalColors = ["#43B6C2", "#73A7FF", "#F0B654", "#F07878", "#B49AE8", "#73B895"]
+
+[theme.dark.sidebar]
+backgroundColor = "#14212B"
+secondaryBackgroundColor = "#1B2A35"

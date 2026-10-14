@@ -27,7 +27,7 @@ Open the local URL printed by Streamlit (default port `8530`). To select another
 
 In the sidebar, either enter a path accessible to this computer or upload one `.pcapng`, `.pcap`, `.zst`, or `.gz` capture, then press **Analyse**. The uploader allows up to 4 GB. If using a remote deployment, its web server or reverse proxy may impose a lower limit.
 
-The app includes a summary, ECU liveness, outage timeline, events, service health, and SOME/IP stream views. Tables support per-column filters. The Summary tab and sidebar Export section can download a Markdown report and CSVs.
+The app uses a high-contrast dashboard theme with light and dark palettes. Switch between them from the app's **Settings** menu in the top-right corner. Capture overview cards lead into separate views for summary, ECU liveness, outages, events, service health, and SOME/IP streams. The Events tab shows the capture's error count in its label and lists errors by default. Use the multi-select ECU filter to filter views by one or more ECUs. To select all ECUs on a VLAN, enter its number (for example, `156`) in **Find ECUs by name or VLAN**, then click **Select all matches**. Tables support per-column filters. The Summary tab and sidebar Export section can download a Markdown report and CSVs.
 
 ## Run the CLI
 
@@ -69,8 +69,14 @@ Thresholds can be adjusted with `--help`, for example `--req-timeout`, `--sd-tim
 
 ## Project files
 
-- `someip_comm_analyzer.py`: capture parser and analysis engine
-- `wireshark_profile.json`: bundled SPA3 ECU names and subnet mappings
+- `someip_comm_analyzer.py`: backwards-compatible CLI entry point
+- `analyzer_core/capture.py`: `CaptureReader` and pcap/pcapng/CMP decoding
+- `analyzer_core/engine.py`: stateful SOME/IP `Analyzer`
+- `analyzer_core/profiles.py`: bundled profile loading and `Names` resolution
+- `analyzer_core/reports.py`: analysis dataframes and report generation
+- `analyzer_core/cli.py`: command-line argument parsing and orchestration
+- `analyzer_core/common.py`: shared binary structures and constants
+- `spa3_profile.json`: bundled SPA3 ECU names and subnet mappings
 - `spa2_profile.json`: bundled SPA2 ECU names and subnet mappings
 - `streamlit_app.py`: Streamlit interface
 - `pyproject.toml`: analyzer dependencies; the root `uv.lock` pins the shared workspace
