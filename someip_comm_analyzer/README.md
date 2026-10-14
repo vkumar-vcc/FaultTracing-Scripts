@@ -7,9 +7,9 @@ A standalone analyzer for SOME/IP and SOME/IP-SD traffic in automotive Ethernet 
 - Windows PowerShell
 - [uv](https://docs.astral.sh/uv/)
 - Python 3.10 or newer (uv creates the local environment)
-- A Wireshark profile with `hosts` and `subnets` files for ECU name resolution (optional)
+- Bundled SPA2 or SPA3 profile data is used for ECU name resolution
 
-The default profile is `VCC-SPA3-SDB17`, discovered under `%APPDATA%\Wireshark\profiles`. If it is not present, IP addresses are still reported without profile names.
+The analyzer always uses bundled JSON data and never reads Wireshark profile folders. SPA3 is selected by default; choose SPA2 or SPA3 in the app, or pass `--profile SPA2` / `--profile SPA3` to the CLI. The bundles contain the profiles' `hosts` and `subnets` entries, so Wireshark is not required.
 
 ## Run the app
 
@@ -43,6 +43,8 @@ To choose an output folder and restrict analysis to a service ID:
 .\run.ps1 -Cli "C:\logs\capture.pcapng.zst" --outdir "C:\logs\report" --service 0x00ae
 ```
 
+Select the SPA2 name mapping with `--profile SPA2`; the default is `--profile SPA3`.
+
 The CLI writes a `<capture>_someip_report` folder next to the capture unless `--outdir` is provided. Outputs include:
 
 - `summary.md`: capture overview and key findings
@@ -68,6 +70,8 @@ Thresholds can be adjusted with `--help`, for example `--req-timeout`, `--sd-tim
 ## Project files
 
 - `someip_comm_analyzer.py`: capture parser and analysis engine
+- `wireshark_profile.json`: bundled SPA3 ECU names and subnet mappings
+- `spa2_profile.json`: bundled SPA2 ECU names and subnet mappings
 - `streamlit_app.py`: Streamlit interface
 - `pyproject.toml`: analyzer dependencies; the root `uv.lock` pins the shared workspace
 - `run.ps1`: local CLI and app launcher

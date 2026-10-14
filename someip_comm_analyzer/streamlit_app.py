@@ -23,12 +23,9 @@ DEFAULTS = vars(sca.build_parser().parse_args(["_"]))
 
 
 @st.cache_data(max_entries=4, show_spinner=False)
-def run_analysis(path: str, mtime: float, size: int, opts: tuple, services: tuple, profile: str,
-                 profile_dir: str) -> dict:
+def run_analysis(path: str, mtime: float, size: int, opts: tuple, services: tuple, profile: str) -> dict:
     # Separate process: multiprocessing spawn would otherwise re-execute this Streamlit script in each worker
     cmd = [sys.executable, str(SCRIPT), path, "--profile", profile]
-    if profile_dir:
-        cmd += ["--profile-dir", profile_dir]
     for k, v in opts:
         cmd += [f"--{k.replace('_', '-')}", str(v)]
     for sid in services:
@@ -59,9 +56,9 @@ with st.sidebar:
         uploaded = st.file_uploader("Or upload a capture", type=["pcapng", "pcap", "zst", "gz"],
                                     max_upload_size=4096,
                                     help="Large uploads may also be limited by the web server or reverse proxy.")
-        profile = st.text_input("Wireshark profile", value=DEFAULTS["profile"],
-                                help="hosts and subnets files are used for ECU names")
-        profile_dir = st.text_input("Profile directory (optional)", help="Overrides the profile name lookup")
+        profile = st.selectbox("Vehicle profile", options=list(sca.PROFILE_FILES),
+                               index=list(sca.PROFILE_FILES).index(DEFAULTS["profile"]),
+                               help="Select the bundled ECU name data for SPA2 or SPA3.")
         services = st.text_input("Service filter (hex, comma separated)", placeholder="0x00d8, 0x022b")
         with st.expander("Thresholds", icon=":material/tune:"):
             req_timeout = st.number_input("Request -> response timeout (s)", 0.01, 60.0, DEFAULTS["req_timeout"])
@@ -92,7 +89,7 @@ if submitted:
         Path(previous).unlink(missing_ok=True)
     st.session_state.run_cfg = dict(path=capture_path, display_name=display_name,
                                 uploaded_path=capture_path if uploaded is not None else None,
-                                profile=profile.strip(), profile_dir=profile_dir.strip(),
+                                profile=profile,
                                 services=services, opts=(("req_timeout", req_timeout), ("sd_timeout", sd_timeout),
                                                          ("find_timeout", find_timeout),
                                                          ("event_timeout", event_timeout), ("gap_factor", gap_factor),
@@ -121,7 +118,7 @@ stat = p.stat()
 try:
     with st.spinner(f"Analysing {capture_name} ({stat.st_size / 2**20:.0f} MB)..."):
         res = run_analysis(str(p), stat.st_mtime, stat.st_size, cfg["opts"], tuple(svc or ()),
-                           cfg["profile"], cfg["profile_dir"])
+                           cfg["profile"])
 except RuntimeError as exc:
     st.error(f"Analysis failed:\n\n```\n{exc}\n```", icon=":material/error:")
     st.stop()
@@ -134,7 +131,7 @@ s = res["stats"]
 ev: pd.DataFrame = res["events"]
 out: pd.DataFrame = res["outages"]
 st.caption(f"`{capture_name}` · {sca._utc(s['t_first'])} → {sca._utc(s['t_last'])} UTC · parsed in {s['parse_s']:.1f}s"
-           + (f" · names from `{res['profile_dir']}`" if res["profile_dir"] else " · :orange[Wireshark profile not found]"))
+           f" · ECU names: {res['profile']} bundled profile")
 
 with st.container(horizontal=True):
     st.metric("Duration", f"{s['duration_s']:.1f} s", border=True)

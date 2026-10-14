@@ -9,7 +9,7 @@ and reports, as a timeline:
   * RPC: requests without response (episodes), error return codes, recovery
   * Streams: periodic SOME/IP streams that stop / resume / start late / end early
   * Hosts: ECUs going silent / coming back
-ECU names come from the Wireshark profile's `hosts` and `subnets` files.
+ECU names come from the bundled SPA2 or SPA3 JSON profile.
 
 Usage:
   python someip_comm_analyzer.py capture.pcapng.zst [--profile VCC-SPA3-SDB17] [-o outdir]
@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import gzip
 import ipaddress
+import json
 import os
 import pickle
 import queue
@@ -70,24 +71,23 @@ EVENT_COLS = ['time_utc', 't_rel_s', 'severity', 'event', 'service', 'instance',
 
 
 # ---------------------------------------------------------------- name resolution
-def find_profile_dir(name: str) -> Path | None:
-    cands = []
-    if os.environ.get('APPDATA'):
-        cands.append(Path(os.environ['APPDATA']) / 'Wireshark' / 'profiles' / name)
-    cands.append(Path.home() / '.config' / 'wireshark' / 'profiles' / name)
-    if Path('/mnt/c/Users').is_dir():
-        cands += sorted(Path('/mnt/c/Users').glob(f'*/AppData/Roaming/Wireshark/profiles/{name}'))
-    return next((c for c in cands if c.is_dir()), None)
+DEFAULT_PROFILE = 'SPA3'
+PROFILE_FILES = {
+    'SPA2': Path(__file__).resolve().with_name('spa2_profile.json'),
+    'SPA3': Path(__file__).resolve().with_name('wireshark_profile.json'),
+}
 
 
 class Names:
-    def __init__(self, profile_dir: Path | None):
+    def __init__(self, profile_file: Path):
         self.hosts: dict[int, str] = {0: 'unconfigured (no IP yet)'}
         self.subnets: list[tuple[int, int, str]] = []
         self.cache: dict[int, str] = {}
-        if not profile_dir:
-            return
-        for line in _read_lines(profile_dir / 'hosts'):
+        with profile_file.open(encoding='utf-8') as f:
+            bundled = json.load(f)
+        host_lines = bundled['hosts']
+        subnet_lines = bundled['subnets']
+        for line in host_lines:
             parts = line.split()
             if len(parts) >= 2:
                 try:
@@ -95,7 +95,7 @@ class Names:
                 except ValueError:
                     pass
         nets = []
-        for line in _read_lines(profile_dir / 'subnets'):
+        for line in subnet_lines:
             parts = line.split(maxsplit=1)
             if len(parts) == 2:
                 try:
@@ -114,22 +114,6 @@ class Names:
                           if ip & mask == net), '')
             self.cache[ip] = n
         return n
-
-
-def _read_lines(p: Path):
-    if not p.is_file():
-        return []
-    out = []
-    raw = p.read_bytes()
-    try:
-        text = raw.decode('utf-8')
-    except UnicodeDecodeError:
-        text = raw.decode('cp1252', errors='replace')
-    for line in text.splitlines():
-        line = ''.join(ch for ch in line.split('#', 1)[0] if ch.isprintable()).strip()
-        if line:
-            out.append(line)
-    return out
 
 
 _ip_cache: dict[int, str] = {}
@@ -1266,7 +1250,7 @@ def summary_markdown(res: dict, capture: str, limit: int = 50) -> str:
           f'- **Traffic:** {st["frames"]:,} frames, {st.get("someip_msgs", 0):,} SOME/IP messages, '
           f'{st.get("sd_msgs", 0):,} SD messages, {st["streams"]} SOME/IP streams',
           f'- **Findings:** {errs} errors, {warns} warnings, {int((~out.resolved).sum())} unresolved outages',
-          f'- **ECU names:** `{res.get("profile_dir") or "Wireshark profile not found"}`', '']
+          f'- **ECU names:** `{res["profile"]} bundled profile`', '']
 
     # key findings in plain words
     kf = []
@@ -1375,8 +1359,8 @@ def _utc(ts):
 def build_parser():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('pcap', nargs='+', help='.pcapng/.pcap, optionally .zst/.gz compressed')
-    ap.add_argument('--profile', default='VCC-SPA3-SDB17', help='Wireshark profile name for hosts/subnets')
-    ap.add_argument('--profile-dir', type=Path, help='explicit Wireshark profile directory')
+    ap.add_argument('--profile', choices=PROFILE_FILES, default=DEFAULT_PROFILE,
+                    help='bundled ECU name profile (default: SPA3)')
     ap.add_argument('-o', '--outdir', type=Path, help='output directory (default: <capture>_someip_report)')
     ap.add_argument('--service', type=lambda s: int(s, 0), action='append', help='only this service id (repeatable)')
     ap.add_argument('--req-timeout', type=float, default=1.0, help='request->response timeout s (default 1.0)')
@@ -1399,13 +1383,11 @@ def main():
     if hasattr(sys.stdout, 'reconfigure'):
         sys.stdout.reconfigure(errors='replace')  # redirected Windows consoles use cp1252
     a = build_parser().parse_args()
-    pdir = a.profile_dir or find_profile_dir(a.profile)
-    if pdir is None:
-        print(f'warning: Wireshark profile "{a.profile}" not found, names unresolved', file=sys.stderr)
-    names = Names(pdir)
+    profile_file = PROFILE_FILES[a.profile]
+    names = Names(profile_file)
     if a.pickle:
         res = analyze(a.pcap[0], a, names)
-        res['profile_dir'] = str(pdir) if pdir else ''
+        res['profile'] = a.profile
         with a.pickle.open('wb') as f:
             pickle.dump(res, f, protocol=pickle.HIGHEST_PROTOCOL)
         return
@@ -1419,7 +1401,7 @@ def main():
               f'{st.get("sd_msgs", 0)} SD msgs, {st["streams"]} streams, parsed in {st["parse_s"]:.1f}s, '
               f'analysed in {st["analyse_s"]:.1f}s')
         name = Path(path).name.split('.')[0]
-        res['profile_dir'] = str(pdir) if pdir else ''
+        res['profile'] = a.profile
         write_outputs(res, a.outdir or Path(path).parent / f'{name}_someip_report', a.max_print, path)
 
 
