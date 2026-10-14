@@ -11,6 +11,8 @@ from pathlib import Path
 import altair as alt
 import pandas as pd
 import streamlit as st
+from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
+from streamlit_explorer import FilePicker
 
 SCRIPT = Path(__file__).resolve().parent / "someip_comm_analyzer.py"
 sys.path.insert(0, str(SCRIPT.parent))
@@ -62,13 +64,25 @@ def clear_selected_ecus() -> None:
 with st.sidebar:
     st.markdown("## :material/lan: SOME/IP")
     st.caption("Communication diagnostics")
+    capture_root = Path(os.environ.get("SOMEIP_CAPTURE_DIR", str(Path.home()))).expanduser().resolve()
+    st.markdown("**Capture setup**")
+    if not capture_root.is_dir():
+        st.error(f"Capture browser folder does not exist or is not a directory: `{capture_root}`")
+        selected_file = None
+    else:
+        selected_file = FilePicker(
+            key="server_capture_picker",
+            start_path=str(capture_root),
+            file_extensions=[".pcapng", ".pcap", ".zst", ".gz"],
+        )
+        st.caption(f"Starting folder: `{capture_root}`")
+
     with st.form("run"):
-        st.markdown("**Capture setup**")
-        path = st.text_input("Capture file", placeholder=r"C:\logs\capture.pcapng.zst",
-                             help=".pcapng / .pcap, optionally .zst or .gz compressed")
-        uploaded = st.file_uploader("Or upload a capture", type=["pcapng", "pcap", "zst", "gz"],
+        uploaded = st.file_uploader("Capture file", type=["pcapng", "pcap", "zst", "gz"],
                                     max_upload_size=4096,
-                                    help="Large uploads may also be limited by the web server or reverse proxy.")
+                                    help="Choose a .pcapng or .pcap file, optionally compressed as .zst or .gz. "
+                                         "Use the server browser above for existing files. Large uploads may also be "
+                                         "limited by the web server or reverse proxy.")
         profile = st.selectbox("Vehicle profile", options=list(sca.PROFILE_FILES),
                                index=list(sca.PROFILE_FILES).index(DEFAULTS["profile"]),
                                help="Select the bundled ECU name data for SPA2 or SPA3.")
@@ -87,27 +101,39 @@ with st.sidebar:
         submitted = st.form_submit_button("Analyse", icon=":material/play_arrow:", type="primary", width="stretch")
 
 if submitted:
-    capture_path = path.strip().strip('"')
-    display_name = Path(capture_path).name if capture_path else ""
     previous = st.session_state.get("run_cfg", {}).get("uploaded_path")
+    capture_path = ""
+    display_name = ""
     if uploaded is not None:
         if previous:
             Path(previous).unlink(missing_ok=True)
-        display_name = uploaded.name
         suffix = "".join(Path(uploaded.name).suffixes) or ".pcapng"
         fd, capture_path = tempfile.mkstemp(prefix="someip_capture_", suffix=suffix)
         with os.fdopen(fd, "wb") as target:
             target.write(uploaded.getbuffer())
-    elif previous:
-        Path(previous).unlink(missing_ok=True)
-    st.session_state.run_cfg = dict(path=capture_path, display_name=display_name,
-                                uploaded_path=capture_path if uploaded is not None else None,
-                                profile=profile,
-                                services=services, opts=(("req_timeout", req_timeout), ("sd_timeout", sd_timeout),
-                                                         ("find_timeout", find_timeout),
-                                                         ("event_timeout", event_timeout), ("gap_factor", gap_factor),
-                                                         ("min_gap", min_gap), ("host_gap", host_gap),
-                                                         ("grace", grace), ("workers", workers)))
+        display_name = uploaded.name
+    else:
+        if previous:
+            Path(previous).unlink(missing_ok=True)
+        if selected_file:
+            selected_path = Path(selected_file).expanduser().resolve()
+            if not selected_path.is_file():
+                st.error(f"Selected server capture does not exist or is not a file: `{selected_path}`")
+            elif not selected_path.name.casefold().endswith((".pcapng", ".pcap", ".zst", ".gz")):
+                st.error("Select a supported capture file: .pcapng, .pcap, .zst, or .gz.")
+            else:
+                capture_path = str(selected_path)
+                display_name = selected_path.name
+    st.session_state.run_cfg = dict(path=capture_path,
+                                    display_name=display_name,
+                                    uploaded_path=capture_path if uploaded is not None else None,
+                                    profile=profile,
+                                    services=services, opts=(("req_timeout", req_timeout), ("sd_timeout", sd_timeout),
+                                                             ("find_timeout", find_timeout),
+                                                             ("event_timeout", event_timeout),
+                                                             ("gap_factor", gap_factor), ("min_gap", min_gap),
+                                                             ("host_gap", host_gap), ("grace", grace),
+                                                             ("workers", workers)))
 
 st.markdown(":blue-badge[NETWORK DIAGNOSTICS]")
 st.title("SOME/IP communication analyzer")
@@ -116,7 +142,8 @@ cfg = st.session_state.get("run_cfg")
 if not cfg or not cfg["path"]:
     with st.container(border=True):
         st.subheader(":material/radar: Start a capture analysis")
-        st.write("Enter a capture path or upload a `.pcapng`, `.pcap`, `.zst`, or `.gz` file in the sidebar.")
+        st.write("Browse server files with the explorer in the sidebar, or upload a local `.pcapng`, `.pcap`, `.zst`, "
+                 "or `.gz` file.")
         st.caption("Choose the SPA2 or SPA3 ECU profile, adjust thresholds if needed, then select **Analyse**.")
     st.stop()
 
@@ -202,45 +229,35 @@ def apply_filters(df: pd.DataFrame, t0: str, t1: str | None = None) -> pd.DataFr
     return df[m]
 
 
-def filtered_table(df: pd.DataFrame, key: str, alt_text: str, **kwargs) -> None:
-    """st.dataframe with per-column filters (values, numeric range or text contains)."""
-    n_active = len(st.session_state.get(f"{key}_cols", []))
-    with st.container(horizontal=True, vertical_alignment="center"):
-        with st.popover(f"Filter columns{f' ({n_active})' if n_active else ''}", icon=":material/filter_list:"):
-            cols = st.multiselect("Columns to filter", list(df.columns), key=f"{key}_cols")
-            for col in cols:
-                s = df[col]
-                k = f"{key}_f_{col}"
-                if pd.api.types.is_bool_dtype(s):
-                    vals = st.multiselect(col, [True, False], default=[True, False], key=k)
-                    df = df[df[col].isin(vals)]
-                elif pd.api.types.is_numeric_dtype(s):
-                    lo, hi = float(s.min()) if s.notna().any() else 0.0, float(s.max()) if s.notna().any() else 0.0
-                    with st.container(horizontal=True):
-                        a = st.number_input(f"{col} min", value=lo, key=f"{k}_lo", format="%.6g")
-                        b = st.number_input(f"{col} max", value=hi, key=f"{k}_hi", format="%.6g")
-                    if (a, b) != (lo, hi):
-                        df = df[df[col].between(a, b)]
-                elif s.nunique(dropna=True) <= 100:
-                    opts = sorted(s.dropna().astype(str).unique())
-                    vals = st.multiselect(col, opts, placeholder="All values", key=k)
-                    if vals:
-                        df = df[df[col].astype(str).isin(vals)]
-                else:
-                    txt = st.text_input(f"{col} contains", key=k, placeholder="text, comma = OR, prefix ! = NOT")
-                    terms = [t.strip() for t in txt.split(",") if t.strip()]
-                    if terms:
-                        sv = df[col].fillna("").astype(str)
-                        inc = [t for t in terms if not t.startswith("!")]
-                        exc = [t[1:] for t in terms if t.startswith("!") and len(t) > 1]
-                        m = pd.Series(not inc, index=df.index)
-                        for t in inc:
-                            m |= sv.str.contains(t, case=False, regex=False)
-                        for t in exc:
-                            m &= ~sv.str.contains(t, case=False, regex=False)
-                        df = df[m]
-        st.caption(f"{len(df):,} rows")
-    st.dataframe(df, hide_index=True, alt=alt_text, **kwargs)
+def filtered_table(df: pd.DataFrame, key: str, alt_text: str, *, height: int | None = None,
+                   number_formats: dict[str, int] | None = None) -> None:
+    """Render a sortable grid with filters in each column header."""
+    grid_builder = GridOptionsBuilder.from_dataframe(df)
+    grid_builder.configure_default_column(
+        filter=True,
+        floatingFilter=True,
+        sortable=True,
+        resizable=True,
+    )
+    for column, decimals in (number_formats or {}).items():
+        grid_builder.configure_column(
+            column,
+            valueFormatter=JsCode(
+                f"params => params.value == null ? '' : Number(params.value).toFixed({decimals})"
+            ),
+        )
+    st.caption(f"{alt_text} · {len(df):,} rows")
+    AgGrid(
+        df.reset_index(drop=True),
+        gridOptions=grid_builder.build(),
+        height=height or 400,
+        theme="streamlit",
+        key=key,
+        allow_unsafe_jscode=bool(number_formats),
+        show_toolbar=False,
+        show_search=False,
+        show_download_button=False,
+    )
 
 
 tab_sum, tab_ecu, tab_out, tab_ev, tab_svc, tab_str = st.tabs([
@@ -350,7 +367,7 @@ with tab_out:
         st.caption("Bars run from the moment communication stopped to when it resumed. "
                    "Faded bars were still unresolved at capture end.")
         filtered_table(o.drop(columns="lane"), "t_out", "Outage intervals",
-                       column_config={"duration_s": st.column_config.NumberColumn("duration_s", format="%.3f")})
+                       number_formats={"duration_s": 3})
 
 with tab_ev:
     st.markdown("#### Detected events")

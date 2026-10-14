@@ -8,6 +8,8 @@ dependencies = [
     "pandas>=2.2",
     "zstandard>=0.22",
     "streamlit>=1.57",
+    "streamlit-aggrid>=1.2.1.post2",
+    "streamlit-explorer>=0.1.0",
 ]
 
 [tool.uv]

@@ -3488,6 +3488,15 @@ wheels = [
 ]
 
 [[package]]
+name = "python-decouple"
+version = "3.8"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e1/97/373dcd5844ec0ea5893e13c39a2c67e7537987ad8de3842fe078db4582fa/python-decouple-3.8.tar.gz", hash = "sha256:ba6e2657d4f376ecc46f77a3a615e058d93ba5e465c01bbe57289bfb7cce680f", size = 9612, upload-time = "2023-03-01T19:38:38.143Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a2/d4/9193206c4563ec771faf2ccf54815ca7918529fe81f6adb22ee6d0e06622/python_decouple-3.8-py3-none-any.whl", hash = "sha256:d0d45340815b25f4de59c974b855bb38d03151d81b037d9e3f463b0c9f8cbd66", size = 9947, upload-time = "2023-03-01T19:38:36.015Z" },
+]
+
+[[package]]
 name = "python-multipart"
 version = "0.0.32"
 source = { registry = "https://pypi.org/simple" }
@@ -3996,6 +4005,8 @@ dependencies = [
     { name = "pandas", version = "2.3.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "pandas", version = "3.0.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "streamlit" },
+    { name = "streamlit-aggrid" },
+    { name = "streamlit-explorer" },
     { name = "zstandard" },
 ]
 
@@ -4004,6 +4015,8 @@ requires-dist = [
     { name = "numpy", specifier = ">=1.26" },
     { name = "pandas", specifier = ">=2.2" },
     { name = "streamlit", specifier = ">=1.57" },
+    { name = "streamlit-aggrid", specifier = ">=1.2.1.post2" },
+    { name = "streamlit-explorer", specifier = ">=0.1.0" },
     { name = "zstandard", specifier = ">=0.22" },
 ]
 
@@ -4086,6 +4099,33 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/8f/61/75c550a2d2acd79402aa1f32c8068c6cf47fa621d3995883a43caafeeadc/streamlit-1.65.0.tar.gz", hash = "sha256:42acd9ebdf3576a35584977c48a044ec0b5d3e4997fa9248809b9891598ac6a0", size = 9749831, upload-time = "2026-10-02T21:40:36.584Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fa/e3/5c9d2e88563c9974e53ac744b1523ebb1fd8f0ebb1ecc28a5f6f6bb0baea/streamlit-1.65.0-py3-none-any.whl", hash = "sha256:517a7254e223f4986d2b2e0745d02acf8ca64656943e63e422d345ce34a7495b", size = 10313469, upload-time = "2026-10-02T21:40:33.164Z" },
+]
+
+[[package]]
+name = "streamlit-aggrid"
+version = "1.2.1.post2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pandas", version = "2.3.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "pandas", version = "3.0.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "python-decouple" },
+    { name = "streamlit" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/47/18/2b1e99ca2c803d920bbc1beb6a7c60a954f587e23a861dd44b57d00744d7/streamlit_aggrid-1.2.1.post2.tar.gz", hash = "sha256:ad186998894af9356d7fa1d6de9f324a376714583cccc31d87c8c003334089fc", size = 5669190, upload-time = "2025-12-29T14:00:34.187Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1a/dc/baec10d371834ca2fbf26a71289d73be79e031c734a9830d7cc2879aeb83/streamlit_aggrid-1.2.1.post2-py3-none-any.whl", hash = "sha256:a812274e69bc6dcdebdd390c2eca7d0502e90420b869d4abf9d74ca3af47bc51", size = 5732799, upload-time = "2025-12-29T14:00:30.524Z" },
+]
+
+[[package]]
+name = "streamlit-explorer"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "streamlit" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e8/b2/269d05a9a0c437619e76034ef18fb0127d7dc03ae654dadc781f0218b4c6/streamlit_explorer-0.1.0.tar.gz", hash = "sha256:bf2682e6c5f24b3a37114f47cb296ad0f61f5eaca3166ec8669dcee2ca071e12", size = 12062, upload-time = "2026-01-10T12:37:42.014Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/05/46/5e33ef0871afa1d017c9fe4d950e889f0d862a8e42c6c9995c81e92b8705/streamlit_explorer-0.1.0-py3-none-any.whl", hash = "sha256:b47afa8b557561d1d6a84d78fad7f975a13e39daae6951f1f3dc6f58aa35c048", size = 8017, upload-time = "2026-01-10T12:37:40.428Z" },
 ]
 
 [[package]]
