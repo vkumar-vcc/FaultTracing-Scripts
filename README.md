@@ -146,6 +146,16 @@ To decode a different log, pass its path with `--input-file`:
 python standby-decoder\hpa_stanby_decoder.py --input-file path\to\hp_coldboot.log
 ```
 
+When the log includes Platform State Transition History (`1D12 22D991`), the
+decoder also prints an ID, state, and UTC timestamp table. It anchors the history's
+`Now` (state 255) counter to the UTC value from Vehicle Time (`1D12 22DD0E`):
+`entry UTC = vehicle UTC + (entry counter - Now counter)` in milliseconds.
+Both raw `Complete Response` payloads and decoded log fields are supported.
+Vehicle Time and exactly one `Now` entry are required when history is present;
+logs without history retain the existing output. Milliseconds preserve relative
+timing, while absolute accuracy depends on the Vehicle Time reference and the
+delay between the two requests.
+
 ## CAN decoder
 
 The CAN decoder is maintained in the `can_decoder` submodule. It decodes BLF
