@@ -131,6 +131,42 @@ output layout are documented in [download_combine_NUC_dlt/README.md](download_co
 The SAT readout decoder is maintained in the `SAT_Readout_decoder` submodule.
 Instructions are in [SAT_Readout_decoder/README.md](SAT_Readout_decoder/README.md).
 
+## Combined Streamlit app
+
+The Streamlit app combines SAT translation and standby analysis in one
+workflow. Enter a VIN and select **Load readouts** (the default readout source),
+or switch the source to upload/provide a readout path. Choose the matching SDDB
+with the server file browser (or upload one); the browser starts in
+`~/Downloads/sddb` when it exists, or in the folder given by the `SAT_SDDB_DIR`
+environment variable. Then start the analysis:
+
+```powershell
+uv run streamlit run decoder\decoder.py
+```
+
+The first translation with a given SDDB indexes every ECU, DID, and DTC in it
+once (about 25 s for a 260 MB file). The index is cached in memory and on disk
+(`%LOCALAPPDATA%\FaultTracing-Scripts\sddb-index`, newest six kept), so later
+translations, including after restarting the app, take about 2 s. The cache is
+keyed by the SDDB file's path, size, and modified time, and by the decoder
+version, so it refreshes automatically when either changes. Translations and
+standby summaries of an identical readout are also cached for the session.
+
+The translated-readout view uses a structured, virtualized ECU-to-readout tree
+for browsing and multi-selecting decoded blocks, with ECU filtering and a
+terminal-style output pane. Use the ▸/▾ button on an ECU row (or Expand all /
+Collapse all) to show or hide its readouts, and the Show checkbox on an ECU or
+readout row to include it in the output; Select all and Clear apply to the
+filtered readouts. Use Lookup to filter readouts by ECU, service, DID, or
+description; use Search/Filter for decoded content. It uses the full-width
+Streamlit layout. The **Readout summary** tab presents the standby decoder's
+results as collapsed sections that open on click into word-wrapped tables:
+standby events, FE03 error slots and reference details, platform state
+transitions, ECU DTC snapshots, and watchdog information. Both the translated
+output and the readout summary are available to download; the raw summary
+output is also available in an expander for troubleshooting. The existing
+standalone decoder tools remain available.
+
 ## Standby decoder
 
 The standby decoder is maintained in the `standby-decoder` submodule. From the

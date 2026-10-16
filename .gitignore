@@ -245,3 +245,6 @@ NUC_DLT_downloads/
 # Local uploads served by the Streamlit app
 pcap_ui_uploads/
 
+__pycache__/
+**/__pycache__/
+**/__pycache__/*

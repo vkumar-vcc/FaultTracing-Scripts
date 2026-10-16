@@ -13,6 +13,8 @@ dependencies = [
     "pydlt",
     "requests",
     "smbprotocol",
+    "streamlit>=1.65.0",
+    "streamlit-explorer>=0.1.0",
     "tkcalendar",
     "truststore",
     "zstandard",
