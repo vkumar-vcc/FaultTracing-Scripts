@@ -146,15 +146,100 @@ To decode a different log, pass its path with `--input-file`:
 python standby-decoder\hpa_stanby_decoder.py --input-file path\to\hp_coldboot.log
 ```
 
+The FE03 error-slot table automatically uses the bundled
+[SQLite error reference](standby-decoder/error_reference.sqlite3). The database
+is indexed by **Reporter ID + Error Code**, so Python reads only matching rows
+using the standard-library `sqlite3` module, without loading the full workbook
+or requiring Excel dependencies. Its path is relative to the decoder script,
+not the working directory.
+
+FE03 output fits the console width (or `COLUMNS`, default 160 when piped). An
+**FE03 error slots** table lists one line per slot with the original fields and
+the matched Error Name. A second **FE03 error reference details** table, keyed by
+Slot, shows Description, Error Level, Expected SOC_ERROR, HI/HP actions, and the
+source reference. Long values wrap inside their column without truncation.
+Other output tables are unchanged.
+
+The slot details add Error Name, Description, Error Level, Expected SOC_ERROR,
+HI Action, HP Action, and Reference columns. HP Action comes directly from the
+workbook's `HP` column. Description uses the workbook's `Description`; where
+absent, it uses the safety mechanism name with a `Safety mechanism:` prefix,
+or `N/A` if neither is available. No descriptions or actions are invented.
+Only these lookup fields, identifier pairs, and source locations are bundled;
+contacts and reviewer information are excluded.
+
+To rebuild the indexed database from an updated converted workbook JSON:
+
+```powershell
+python standby-decoder\error_reference.py "$HOME\Downloads\NVIDIA_DRIVE_OS_Error_ID_Reference_QNX.json"
+```
+
+Rebuilding verifies every stored field against the source and checks SQLite
+integrity before atomically replacing the existing database. It retains
+duplicate matches instead of choosing an arbitrary interpretation.
+
+To override the bundled reference, supply either another SQLite database or
+the original workbook JSON:
+
+```powershell
+.\run.ps1 standby --input-file path\to\hp_coldboot.log --error-reference "$HOME\Downloads\NVIDIA_DRIVE_OS_Error_ID_Reference_QNX.json"
+```
+
+The source JSON must be keyed by worksheet name, with each worksheet containing a
+`rows` array of objects (as produced by the workbook conversion). Optional
+`row_numbers` arrays preserve Excel row numbers in source references.
+Both named headers and column-letter sheets with embedded headers are supported.
+Hexadecimal IDs accept a `0x` prefix, bare hex, or space-separated bytes;
+JSON integer IDs are treated numerically. Original FE03 values and standby
+correlation are unchanged.
+
+Unknown pairs show `Not found` / `No exact match`; missing reference fields show
+`N/A`. When several entries share a Reporter ID + Error Code (for example 23
+NvTime errors under `0x8134` / `0x200`), the FE03 **Error Attribute** is matched
+against the workbook **Meta Data** column (`0x`-prefixed values are hex, plain
+numbers decimal) to select the exact error. If no Meta Data value matches, all
+entries remain on the same slot row, with numbered
+alternatives linked to their source worksheet and row. Matching is exact:
+placeholder IDs, wildcard templates, and partial-bit error codes are not
+inferred. Reference actions describe the workbook, not an observed vehicle
+response or a diagnosis. Missing or malformed reference files fail explicitly.
+Use `--no-error-reference` for only the original FE03 slot table. The full internal
+workbook JSON is not bundled with the decoder.
+
 When the log includes Platform State Transition History (`1D12 22D991`), the
 decoder also prints an ID, state, and UTC timestamp table. It anchors the history's
 `Now` (state 255) counter to the UTC value from Vehicle Time (`1D12 22DD0E`):
 `entry UTC = vehicle UTC + (entry counter - Now counter)` in milliseconds.
+The `Time taken (HH:MM:SS.mmm)` column shows elapsed time since the previous
+history entry, including for `Now`; the first entry shows `N/A`. Hours can
+exceed 24 for longer intervals.
+The table ends at the `Now` entry (inclusive); subsequent history rows are hidden.
 Both raw `Complete Response` payloads and decoded log fields are supported.
 Vehicle Time and exactly one `Now` entry are required when history is present;
 logs without history retain the existing output. Milliseconds preserve relative
 timing, while absolute accuracy depends on the Vehicle Time reference and the
 delay between the two requests.
+
+When Application Watchdog App Failure Timeline (`1D12 22D99D`) is present,
+the decoder prints one summary row per application: failure count, first and
+latest non-1970 timestamps, and number of 1970 timestamps. Rows are sorted by
+failure count (descending), then application name. Counts include duplicates.
+Use `--watchdog-details` to also print the full ID/application/timestamp timeline.
+Raw version-1 responses and decoded timeline fields are supported; duplicate
+entries and original order are preserved. The timestamps have no stated timezone
+and are not converted using the platform counter. Entries dated 1970 are retained
+with a warning that their clock may be unset.
+Data Health 3 (`No data available`) prints an explicit unavailable status and
+does not prevent the other tables from being displayed. It is not interpreted
+as zero watchdog failures; other nonzero health values remain errors.
+
+When an HIA (`1D0D`), HIB (`1D0E`), or HPA (`1D12`) DTC list (`19 03`) and
+DTC snapshot reads (`19 04`) are present, the decoder prints one table per ECU
+with one row per unique DTC, its description, latest decoded Global Real Time,
+converted UTC time, and latest matching event. The UTC conversion uses the
+Vehicle Time (`1D12 22DD0E`) Global Real Time and UTC fields as its anchor. DTC
+snapshot times are in minutes; a timestamp without the Vehicle Time anchor is
+reported as an error rather than guessed.
 
 ## CAN decoder
 
