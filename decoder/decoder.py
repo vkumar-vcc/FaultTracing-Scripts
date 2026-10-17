@@ -2,9 +2,11 @@ import html
 import os
 import re
 import tempfile
+from collections import Counter
 from pathlib import Path
 
 import pandas as pd
+import requests
 import streamlit as st
 from streamlit_explorer import FilePicker
 
@@ -16,6 +18,9 @@ from streamlit_workflow import (
     run_standby_summary,
     uploaded_signature,
 )
+from interpretation import add_watchdog_columns, interpret_readout
+from sw_versions import ecu_software_info, identification_items, shared_hardware
+from baselines import LoginRequired, connect, lookup_main_int_baselines, stored_username
 
 
 st.set_page_config(
@@ -214,18 +219,34 @@ WRAP_TABLE_CSS = """
 SHORT_CELL_LIMIT = 28
 
 
+def cell_text(value):
+    """Plain text of a cell; a cell may also be a list of (text, url) links."""
+    if isinstance(value, list):
+        return ", ".join(text for text, _ in value)
+    return str(value)
+
+
+def cell_html(value):
+    if isinstance(value, list):
+        return ", ".join(
+            f'<a href="{html.escape(url, quote=True)}" target="_blank" rel="noopener">{html.escape(text)}</a>'
+            for text, url in value
+        )
+    return html.escape(str(value))
+
+
 def render_wrapped_table(headers, rows):
     """Show a table whose long cells word-wrap to the cell width while short cells stay on one line."""
     long_columns = {
         header for header in headers
-        if max([len(header)] + [len(str(row.get(header, ""))) for row in rows])
+        if max([len(header)] + [len(cell_text(row.get(header, ""))) for row in rows])
         > SHORT_CELL_LIMIT
     }
     head = "".join(f"<th>{html.escape(header)}</th>" for header in headers)
     body = "".join(
         "<tr>" + "".join(
             f'<td class="{"rw-long" if header in long_columns else "rw-short"}">'
-            f"{html.escape(str(row.get(header, '')))}</td>"
+            f"{cell_html(row.get(header, ''))}</td>"
             for header in headers
         ) + "</tr>"
         for row in rows
@@ -234,6 +255,199 @@ def render_wrapped_table(headers, rows):
         f'{WRAP_TABLE_CSS}<div class="rw-table-wrap"><table class="rw-table">'
         f"<thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div>"
     )
+
+
+SEVERITY_LABELS = {
+    "issue": (":red[ISSUE]", ":material/error:"),
+    "warning": (":orange[WARNING]", ":material/warning:"),
+    "info": (":blue[INFO]", ":material/info:"),
+    "ok": (":green[OK]", ":material/check_circle:"),
+}
+
+
+def render_interpretation(result, sections):
+    """Show the rule-based findings and the merged timeline for the decoded readout."""
+    if "app_states" not in result.get("interpretation", {}):
+        result["interpretation"] = interpret_readout(result["blocks"], sections)
+    interpretation = result["interpretation"]
+    findings = interpretation["findings"]
+
+    st.subheader("Interpretation")
+    st.caption(
+        "A rule-based reading of this readout using how the nodes relate: HIA controls HPA and keeps "
+        "its reset reasons, HPA hardware errors reach HIA as FSI errors, and LPA keeps the standby "
+        "history of the VCU nodes. Open a finding to see the evidence."
+    )
+    counts = Counter(finding["severity"] for finding in findings)
+    columns = st.columns(4)
+    columns[0].metric("Issues", counts.get("issue", 0))
+    columns[1].metric("Warnings", counts.get("warning", 0))
+    columns[2].metric("Info", counts.get("info", 0))
+    columns[3].metric("OK", counts.get("ok", 0))
+
+    for finding in findings:
+        badge, icon = SEVERITY_LABELS[finding["severity"]]
+        with st.expander(f"{badge} · {finding['headline']}", icon=icon, expanded=False):
+            st.caption(finding["category"])
+            for detail in finding["details"]:
+                st.markdown(f"- {detail}")
+            if finding["table"]:
+                headers, rows = finding["table"]
+                render_wrapped_table(headers, [dict(zip(headers, row)) for row in rows])
+            elif finding["evidence"]:
+                render_wrapped_table(
+                    ["Item", "Value"],
+                    [{"Item": label, "Value": value} for label, value in finding["evidence"]],
+                )
+            for title, extra_headers, extra_rows in finding["extra_tables"]:
+                st.markdown(f"**{title}**")
+                render_wrapped_table(extra_headers, [dict(zip(extra_headers, row)) for row in extra_rows])
+            if finding["sources"]:
+                st.caption("Source readouts: " + " · ".join(finding["sources"]))
+
+    timeline = interpretation["timeline"]
+    if timeline:
+        with st.expander(f"Timeline of recorded events ({len(timeline):,})", icon=":material/timeline:", expanded=False):
+            st.caption(
+                "Standby cycles, FSI errors, platform states, DTCs and the HIA exceptional restart merged by time. "
+                "Times are shown as stored by each source; they are UTC where the source states it."
+            )
+            render_wrapped_table(
+                ["Time", "Source", "Event", "Detail"],
+                [
+                    {"Time": when, "Source": source, "Event": event, "Detail": detail}
+                    for when, source, event, detail in timeline
+                ],
+            )
+    if interpretation["missing"]:
+        st.caption("Not present in this readout: " + ", ".join(interpretation["missing"]) + ".")
+    for message in interpretation["errors"]:
+        st.caption(f"A rule could not be evaluated: {message}")
+
+
+def render_baselines(result, records):
+    """Look up and show the MAIN_INT baseline of each position's software part numbers (ConfigHub)."""
+    st.markdown("**Baselines (MAIN_INT) from ConfigHub**")
+    with st.expander("ConfigHub login (only needed when no login is saved)"):
+        try:
+            saved_user = stored_username()
+        except Exception:
+            saved_user = ""
+        st.text_input("ConfigHub username", value=saved_user, key="confighub_username")
+        st.text_input("ConfigHub password", type="password", key="confighub_password")
+        st.checkbox("Save these credentials in the OS keychain", key="confighub_remember")
+        st.caption(
+            "Leave both fields as they are to use the login saved by confighub_lookup.py, "
+            "or the CONFIGHUB_TOKEN environment variable."
+        )
+
+    if st.button(
+        "Look up MAIN_INT baselines",
+        key="lookup_baselines",
+        icon=":material/account_tree:",
+    ):
+        try:
+            with st.status("Looking up baselines in ConfigHub...", expanded=True) as status:
+                status.write("Signing in to ConfigHub...")
+                client = connect(
+                    st.session_state.get("confighub_username", ""),
+                    st.session_state.get("confighub_password", ""),
+                    st.session_state.get("confighub_remember", False),
+                )
+                result["baselines"] = lookup_main_int_baselines(client, records, progress=status.write)
+                status.update(
+                    label=(
+                        f"Baselines found for {len(result['baselines']['rows'])} positions in "
+                        f"{result['baselines']['seconds']:.0f} s."
+                    ),
+                    state="complete",
+                    expanded=False,
+                )
+        except LoginRequired:
+            st.warning(
+                "No ConfigHub login is available. Enter your username and password in the login section above "
+                "(or run confighub_lookup.py once to save them)."
+            )
+        except requests.HTTPError as error:
+            code = error.response.status_code if error.response is not None else None
+            st.error(
+                "ConfigHub rejected the login." if code in (400, 401, 403)
+                else f"ConfigHub returned an error: {error}"
+            )
+        except (requests.ConnectionError, requests.Timeout) as error:
+            st.error(f"Could not reach ConfigHub (check the VPN or network): {error}")
+
+    baselines = result.get("baselines")
+    if not baselines:
+        st.caption(
+            "Finds the *_MAIN_INT baselines that contain the software part numbers of each ECU "
+            "(about 5-10 s; repeated lookups of the same parts are cached)."
+        )
+        return
+    render_wrapped_table(
+        ["Position", "Baseline", "Version(s)", "ConfigHub", "Download", "Parts"], baselines["rows"]
+    )
+    st.caption(
+        f"Matched {baselines['looked_up']} software part numbers in {baselines['seconds']:.0f} s. Only *_MAIN_INT "
+        "baselines are shown. ConfigHub reports HPA's platform parts (HPA) and application parts (HPAA) as separate "
+        "positions; Parts lists the part types of each. ConfigHub returns the three best matches, so several "
+        "versions mean that more than one MAIN_INT baseline contains every part and the part numbers alone cannot "
+        "tell which of them the software came from; only the newest are listed. Download opens the software file "
+        "(.vbf) of each part from Artifactory in a new tab; the browser asks you to sign in there."
+    )
+    if baselines["ignored"]:
+        st.caption(
+            "Ignored certificate and placeholder parts: "
+            + ", ".join(f"{item['ecu']} {item['module']}" for item in baselines["ignored"]) + "."
+        )
+    if baselines["not_found"]:
+        st.caption("Not found in ConfigHub: " + ", ".join(baselines["not_found"]) + ".")
+
+
+def render_sw_versions(result):
+    """Software and identification part numbers of HIA, HIB, HPA, SGA, VESA and VESB."""
+    if "sw_versions" not in result:
+        result["sw_versions"] = ecu_software_info(result["blocks"])
+    records = result["sw_versions"]
+    present = [record for record in records if record["present"]]
+
+    st.subheader("Software versions")
+    shared = shared_hardware(records)
+    shared_keys = {key for key, _, _ in shared}
+    if shared:
+        st.caption(
+            "Reported identically by all ECUs: "
+            + " · ".join(f"{label.replace('ECU ', '')} {value}" for _, label, value in shared)
+        )
+    missing = [record["ecu"] for record in records if not record["present"]]
+    if missing:
+        st.caption("Not present in this readout: " + ", ".join(missing) + ".")
+
+    render_baselines(result, records)
+
+    for record in present:
+        label = f"{record['ecu']} ({record['address']}) · {record['main']} · {len(record['software'])} software module(s)"
+        with st.expander(label, expanded=False):
+            if record["software"]:
+                render_wrapped_table(
+                    ["Module", "Part number"],
+                    [
+                        {
+                            "Module": module["module"],
+                            "Part number": f"{module['part']} {module['edition']}".strip(),
+                        }
+                        for module in record["software"]
+                    ],
+                )
+            else:
+                st.info("No software part numbers (22 F1 2E) in this readout.")
+            items = identification_items(record, shared_keys)
+            if items:
+                render_wrapped_table(
+                    ["Item", "Value"],
+                    [{"Item": name, "Value": value} for name, value in items],
+                )
+            st.caption("Source readouts: " + " · ".join(record["sources"]))
 
 
 def render_translated_output(content, search_terms):
@@ -771,7 +985,12 @@ if current_result is not None:
         key="download_translated_readout",
     )
     st.metric("Decoded readouts", len(current_result["blocks"]))
-    translated_tab, summary_tab = st.tabs(["Translated readout", "Readout summary"])
+    translated_tab, summary_tab, versions_tab = st.tabs(
+        ["Translated readout", "Readout summary", "SW versions"]
+    )
+
+    with versions_tab:
+        render_sw_versions(current_result)
 
     with translated_tab:
         render_translated_browser(current_result)
@@ -780,7 +999,14 @@ if current_result is not None:
                 st.code(current_result["sat_diagnostics"], language="text")
 
     with summary_tab:
-        if current_result["standby_code"] == 0:
+        summary_available = current_result["standby_code"] == 0
+        sections, notes = (
+            parse_standby_report(current_result["standby_output"])
+            if summary_available else ([], [])
+        )
+        render_interpretation(current_result, sections)
+        if summary_available:
+            st.subheader("Recorded data")
             st.download_button(
                 "Download readout summary",
                 data=current_result["standby_output"],
@@ -788,7 +1014,6 @@ if current_result is not None:
                 mime="text/plain",
                 key="download_readout_summary",
             )
-            sections, notes = parse_standby_report(current_result["standby_output"])
             if sections:
                 def rows_of(kind):
                     return sum(
@@ -813,7 +1038,18 @@ if current_result is not None:
                         for description in section["description"]:
                             st.caption(description)
                         if section["rows"]:
-                            render_wrapped_table(section["headers"], section["rows"])
+                            headers, rows = section["headers"], section["rows"]
+                            if section["kind"] == "watchdog":
+                                headers, rows = add_watchdog_columns(
+                                    headers, rows,
+                                    current_result["interpretation"]["app_states"],
+                                )
+                            render_wrapped_table(headers, rows)
+                            if section["kind"] == "watchdog" and "Essential" in headers:
+                                st.caption(
+                                    "Essential and Restartable come from the HPx watchdog state "
+                                    "(HPA 22 D9 45); N/A means the application is not in that record."
+                                )
                         elif section["kind"] != "text":
                             st.info("No rows recorded.")
                         for footnote in section["footnotes"]:

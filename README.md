@@ -159,13 +159,51 @@ Collapse all) to show or hide its readouts, and the Show checkbox on an ECU or
 readout row to include it in the output; Select all and Clear apply to the
 filtered readouts. Use Lookup to filter readouts by ECU, service, DID, or
 description; use Search/Filter for decoded content. It uses the full-width
-Streamlit layout. The **Readout summary** tab presents the standby decoder's
-results as collapsed sections that open on click into word-wrapped tables:
+Streamlit layout. The **Readout summary** tab opens with an **Interpretation**
+section: rule-based findings (issue, warning, info, ok) that explain what the
+readout means for HPA, HIA, HIB and LPA, such as failed standby transitions,
+the reasons HIA restarted HP, FSI errors, application watchdog failures, and the
+LPA shutdown and wake-up history, plus a merged timeline of recorded events. The
+HIA and HIB reset logs (`22 FE 04`) are decoded like the Safety-B ResetLog parser
+sheet (`decoder/reset_log.py`): reset common data, reset history and the
+application context (stack trace, error hook, SMU, PMIC, ...). The
+rules and the platform model behind them are documented in the
+[decoder-summary-interpretation skill](.github/skills/decoder-summary-interpretation/SKILL.md),
+which also explains how to add a rule. Below it, the standby decoder's
+results appear as collapsed sections that open on click into word-wrapped tables:
 standby events, FE03 error slots and reference details, platform state
 transitions, ECU DTC snapshots, and watchdog information. Both the translated
 output and the readout summary are available to download; the raw summary
-output is also available in an expander for troubleshooting. The existing
-standalone decoder tools remain available.
+output is also available in an expander for troubleshooting.
+
+The **SW versions** tab lists the software part numbers of HIA, HIB, HPA, SGA,
+VESA and VESB. Each ECU has a collapsed section with its software modules
+(module and part number with edition, for example `32489651 ACP`) and its other
+identification values: diagnostic database, integrated diagnostic database,
+software structure, calibration identifications and software fingerprint.
+Values that repeat another one are left out, such as a calibration ID equal to
+a module's part number. Hardware values that every ECU reports identically
+(core assembly, delivery assembly, ECU serial number) are shown once at the top.
+The values come from each ECU's identification readouts (22 F1 2E, F1 20,
+F1 2A, F1 2B, F1 8C and related) and are matched by ECU name; the list of ECUs
+is `SW_VERSION_ECUS` in `decoder/sw_versions.py`.
+
+The same tab can look up the **MAIN_INT baselines** of those part numbers in
+ConfigHub (button *Look up MAIN_INT baselines*). One ConfigHub matching call per
+ECU (run in parallel) returns the baselines that contain the parts. HPA's
+platform parts (position HPA, baseline `HPA_MAIN_INT`) and application parts
+(position HPAA, baseline `HPAA_EE_MAIN_INT`) are separate rows. ConfigHub
+returns its three best matches, so only the newest versions that contain every
+part are listed. Only `*_MAIN_INT` baselines are
+used, and certificate modules and `00000000` placeholder parts are ignored. A
+*Download* column links each part's software file (`.vbf`, from Artifactory) and
+opens it in a new tab, where the browser signs in to Artifactory. The
+lookup signs in with the login saved by `confighub_lookup.py` (OS keychain), the
+`CONFIGHUB_TOKEN` environment variable, or a username and password entered in
+the tab (optionally saved to the keychain). It needs access to ConfigHub (VPN),
+takes about 6 s for the six ECUs and is cached for an hour afterwards.
+The logic is in `decoder/baselines.py`. The existing standalone decoder tools
+remain available.
 
 ## Standby decoder
 
