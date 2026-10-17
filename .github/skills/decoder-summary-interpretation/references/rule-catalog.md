@@ -31,6 +31,7 @@ finding(category, severity, headline,
         details=[...],            # bullet sentences
         evidence=[(label, value)],# shown as an Item/Value table
         table=(headers, rows),    # shown instead of evidence when set
+        extra_tables=[(title, headers, rows)],  # more titled tables, shown after the main one
         sources=["HIA 22 FE 14"]) # readouts to check in the Translated readout tab
 ```
 

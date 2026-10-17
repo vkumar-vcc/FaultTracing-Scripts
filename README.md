@@ -172,9 +172,11 @@ rules and the platform model behind them are documented in the
 which also explains how to add a rule. Below it, the standby decoder's
 results appear as collapsed sections that open on click into word-wrapped tables:
 standby events, FE03 error slots and reference details, platform state
-transitions, ECU DTC snapshots, and watchdog information. Both the translated
-output and the readout summary are available to download; the raw summary
-output is also available in an expander for troubleshooting.
+transitions, ECU DTC snapshots, and watchdog information. The translated
+output is available to download as text, and the whole readout summary
+(every finding with its tables, the timeline, all recorded-data tables, notes
+and the raw summary output) as a Markdown report (`decoder/summary_report.py`);
+the raw summary output is also available in an expander for troubleshooting.
 
 The **SW versions** tab lists the software part numbers of HIA, HIB, HPA, SGA,
 VESA and VESB. Each ECU has a collapsed section with its software modules

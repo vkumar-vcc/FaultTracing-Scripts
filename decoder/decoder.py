@@ -19,6 +19,7 @@ from streamlit_workflow import (
     uploaded_signature,
 )
 from interpretation import add_watchdog_columns, interpret_readout
+from summary_report import build_summary_markdown
 from sw_versions import ecu_software_info, identification_items, shared_hardware
 from baselines import LoginRequired, connect, lookup_main_int_baselines, stored_username
 
@@ -953,7 +954,7 @@ if st.button(
             "standby_output": standby_output,
             "standby_error": standby_error,
             "translated_filename": f"{Path(log_filename).stem}_decoded.log",
-            "summary_filename": f"{Path(log_filename).stem}_readout_summary.txt",
+            "summary_filename": f"{Path(log_filename).stem}_readout_summary.md",
         }
         st.session_state["rt_selected"] = set()
         st.session_state.pop("rt_grouped", None)
@@ -1004,16 +1005,17 @@ if current_result is not None:
             parse_standby_report(current_result["standby_output"])
             if summary_available else ([], [])
         )
+        st.download_button(
+            "Download readout summary (Markdown)",
+            data=lambda: build_summary_markdown(current_result, sections, notes),
+            file_name=current_result["summary_filename"],
+            mime="text/markdown",
+            icon=":material/download:",
+            key="download_readout_summary",
+        )
         render_interpretation(current_result, sections)
         if summary_available:
             st.subheader("Recorded data")
-            st.download_button(
-                "Download readout summary",
-                data=current_result["standby_output"],
-                file_name=current_result["summary_filename"],
-                mime="text/plain",
-                key="download_readout_summary",
-            )
             if sections:
                 def rows_of(kind):
                     return sum(
