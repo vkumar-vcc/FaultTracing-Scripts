@@ -8,13 +8,15 @@ from interpretation import SEVERITY_ORDER, add_watchdog_columns, interpret_reado
 SEVERITY_LABELS = {"issue": "ISSUE", "warning": "WARNING", "info": "INFO", "ok": "OK"}
 
 
-def cell(value):
+def cell(value, max_chars=None):
     text = "" if value is None else str(value)
+    if max_chars and len(text) > max_chars:
+        text = f"{text[:max_chars]}… (+{len(text) - max_chars} more characters)"
     return text.replace("\\", "\\\\").replace("|", "\\|").replace("\r", " ").replace("\n", "<br>")
 
 
-def table(headers, rows):
-    """Markdown table; rows are dicts keyed by header, or sequences in header order."""
+def table(headers, rows, max_chars=None):
+    """Markdown table; rows are dicts keyed by header, or sequences in header order; long cells can be cut."""
     lines = [
         "| " + " | ".join(cell(header) for header in headers) + " |",
         "| " + " | ".join("---" for _ in headers) + " |",
@@ -22,7 +24,7 @@ def table(headers, rows):
     for row in rows:
         values = [row.get(header, "") for header in headers] if isinstance(row, dict) else list(row)
         values += [""] * (len(headers) - len(values))
-        lines.append("| " + " | ".join(cell(value) for value in values) + " |")
+        lines.append("| " + " | ".join(cell(value, max_chars) for value in values) + " |")
     return "\n".join(lines)
 
 

@@ -18,7 +18,11 @@ from streamlit_workflow import (
     run_standby_summary,
     uploaded_signature,
 )
-from interpretation import add_watchdog_columns, interpret_readout
+from interpretation import ECU_IDS, add_watchdog_columns, interpret_readout, source_readout_blocks
+from compare import (
+    ROW_HEADERS, SUMMARY_HEADERS, VOLATILE_FIELDS, compare_blocks, comparison_markdown,
+    group_changed_rows, readout_stamp, summary_rows,
+)
 from summary_report import build_summary_markdown
 from sw_versions import ecu_software_info, identification_items, shared_hardware
 from baselines import LoginRequired, connect, lookup_main_int_baselines, stored_username
@@ -265,6 +269,216 @@ SEVERITY_LABELS = {
     "ok": (":green[OK]", ":material/check_circle:"),
 }
 
+TIMELINE_EVENT_STYLES = {
+    "Restart": ("#d62728", "diamond"),
+    "Platform state": ("#1f77b4", "square"),
+    "Standby": ("#2ca02c", "circle"),
+    "FSI / error": ("#ff7f0e", "triangle-up"),
+    "DTC": ("#b07bd5", "cross"),
+    "Other": ("#777777", "circle"),
+}
+
+
+def timeline_chart_rows(timeline):
+    """Shape merged timeline events for the HPA/HIA relationship chart."""
+    rows = []
+    groups = {}
+    for when, source, event, detail in timeline:
+        source_upper = source.upper()
+        event_upper = event.upper()
+        if "DTC" in source_upper:
+            event_type = "DTC"
+            lane = "HPA" if source_upper.startswith("HPA ") else "HIA"
+        elif "FSI" in source_upper:
+            event_type, lane = "FSI / error", "HIA"
+        elif "RESTART" in source_upper or "RESTART" in event_upper:
+            event_type, lane = "Restart", "HPA & HIA"
+        elif "STANDBY" in source_upper or "STANDBY" in event_upper:
+            event_type, lane = "Standby", "HPA"
+        elif "PLATFORM STATE" in source_upper:
+            event_type, lane = "Platform state", "HPA"
+        else:
+            event_type = "Other"
+            lane = "HPA" if source_upper.startswith("HPA ") else "HIA"
+
+        timestamp = pd.to_datetime(when, errors="coerce")
+        if pd.isna(timestamp):
+            continue
+        key = (timestamp, lane)
+        group = groups.setdefault(key, [])
+        group.append({
+            "time": timestamp.isoformat(),
+            "lane": lane,
+            "y": {"HIA": 0, "HPA & HIA": 1, "HPA": 2}[lane],
+            "event_type": event_type,
+            "source": source,
+            "event": event,
+            "detail": detail,
+        })
+
+    for group in groups.values():
+        midpoint = (len(group) - 1) / 2
+        for index, row in enumerate(group):
+            row["y"] += (index - midpoint) * min(0.12, 0.48 / max(1, len(group) - 1))
+            rows.append(row)
+    return rows
+
+
+def render_timeline_chart(result):
+    """Show overview and seven-day views of the merged HPA/HIA event timeline."""
+    timeline = result["interpretation"]["timeline"]
+    rows = timeline_chart_rows(timeline)
+    if not rows:
+        return
+
+    frame = pd.DataFrame(rows)
+    frame["timestamp"] = pd.to_datetime(frame["time"], errors="coerce")
+    frame["date"] = frame["timestamp"].dt.date
+    min_date, max_date = frame["date"].min(), frame["date"].max()
+    event_types = [event_type for event_type in TIMELINE_EVENT_STYLES if event_type in set(frame["event_type"])]
+    lanes = sorted(frame["lane"].unique())
+
+    event_col, lane_col, date_col = st.columns([1, 1, 2])
+    with event_col:
+        selected_types = st.multiselect(
+            "Event types",
+            event_types,
+            default=event_types,
+            key="timeline_event_types",
+        )
+    with lane_col:
+        selected_lanes = st.multiselect(
+            "Node lanes",
+            lanes,
+            default=lanes,
+            key="timeline_node_lanes",
+        )
+    with date_col:
+        selected_dates = st.date_input(
+            "Date range",
+            value=(min_date, max_date),
+            min_value=min_date,
+            max_value=max_date,
+            key=f"timeline_dates_{Path(result['translated_filename']).stem}",
+        )
+
+    if isinstance(selected_dates, (tuple, list)):
+        start_date = selected_dates[0] if selected_dates else min_date
+        end_date = selected_dates[-1] if len(selected_dates) > 1 else start_date
+    else:
+        start_date = end_date = selected_dates
+    if start_date is None:
+        start_date = min_date
+    if end_date is None:
+        end_date = max_date
+
+    filtered = frame[
+        frame["event_type"].isin(selected_types)
+        & frame["lane"].isin(selected_lanes)
+        & (frame["timestamp"] >= pd.Timestamp(start_date))
+        & (frame["timestamp"] < pd.Timestamp(end_date) + pd.Timedelta(days=1))
+    ].copy()
+    if filtered.empty:
+        st.info("No timeline events match these filters.")
+        return
+
+    latest = filtered["timestamp"].max()
+    recent_start = latest - pd.Timedelta(days=7)
+    recent = filtered[filtered["timestamp"] >= recent_start]
+    colors = [TIMELINE_EVENT_STYLES[event_type][0] for event_type in event_types]
+    shapes = [TIMELINE_EVENT_STYLES[event_type][1] for event_type in event_types]
+
+    def chart_spec(data, height, show_legend):
+        return {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "width": "container",
+            "height": height,
+            "data": {"values": data.to_dict(orient="records")},
+            "mark": {"type": "point", "filled": True, "size": 90, "stroke": "#333333", "strokeWidth": 0.7},
+            "params": [
+                {"name": "time_zoom", "select": {"type": "interval", "encodings": ["x"], "bind": "scales"}},
+                {"name": "event_highlight", "select": {"type": "point", "fields": ["event_type"], "on": "click", "clear": "dblclick"}},
+            ],
+            "encoding": {
+                "x": {
+                    "field": "time",
+                    "type": "temporal",
+                    "axis": {
+                        "title": "Time (UTC, as recorded)",
+                        "format": "%Y-%m-%d",
+                        "labelAngle": -30,
+                        "tickCount": 8,
+                    },
+                },
+                "y": {
+                    "field": "y",
+                    "type": "quantitative",
+                    "scale": {"domain": [-0.5, 2.5]},
+                    "axis": {
+                        "title": None,
+                        "values": [2, 1, 0],
+                        "labelExpr": (
+                            "datum.value === 2 ? 'HPA' : "
+                            "datum.value === 1 ? 'HPA & HIA' : 'HIA'"
+                        ),
+                    },
+                },
+                "color": {
+                    "field": "event_type",
+                    "type": "nominal",
+                    "scale": {"domain": event_types, "range": colors},
+                    "legend": {"title": "Event type"} if show_legend else False,
+                },
+                "shape": {
+                    "field": "event_type",
+                    "type": "nominal",
+                    "scale": {"domain": event_types, "range": shapes},
+                    "legend": False,
+                },
+                "opacity": {
+                    "condition": {"param": "event_highlight", "value": 1},
+                    "value": 0.25,
+                },
+                "tooltip": [
+                    {"field": "time", "type": "temporal", "title": "Time (as recorded)"},
+                    {"field": "lane", "type": "nominal", "title": "Node relationship"},
+                    {"field": "event_type", "type": "nominal", "title": "Event type"},
+                    {"field": "source", "type": "nominal", "title": "Source"},
+                    {"field": "event", "type": "nominal", "title": "Event"},
+                    {"field": "detail", "type": "nominal", "title": "Detail"},
+                ],
+            },
+            "config": {"view": {"stroke": None}, "axis": {"grid": True}},
+        }
+
+    st.subheader("HPA / HIA Event Timeline Relationship")
+    st.caption(
+        f"{Path(result['translated_filename']).stem.removesuffix('_decoded')} · "
+        f"Showing {len(filtered):,} of {len(frame):,} events. "
+        "Scroll to zoom and drag to pan in time; click a marker to highlight its event type, "
+        "then double-click to clear the highlight and reset the time range. Hover for event details. "
+        "Timestamps are shown as stored by each source; they are UTC where the source states it."
+    )
+    st.markdown("**Overview (full time range)**")
+    st.vega_lite_chart(chart_spec(filtered, 180, True), use_container_width=True)
+    st.markdown(f"**Zoomed-in: last 7 days ({len(recent):,} events)**")
+    st.vega_lite_chart(chart_spec(recent, 220, False), use_container_width=True)
+    st.markdown("**Filtered events**")
+    st.dataframe(
+        filtered[["time", "lane", "event_type", "source", "event", "detail"]].rename(
+            columns={
+                "time": "Time",
+                "lane": "Node lane",
+                "event_type": "Event type",
+                "source": "Source",
+                "event": "Event",
+                "detail": "Detail",
+            }
+        ),
+        hide_index=True,
+        use_container_width=True,
+    )
+
 
 def render_interpretation(result, sections):
     """Show the rule-based findings and the merged timeline for the decoded readout."""
@@ -305,6 +519,17 @@ def render_interpretation(result, sections):
                 render_wrapped_table(extra_headers, [dict(zip(extra_headers, row)) for row in extra_rows])
             if finding["sources"]:
                 st.caption("Source readouts: " + " · ".join(finding["sources"]))
+                with st.expander("Source readouts / raw response", expanded=False):
+                    st.caption(
+                        "Original response bytes and decoded fields from the translated readout."
+                    )
+                    for source in finding["sources"]:
+                        st.markdown(f"**{source}**")
+                        source_blocks = source_readout_blocks(result["blocks"], source)
+                        if not source_blocks:
+                            st.info("This source readout is not present in the loaded readout.")
+                        for block in source_blocks:
+                            st.code(block["content"], language="text", wrap_lines=True)
 
     timeline = interpretation["timeline"]
     if timeline:
@@ -326,6 +551,7 @@ def render_interpretation(result, sections):
         st.caption(f"A rule could not be evaluated: {message}")
 
 
+@st.fragment
 def render_baselines(result, records):
     """Look up and show the MAIN_INT baseline of each position's software part numbers (ConfigHub)."""
     st.markdown("**Baselines (MAIN_INT) from ConfigHub**")
@@ -451,6 +677,157 @@ def render_sw_versions(result):
             st.caption("Source readouts: " + " · ".join(record["sources"]))
 
 
+def translate_other_readout(path, report):
+    """Translate another readout of the VIN with the SDDB that is selected for this one."""
+    sddb_path, sddb_name, sddb_bytes = get_selected_sddb()
+    log = read_selected_log(path)
+    with tempfile.TemporaryDirectory(prefix="faulttracing-sat-") as directory:
+        if sddb_path is None:
+            sddb_path = str(Path(directory) / Path(sddb_name).name)
+            Path(sddb_path).write_bytes(sddb_bytes)
+        _, blocks, _ = decode_sat_readout(
+            log,
+            Path(path).name,
+            sddb_path,
+            sddb_name,
+            sddb_identity=uploaded_signature(sddb_bytes) if sddb_bytes is not None else None,
+            progress=report,
+        )
+    return blocks
+
+
+COMPARE_ROW_LIMIT = 500
+
+
+def render_compare(result, current_name):
+    """Compare this readout with another readout of the same VIN for the chosen nodes."""
+    st.subheader("Compare readouts")
+    candidates = [item for item in readouts if Path(item["path"]).name != current_name]
+    if readout_source != "VIN readout" or not candidates:
+        st.info(
+            "Load the readouts of a VIN (source: VIN readout) and translate one of them to compare it with "
+            "another readout of the same VIN."
+        )
+        return
+    options = {item["label"]: item for item in candidates}
+    current_stamp = readout_stamp(current_name)
+    default_index = next(
+        (
+            index for index, item in enumerate(candidates)
+            if current_stamp and (readout_stamp(Path(item["path"]).name) or current_stamp) < current_stamp
+        ),
+        0,
+    )
+    other_label = st.selectbox(
+        f"Compare {current_name} with",
+        options=list(options),
+        index=default_index,
+        key="compare_other",
+    )
+    ecu_names = result["ecu_names"]
+    nodes = st.multiselect(
+        "Nodes to compare",
+        options=list(ecu_names),
+        default=[ecu_id for ecu_id in ECU_IDS.values() if ecu_id in ecu_names],
+        format_func=lambda ecu_id: f"{ecu_names[ecu_id]} | {ecu_id}",
+        key="compare_nodes",
+    )
+    hide_context = st.checkbox(
+        "Hide time, distance and environment fields",
+        value=True,
+        key="compare_hide_context",
+        help="Fields stored next to many readouts that differ in every one: " + ", ".join(sorted(VOLATILE_FIELDS)) + ".",
+    )
+
+    if st.button("Compare readouts", key="run_compare", icon=":material/compare_arrows:"):
+        other = options[other_label]
+        try:
+            with st.status("Translating the other readout...", expanded=True) as status:
+                blocks = translate_other_readout(other["path"], status.write)
+                status.update(label=f"Translated {len(blocks):,} readouts.", state="complete", expanded=False)
+            st.session_state["comparison"] = {
+                "signature": result["signature"],
+                "other_name": Path(other["path"]).name,
+                "other_blocks": blocks,
+            }
+        except (FileNotFoundError, OSError, ValueError) as error:
+            st.error(f"Could not translate the other readout: {error}")
+
+    comparison = st.session_state.get("comparison")
+    if not comparison or comparison["signature"] != result["signature"]:
+        st.caption("Choose the readout and the nodes, then compare. Only fields whose decoded value differs are listed.")
+        return
+    if not nodes:
+        st.info("Select at least one node.")
+        return
+
+    other_stamp = readout_stamp(comparison["other_name"])
+    other_is_newer = bool(current_stamp and other_stamp and other_stamp > current_stamp)
+    older_name, newer_name = (
+        (current_name, comparison["other_name"]) if other_is_newer else (comparison["other_name"], current_name)
+    )
+    older_blocks, newer_blocks = (
+        (result["blocks"], comparison["other_blocks"]) if other_is_newer
+        else (comparison["other_blocks"], result["blocks"])
+    )
+    results = compare_blocks(
+        older_blocks, newer_blocks, set(nodes), VOLATILE_FIELDS if hide_context else frozenset()
+    )
+    st.caption(f"Older: {older_name}  ·  Newer: {newer_name}")
+    render_wrapped_table(SUMMARY_HEADERS, summary_rows(results))
+    st.download_button(
+        "Download comparison (Markdown)",
+        data=lambda: comparison_markdown(
+            older_name, newer_name, results, VOLATILE_FIELDS if hide_context else ()
+        ),
+        file_name=f"{Path(newer_name).stem}_vs_{Path(older_name).stem}_comparison.md",
+        mime="text/markdown",
+        icon=":material/download:",
+        key="download_comparison",
+    )
+    st.caption(
+        "To have the changes summarized, attach this file to the *Readout comparison* agent in Copilot Chat "
+        "(see .github/agents/readout-comparison.agent.md)."
+    )
+    field_filter = st.text_input(
+        "Filter the changed fields",
+        placeholder="readout, field or value",
+        key="compare_filter",
+    ).strip().lower()
+    for item in results:
+        rows = [
+            row for row in item["rows"]
+            if not field_filter or field_filter in " ".join(map(str, row)).lower()
+        ]
+        label = (
+            f"{item['ecu_name']} | {item['ecu_id']} · {item['changed']} of {item['compared']} readouts changed"
+            f" · {item['fields']} fields"
+        )
+        with st.expander(label, expanded=False):
+            if rows:
+                for readout, changed_fields in group_changed_rows(rows).items():
+                    with st.expander(
+                        f"{readout} · {len(changed_fields):,} fields changed", expanded=False
+                    ):
+                        shown = changed_fields[:COMPARE_ROW_LIMIT]
+                        render_wrapped_table(
+                            ROW_HEADERS[1:],
+                            [dict(zip(ROW_HEADERS[1:], row)) for row in shown],
+                        )
+                        if len(changed_fields) > len(shown):
+                            st.caption(
+                                f"Showing the first {len(shown):,} of {len(changed_fields):,} changes "
+                                "in this readout; narrow them with the filter or download the "
+                                "Markdown comparison for all of them."
+                            )
+            else:
+                st.info("No field changed in the readouts present in both." if not field_filter else "No change matches the filter.")
+            if item["only_older"]:
+                st.caption("Only in the older readout: " + "; ".join(item["only_older"]))
+            if item["only_newer"]:
+                st.caption("Only in the newer readout: " + "; ".join(item["only_newer"]))
+
+
 def render_translated_output(content, search_terms):
     terms = sorted(
         {
@@ -487,7 +864,7 @@ def render_translated_output(content, search_terms):
         display = html.escape(content)
     st.html(
         f"""
-        <div style="width:100%;height:64vh;min-height:420px;overflow:auto;
+        <div style="width:100%;height:85vh;min-height:600px;overflow:auto;
                     box-sizing:border-box;background:#000;color:#fff;
                     border:1px solid #555;border-radius:4px;padding:12px">
           <pre style="margin:0;white-space:pre-wrap;overflow-wrap:anywhere;
@@ -523,11 +900,11 @@ def parse_content_search(query):
     return search_parts
 
 
-def block_matches_content_search(block, search_parts):
+def text_matches_search(text, search_parts):
     if not search_parts:
         return True
-    content = block["content"].upper()
-    content_without_spaces = content.replace(" ", "")
+    content = text.upper()
+    content_without_spaces = re.sub(r"\s+", "", content)
     for part in search_parts:
         if part in content:
             continue
@@ -571,7 +948,10 @@ def build_tree_frame(grouped, expanded, selected):
         is_open = ecu_id in expanded
         records.append({
             "Open": "▾" if is_open else "▸",
-            "Show": selected_count == len(row_ids),
+            "Show": (
+                ":material/check_box:" if selected_count == len(row_ids)
+                else ":material/check_box_outline_blank:"
+            ),
             "ECU / Readout": (
                 f"{ecu_blocks[0]['ecu_name']} | {ecu_id} "
                 f"({selected_count}/{len(row_ids)})"
@@ -582,7 +962,10 @@ def build_tree_frame(grouped, expanded, selected):
             for block in ecu_blocks:
                 records.append({
                     "Open": "",
-                    "Show": block["row_id"] in selected,
+                    "Show": (
+                        ":material/check_box:" if block["row_id"] in selected
+                        else ":material/check_box_outline_blank:"
+                    ),
                     "ECU / Readout": f"      {readout_label(block)}",
                 })
                 nodes.append(("readout", ecu_id, block["row_id"]))
@@ -594,7 +977,6 @@ def rebuild_tree():
     state["rt_base"], state["rt_nodes"] = build_tree_frame(
         state["rt_grouped"], state["rt_expanded"], state["rt_selected"]
     )
-    state["rt_key"] = state.get("rt_key", 0) + 1
 
 
 def mark_tree_dirty():
@@ -611,6 +993,26 @@ def toggle_ecu_click():
     ecu_id = nodes[click.row][1]
     expanded = st.session_state["rt_expanded"]
     expanded.symmetric_difference_update({ecu_id})
+    mark_tree_dirty()
+
+
+def toggle_readout_click():
+    click = st.session_state.get("rt_show_click")
+    if click is None:
+        return
+    nodes = st.session_state["rt_nodes"]
+    if not 0 <= click.row < len(nodes):
+        return
+    kind, ecu_id, row_id = nodes[click.row]
+    row_ids = (
+        {block["row_id"] for block in st.session_state["rt_grouped"][ecu_id]}
+        if kind == "ecu" else {row_id}
+    )
+    selected = st.session_state["rt_selected"]
+    if row_ids <= selected:
+        selected.difference_update(row_ids)
+    else:
+        selected.update(row_ids)
     mark_tree_dirty()
 
 
@@ -637,21 +1039,20 @@ def clear_selected_readouts():
 @st.fragment
 def render_translated_browser(result):
     all_blocks = result["blocks"]
-    search_col, lookup_col = st.columns([3, 2])
+    search_col, lookup_col = st.columns(2)
     with search_col:
         with st.form("translated_content_search", border=False):
-            search_col, search_button_col, clear_button_col = st.columns([6, 1, 1])
-            with search_col:
-                st.text_input(
-                    "Search/Filter",
-                    placeholder="Search decoded text, ECU, DID, or DTC",
-                    key="readout_search_input",
-                    type="search",
-                )
+            st.text_input(
+                "Search decoded content",
+                placeholder="Text, DID, or DTC in decoded readouts",
+                key="readout_search_input",
+                type="search",
+            )
+            search_button_col, clear_button_col = st.columns(2)
             with search_button_col:
                 st.form_submit_button(
                     "Search",
-                    use_container_width=True,
+                    width="stretch",
                     on_click=lambda: st.session_state.update(
                         active_readout_search=st.session_state.readout_search_input
                     ),
@@ -659,7 +1060,7 @@ def render_translated_browser(result):
             with clear_button_col:
                 st.form_submit_button(
                     "Clear",
-                    use_container_width=True,
+                    width="stretch",
                     on_click=lambda: st.session_state.update(
                         readout_search_input="",
                         active_readout_search="",
@@ -668,26 +1069,27 @@ def render_translated_browser(result):
     with lookup_col:
         with st.form("translated_metadata_lookup", border=False):
             st.text_input(
-                "Lookup",
-                placeholder="ECU, service, DID",
+                "Lookup ECU / service / DID",
+                placeholder="e.g. HIA, 22 47 CF, or 2247cf",
                 key="readout_lookup_input",
+                help="Hexadecimal requests and DIDs work with or without spaces.",
             )
             lookup_button_col, reset_button_col = st.columns(2)
             with lookup_button_col:
                 st.form_submit_button(
                     "Lookup",
-                    use_container_width=True,
+                    width="stretch",
                     on_click=apply_readout_lookup,
                 )
             with reset_button_col:
                 st.form_submit_button(
                     "Reset",
-                    use_container_width=True,
+                    width="stretch",
                     on_click=clear_readout_lookup,
                 )
 
     active_lookup = st.session_state.get("active_readout_lookup", "").strip().upper()
-    lookup_tokens = active_lookup.split()
+    lookup_tokens = parse_content_search(active_lookup)
     search_parts = parse_content_search(
         st.session_state.get("active_readout_search", "")
     )
@@ -722,8 +1124,8 @@ def render_translated_browser(result):
             block for block in all_blocks
             if (
                 (not selected_ecus or block["ecu_id"] in selected_ecus)
-                and all(token in block["lookup_text"] for token in lookup_tokens)
-                and block_matches_content_search(block, search_parts)
+                and text_matches_search(block["lookup_text"], lookup_tokens)
+                and text_matches_search(block["content"], search_parts)
             )
         ]
         grouped = {}
@@ -786,58 +1188,39 @@ def render_translated_browser(result):
             )
 
         base_tree = st.session_state["rt_base"]
-        tree_nodes = st.session_state["rt_nodes"]
-        edited_tree = st.data_editor(
+        # A dataframe keeps its viewport when tree rows change; an editor
+        # resets its identity (and scroll) whenever its row count changes.
+        st.dataframe(
             base_tree,
             hide_index=True,
             width="stretch",
-            height=560,
-            num_rows="fixed",
-            key=f"rt_editor_{st.session_state['rt_key']}",
-            disabled=["ECU / Readout"],
+            height=800,
+            key="rt_tree",
+            alt="ECU and readout tree",
             column_config={
                 "Open": st.column_config.ButtonColumn(
                     " ",
-                    width="small",
+                    width=40,
+                    pinned=True,
+                    help="Expand or collapse ECU readouts",
                     on_click=toggle_ecu_click,
                     key="rt_open_click",
                 ),
-                "Show": st.column_config.CheckboxColumn("Show", width="small"),
+                "Show": st.column_config.ButtonColumn(
+                    " ",
+                    width=40,
+                    pinned=True,
+                    help="Show or hide decoded readouts",
+                    on_click=toggle_readout_click,
+                    key="rt_show_click",
+                ),
                 "ECU / Readout": st.column_config.TextColumn(
                     "ECU / Readout", width="large"
                 ),
             },
         )
 
-        old_show = base_tree["Show"].tolist()
-        new_show = edited_tree["Show"].fillna(False).astype(bool).tolist()
         selected = set(st.session_state["rt_selected"])
-        visible_children = {
-            node[2] for node in tree_nodes if node[0] == "readout"
-        }
-        selected -= visible_children
-        selected.update(
-            node[2]
-            for node, checked in zip(tree_nodes, new_show)
-            if node[0] == "readout" and checked
-        )
-        toggled_ecus = [
-            (node[1], checked)
-            for node, checked, was_checked in zip(tree_nodes, new_show, old_show)
-            if node[0] == "ecu" and checked != was_checked
-        ]
-        for ecu_id, checked in toggled_ecus:
-            ecu_row_ids = [
-                block["row_id"] for block in st.session_state["rt_grouped"][ecu_id]
-            ]
-            if checked:
-                selected.update(ecu_row_ids)
-            else:
-                selected.difference_update(ecu_row_ids)
-        st.session_state["rt_selected"] = selected
-        if toggled_ecus:
-            rebuild_tree()
-            st.rerun(scope="fragment")
         st.caption(f"{len(selected):,} readouts selected")
 
     with right_pane:
@@ -986,9 +1369,12 @@ if current_result is not None:
         key="download_translated_readout",
     )
     st.metric("Decoded readouts", len(current_result["blocks"]))
-    translated_tab, summary_tab, versions_tab = st.tabs(
-        ["Translated readout", "Readout summary", "SW versions"]
+    translated_tab, summary_tab, versions_tab, compare_tab = st.tabs(
+        ["Translated readout", "Readout summary", "SW versions", "Compare readouts"]
     )
+
+    with compare_tab:
+        render_compare(current_result, current_log_filename)
 
     with versions_tab:
         render_sw_versions(current_result)
@@ -1014,6 +1400,7 @@ if current_result is not None:
             key="download_readout_summary",
         )
         render_interpretation(current_result, sections)
+        render_timeline_chart(current_result)
         if summary_available:
             st.subheader("Recorded data")
             if sections:

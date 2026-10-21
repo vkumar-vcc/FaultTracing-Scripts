@@ -47,7 +47,8 @@ Use `run.ps1` on Windows PowerShell or `run.sh` on Linux/macOS:
 ./run.sh <tool> [arguments]
 ```
 
-Available tools are `confighub`, `can`, `nuc`, `sat`, and `standby`. Use the
+Available tools are `confighub`, `can`, `nuc`, `sat`, `standby`, and `decoder`
+(the combined Streamlit readout app, started with `./run.sh decoder`). Use the
 tool's normal arguments after its name:
 
 ```powershell
@@ -57,7 +58,6 @@ tool's normal arguments after its name:
 .\run.ps1 standby --input-file hp_coldboot.log
 ```
 
-To see the dispatcher help, run `.run.ps1 --help` or `./run.sh --help`.
 To see the dispatcher help, run `.\run.ps1 --help` or `./run.sh --help`.
 
 Add or update Python dependencies from the repository root with `uv`:
@@ -131,6 +131,22 @@ output layout are documented in [download_combine_NUC_dlt/README.md](download_co
 The SAT readout decoder is maintained in the `SAT_Readout_decoder` submodule.
 Instructions are in [SAT_Readout_decoder/README.md](SAT_Readout_decoder/README.md).
 
+## Host all Streamlit tools at one address
+
+The [hosting setup](hosting/README.md) runs the readout decoder, SOME/IP analyzer,
+and CAN viewer on Windows, and the PCAP decoder in its existing WSL/Python 3.10
+environment. Caddy exposes them under one address with a landing page and a
+shared app switcher. Each tool keeps its own process, dependencies, and session
+state; no Linux native decoder libraries are loaded into Windows.
+
+After the one-time prerequisites in that guide:
+
+```powershell
+.\hosting\start.ps1 -Distro Ubuntu22
+```
+
+Open `http://localhost:8080`. The existing standalone commands remain supported.
+
 ## Combined Streamlit app
 
 The Streamlit app combines SAT translation and standby analysis in one
@@ -140,9 +156,12 @@ with the server file browser (or upload one); the browser starts in
 `~/Downloads/sddb` when it exists, or in the folder given by the `SAT_SDDB_DIR`
 environment variable. Then start the analysis:
 
-```powershell
-uv run streamlit run decoder\decoder.py
+```bash
+./run.sh decoder
 ```
+
+On Windows use `.\run.ps1 decoder` (equivalent to
+`uv run streamlit run decoder\decoder.py`).
 
 The first translation with a given SDDB indexes every ECU, DID, and DTC in it
 once (about 25 s for a 260 MB file). The index is cached in memory and on disk
@@ -155,15 +174,31 @@ standby summaries of an identical readout are also cached for the session.
 The translated-readout view uses a structured, virtualized ECU-to-readout tree
 for browsing and multi-selecting decoded blocks, with ECU filtering and a
 terminal-style output pane. Use the ▸/▾ button on an ECU row (or Expand all /
-Collapse all) to show or hide its readouts, and the Show checkbox on an ECU or
+Collapse all) to show or hide its readouts without resetting the tree's scroll
+position, and the checkbox-style Show button on an ECU or
 readout row to include it in the output; Select all and Clear apply to the
-filtered readouts. Use Lookup to filter readouts by ECU, service, DID, or
-description; use Search/Filter for decoded content. It uses the full-width
+filtered readouts. Both button columns stay compact and pinned on the left;
+the ECU/readout text column takes the remaining width.
+Use Lookup to filter readouts by ECU, service, DID, or
+description; hexadecimal requests and DIDs accept either spaced or compact
+input, such as `22 47 CF` or `2247cf`, regardless of case.
+Search decoded content and Lookup appear side by side, each with its own apply
+and clear/reset buttons underneath; the ECU filter applies to both.
+It uses the full-width
 Streamlit layout. The **Readout summary** tab opens with an **Interpretation**
 section: rule-based findings (issue, warning, info, ok) that explain what the
+readout means. Each finding includes a collapsed **Source readouts / raw response**
+option showing the original response bytes and decoded fields for its cited
+sources, without switching tabs. Missing source readouts are explicitly noted.
+The findings explain what the
 readout means for HPA, HIA, HIB and LPA, such as failed standby transitions,
 the reasons HIA restarted HP, FSI errors, application watchdog failures, and the
 LPA shutdown and wake-up history, plus a merged timeline of recorded events. The
+summary also includes an interactive HPA / HIA event relationship chart with
+standby, platform-state, restart, FSI/error and DTC events, a full-range
+overview and a seven-day zoom. Filter by event type, node lane and date range;
+the chart also supports time zoom/pan and event-type highlighting. A matching
+event table is shown below the charts. The
 HIA and HIB reset logs (`22 FE 04`) are decoded like the Safety-B ResetLog parser
 sheet (`decoder/reset_log.py`): reset common data, reset history and the
 application context (stack trace, error hook, SMU, PMIC, ...). The
@@ -204,7 +239,35 @@ lookup signs in with the login saved by `confighub_lookup.py` (OS keychain), the
 `CONFIGHUB_TOKEN` environment variable, or a username and password entered in
 the tab (optionally saved to the keychain). It needs access to ConfigHub (VPN),
 takes about 6 s for the six ECUs and is cached for an hour afterwards.
-The logic is in `decoder/baselines.py`. The existing standalone decoder tools
+Lookup runs independently of the page, keeping the current tab and page position.
+The logic is in `decoder/baselines.py`.
+
+The **Compare readouts** tab compares the translated readout with another
+readout of the same VIN (a VIN readout is the source; the next older one is
+preselected). Choose the nodes (HIA, HIB, HPA and LPA are preselected), then
+*Compare readouts* translates the other readout with the same SDDB (cached) and
+lists, per node, every decoded field whose value differs: readout, field, older
+value, newer value, and the change (for numbers the difference with its unit,
+for example `+14 km`). Readouts present in only one of the two are listed too.
+Within each node, changed fields are grouped into collapsed readout/DID sections
+with a field-change count. Open a section to see its older/newer values without
+repeating the readout name on every row. The Markdown download groups fields by
+readout as well.
+The time, distance and environment fields stored next to many readouts
+(`Global Real Time`, `Total Distance`, `Vehicle Speed`, ...) can be hidden, a
+text filter narrows the changes, and the comparison downloads as Markdown (an
+index of the changed readouts per node, the changed fields, the readouts present
+on one side only, and the unchanged readouts). The logic is in
+`decoder/compare.py`.
+
+To have a comparison summarized, attach the downloaded Markdown file to the
+**Readout comparison** agent (`.github/agents/readout-comparison.agent.md`) in
+Copilot Chat. It is read-only: it loads the
+[decoder-summary-interpretation skill](.github/skills/decoder-summary-interpretation/SKILL.md)
+for the platform model and reports, with evidence, what needs attention, what is
+worth knowing, what is normal driving activity, and what the comparison cannot
+tell. The readout data stays in your Copilot session; nothing is sent elsewhere
+by the app. The existing standalone decoder tools
 remain available.
 
 ## Standby decoder
@@ -307,7 +370,9 @@ and are not converted using the platform counter. Entries dated 1970 are retaine
 with a warning that their clock may be unset.
 Data Health 3 (`No data available`) prints an explicit unavailable status and
 does not prevent the other tables from being displayed. It is not interpreted
-as zero watchdog failures; other nonzero health values remain errors.
+as zero watchdog failures. Data Health 2 (`Overloaded`) means the buffer kept
+only the latest entries: the timeline is decoded with a warning that counts are
+incomplete. Other nonzero health values remain errors.
 
 When an HIA (`1D0D`), HIB (`1D0E`), or HPA (`1D12`) DTC list (`19 03`) and
 DTC snapshot reads (`19 04`) are present, the decoder prints one table per ECU

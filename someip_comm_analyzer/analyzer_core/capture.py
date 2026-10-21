@@ -13,7 +13,7 @@ import numpy as np
 
 from .common import (
     CHUNK, EXCLUDED_PORTS, HOST_TS_RES, JOB_SIZE, MT_NAMES, OVERLAP,
-    S_PCAP_REC_BE, S_PCAP_REC_LE, S_SD_ENT, S_SOMEIP, S_U32, S_U32_LE,
+    S_II_LE, S_PCAP_REC_BE, S_PCAP_REC_LE, S_SD_ENT, S_SOMEIP, S_U32, S_U32_LE,
     VALID_MT,
 )
 

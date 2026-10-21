@@ -1,0 +1,30 @@
+{
+	admin off
+	auto_https disable_redirects
+}
+
+{$FAULT_TRACING_ADDRESS:http://localhost:8080} {
+	@readout path /readout /readout/*
+	handle @readout {
+		reverse_proxy 127.0.0.1:8511
+	}
+
+	@pcap path /pcap /pcap/*
+	handle @pcap {
+		reverse_proxy 127.0.0.1:8512
+	}
+
+	@someip path /someip /someip/*
+	handle @someip {
+		reverse_proxy 127.0.0.1:8513
+	}
+
+	@can path /can /can/*
+	handle @can {
+		reverse_proxy 127.0.0.1:8514
+	}
+
+	handle {
+		reverse_proxy 127.0.0.1:8510
+	}
+}

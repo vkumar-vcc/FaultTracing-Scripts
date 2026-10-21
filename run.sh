@@ -14,8 +14,10 @@ Tools:
   nuc        NUC DLT downloader
   sat        SAT readout decoder
   standby    Standby decoder
+  decoder    Combined readout decoder (Streamlit app)
 
 Examples:
+  ./run.sh decoder
   ./run.sh confighub 32477281IMJ
   ./run.sh can log.blf --map can_decoder/channels.txt
   ./run.sh nuc --help
@@ -45,6 +47,9 @@ case "${tool,,}" in
     ;;
   standby)
     exec uv run python standby-decoder/hpa_stanby_decoder.py "$@"
+    ;;
+  decoder)
+    exec uv run streamlit run decoder/decoder.py "$@"
     ;;
   *)
     usage >&2

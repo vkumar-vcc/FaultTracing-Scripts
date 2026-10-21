@@ -19,6 +19,7 @@ function Show-Usage {
     Write-Host "  nuc        NUC DLT downloader"
     Write-Host "  sat        SAT readout decoder"
     Write-Host "  standby    Standby decoder"
+    Write-Host "  decoder    Combined readout decoder (Streamlit app)"
     Write-Host "  someip     SOME/IP communication analyzer (CLI)"
     Write-Host "  someip-ui  SOME/IP communication analyzer (Streamlit)"
     Write-Host ""
@@ -54,6 +55,9 @@ switch ($Tool.ToLowerInvariant()) {
     }
     "standby" {
         uv run python standby-decoder\hpa_stanby_decoder.py @Arguments
+    }
+    "decoder" {
+        uv run streamlit run decoder\decoder.py @Arguments
     }
     "someip" {
         & (Join-Path $PSScriptRoot "someip_comm_analyzer\run.ps1") -Cli @Arguments

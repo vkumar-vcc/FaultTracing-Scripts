@@ -55,6 +55,18 @@ def finding(category, severity, headline, details=None, evidence=None, table=Non
     }
 
 
+def source_readout_blocks(blocks, source):
+    """Resolve a finding's source label, including grouped requests such as 19 03 / 19 04."""
+    ecu, _, requests = source.partition(" ")
+    ecu_id = ECU_IDS.get(ecu)
+    readouts = {re.sub(r"\s+", "", request).upper() for request in requests.split("/")}
+    return [
+        block for block in blocks
+        if block["ecu_id"] == ecu_id
+        and re.sub(r"\s+", "", block["readout"]).upper() in readouts
+    ]
+
+
 def to_int(value):
     """Leading number of a decoded value such as '3', '1 True' or '19 Seconds'; None if unreliable."""
     if value is None or "not reliable" in value.lower():
