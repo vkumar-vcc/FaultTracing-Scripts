@@ -18,7 +18,7 @@ class HostingTests(unittest.TestCase):
             app = AppTest.from_file(str(ROOT / "hosted_app.py")).run()
         self.assertEqual(list(app.exception), [])
         self.assertEqual(app.title[0].value, "Fault tracing tools")
-        self.assertEqual(len(app.get("html")), 5)
+        self.assertEqual(len(app.get("html")), 1 + len(hosted_app.TOOLS))
 
     def test_navigation_uses_same_origin_and_same_tab(self):
         navigation = hosted_app.navigation_html()

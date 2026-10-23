@@ -15,6 +15,7 @@ Tools:
   sat        SAT readout decoder
   standby    Standby decoder
   decoder    Combined readout decoder (Streamlit app)
+  investigate  Root-cause investigation page (Streamlit; the worker runs on Windows)
 
 Examples:
   ./run.sh decoder
@@ -50,6 +51,9 @@ case "${tool,,}" in
     ;;
   decoder)
     exec uv run streamlit run decoder/decoder.py "$@"
+    ;;
+  investigate)
+    exec uv run streamlit run investigate/app.py "$@"
     ;;
   *)
     usage >&2

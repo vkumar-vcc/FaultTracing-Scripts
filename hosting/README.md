@@ -12,6 +12,7 @@ menu without modifying the standalone tools.
 | `/pcap/` | 8512 | WSL `pcap_decoder/.venv` |
 | `/someip/` | 8513 | Root Windows `.venv` (workspace dependencies) |
 | `/can/` | 8514 | Windows `can_decoder/.venv` |
+| `/investigate/` | 8515 | Root Windows `.venv`, plus the investigation worker |
 
 Caddy preserves each prefix, including Streamlit's WebSocket, upload, and static
 asset routes. The menu uses same-origin links; users never need backend addresses
@@ -78,6 +79,12 @@ the existing viewer selects the first Parquet file in `can_decoder`, or shows
 its existing "No .parquet file found" message. Decode a CAN capture first.
 This setup does not add browser-based CAN conversion/upload.
 
+The launcher also starts the [root-cause investigation](../README.md#root-cause-investigation)
+worker, which processes jobs submitted on `/investigate/`. It runs as the
+launching account and uses that account's Copilot CLI login, `az login` and SMB
+credentials. To leave it out, for example when the worker runs on another
+session that shares the same job folder, pass `-NoWorker`.
+
 ## Share with colleagues
 
 For a **trusted-network test only**:
@@ -87,15 +94,17 @@ For a **trusted-network test only**:
 ```
 
 Allow only the front-door port through Windows Firewall for the intended
-network. Do not expose backend ports 8510-8514. Caddy automatically proxies
-WebSockets; do not strip `/pcap`, `/readout`, `/someip`, or `/can`.
+network. Do not expose backend ports 8510-8515. Caddy automatically proxies
+WebSockets; do not strip `/pcap`, `/readout`, `/someip`, `/can`, or `/investigate`.
 
 **This launcher does not add authentication.** The tools can access server
 files, network shares and credentials, and invoke analysis jobs. Before using a
 shared or internet-reachable deployment, put the *entire site*, including health,
 WebSocket and upload endpoints, behind your organization's authenticated VPN or
 SSO gateway. Do not expose these tools to untrusted users. OS keychain credentials
-belong to the server account, not to each browser user.
+belong to the server account, not to each browser user. Anyone who can open
+`/investigate/` can make the worker read logs for any VIN with those credentials
+and spend the account's Copilot requests.
 
 For HTTPS, pass an address such as `https://fault-tools.example.com`.
 Caddy requests certificates automatically if DNS and ACME connectivity permit;

@@ -14,6 +14,7 @@ TOOLS = {
     "pcap": ("PCAP decoder (WSL)", ROOT / "pcap_decoder" / "streamlit_app.py"),
     "someip": ("SOME/IP communication analyzer", ROOT / "someip_comm_analyzer" / "streamlit_app.py"),
     "can": ("CAN signal viewer", ROOT / "can_decoder" / "signal_viewer.py"),
+    "investigate": ("Root-cause investigation", ROOT / "investigate" / "app.py"),
 }
 
 

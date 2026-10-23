@@ -24,6 +24,11 @@
 		reverse_proxy 127.0.0.1:8514
 	}
 
+	@investigate path /investigate /investigate/*
+	handle @investigate {
+		reverse_proxy 127.0.0.1:8515
+	}
+
 	handle {
 		reverse_proxy 127.0.0.1:8510
 	}

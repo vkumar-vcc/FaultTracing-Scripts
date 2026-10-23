@@ -4,7 +4,8 @@ param(
     [string]$CaddyPath = "caddy",
     [string]$Address = "http://localhost:8501",
     [string]$CanParquet,
-    [string]$StopFile
+    [string]$StopFile,
+    [switch]$NoWorker
 )
 
 $ErrorActionPreference = "Stop"
@@ -71,7 +72,7 @@ try {
     if ($CanParquet) {
         $CanParquet = (Resolve-Path $CanParquet).Path
     }
-    foreach ($port in 8510..8514) {
+    foreach ($port in 8510..8515) {
         $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $port)
         try { $listener.Start() }
         finally { $listener.Stop() }
@@ -95,7 +96,8 @@ try {
         @{ Name = "home"; Port = 8510; Python = $rootPython },
         @{ Name = "readout"; Port = 8511; Python = $rootPython },
         @{ Name = "someip"; Port = 8513; Python = $rootPython },
-        @{ Name = "can"; Port = 8514; Python = $canPython }
+        @{ Name = "can"; Port = 8514; Python = $canPython },
+        @{ Name = "investigate"; Port = 8515; Python = $rootPython }
     )) {
         $arguments = @("-m", "streamlit", "run", $hosted,
             "--server.address", "127.0.0.1", "--server.port", "$($app.Port)",
@@ -116,6 +118,11 @@ try {
         "--server.port", "8512", "--server.baseUrlPath", "pcap", "--server.headless", "true",
         "--", "pcap")
     Wait-Healthy "http://127.0.0.1:8512/pcap/_stcore/health" $wsl
+
+    if (-not $NoWorker) {
+        # Runs investigations with this account's SMB keychain, az login and Copilot CLI login.
+        $null = Start-HostedProcess "investigate-worker" $rootPython @((Join-Path $root "investigate\worker.py"))
+    }
 
     $proxy = Start-HostedProcess "proxy" $caddy @("run", "--config", (Join-Path $PSScriptRoot "Caddyfile"),
         "--adapter", "caddyfile")

@@ -47,8 +47,10 @@ Use `run.ps1` on Windows PowerShell or `run.sh` on Linux/macOS:
 ./run.sh <tool> [arguments]
 ```
 
-Available tools are `confighub`, `can`, `nuc`, `sat`, `standby`, and `decoder`
-(the combined Streamlit readout app, started with `./run.sh decoder`). Use the
+Available tools are `confighub`, `can`, `nuc`, `sat`, `standby`, `decoder`
+(the combined Streamlit readout app, started with `./run.sh decoder`),
+`investigate` (the root-cause investigation page) and `investigate-worker`
+(Windows only; see [Root-cause investigation](#root-cause-investigation)). Use the
 tool's normal arguments after its name:
 
 ```powershell
@@ -146,6 +148,88 @@ After the one-time prerequisites in that guide:
 ```
 
 Open `http://localhost:8080`. The existing standalone commands remain supported.
+
+## Root-cause investigation
+
+Colleagues open the **Root-cause investigation** page (`/investigate/` in the hosted
+stack) and enter a VIN, the event time and time zone, a problem description and
+notes. A worker on the hosting computer then:
+
+1. Collects everything for that VIN around the event (default 5 minutes before and
+   after; adjustable in the form):
+   - SAT readouts from the share, decoded with an SDDB and summarised.
+   - NUC DLT, UART and Ethernet PCAP files.
+
+   DLT is exported per ECU to text, together with a digest of resets, logging gaps,
+   error bursts and new error signatures.
+2. Runs the Copilot CLI headless with the
+   [Root cause agent](.github/agents/root-cause.agent.md). The agent reads the
+   collected data, may widen the window or collect more by rerunning
+   `investigate\collect.ps1` (the only command it is allowed to run), and writes a
+   report: likely causes with evidence, a timeline, and data gaps.
+
+The page shows each job's status, the report and the collected-file manifest, and
+refreshes every 10 seconds. Jobs run one at a time. Under **Evidence**, open any text
+file of the job (report, readout summaries, DLT digests and text exports): go to the
+line number the report cites, search for a time, application or message (plain text
+or regular expression), or view Markdown formatted. Large DLT exports are streamed, so
+a search through a 300 MB file takes a few seconds.
+
+### Feedback and team knowledge
+
+Below each report, **Correct or add to this finding** lets an engineer say what is
+wrong or what the agent missed. With *Analyse again with this feedback* (default),
+the job is queued again: the worker keeps the collected logs, archives the report as
+`report_v<N>.md`, and runs the agent with `feedback.md`. The agent must verify each
+feedback point against the logs and answer it under **Response to feedback**.
+
+The same form, or **Team knowledge > Add knowledge** at the bottom of the page, saves
+knowledge for an issue as a skill in [.github/skills](.github/skills)
+(`<name>/SKILL.md`; existing skills get dated notes under *Engineer notes*). The
+agent reads every skill's description and loads the ones that match the problem, so
+saved knowledge is used in all later investigations. Review and commit the new files
+to share them; the page writes to the working tree of the repository it runs from.
+Example: [system-communication-fault](.github/skills/system-communication-fault/SKILL.md).
+
+Start the page and the worker together with the hosted stack (`hosting\start.ps1`,
+see [hosting/README.md](hosting/README.md)), or separately:
+
+```powershell
+.\run.ps1 investigate          # the page, http://localhost:8501
+.\run.ps1 investigate-worker   # the worker; add --once to process the queue and exit
+```
+
+To collect without the agent, run
+`.\investigate\collect.ps1 --job <job folder> [--minutes-before N --minutes-after N --sources readouts,dlt,uart,pcap --ecus HPA,SGA --sddb PATH]`.
+
+The worker uses **the hosting account's** access. Before you start it, set up:
+- `copilot login` (install with `winget install GitHub.Copilot`).
+- `az login` for the NUC archive.
+- SMB credentials for the readout and NUC shares.
+- An SDDB folder (`~/Downloads/sddb` by default).
+
+Environment variables:
+
+| Variable | Purpose |
+| --- | --- |
+| `FAULT_TRACING_INVESTIGATIONS` | Job folder (default `%LOCALAPPDATA%\FaultTracing-Scripts\investigations`); the page and worker must use the same one. |
+| `FAULT_TRACING_SKILLS_DIR` | Where the page saves team knowledge (default `.github/skills` in this repository, which the agent reads). |
+| `SAT_SDDB` / `SAT_SDDB_DIR` | SDDB file, or folder whose newest `*.sddb` is used when the form does not choose one. |
+| `INVESTIGATION_COPILOT` | Path to `copilot.exe` or the npm package's `npm-loader.js` when it is not on PATH. |
+| `INVESTIGATION_MODEL` | Copilot model for the agent (default: the CLI's default). |
+| `INVESTIGATION_COLLECT_TIMEOUT`, `INVESTIGATION_AGENT_TIMEOUT` | Seconds per step (default 3600 each). |
+
+Each job folder holds:
+- `request.json`, `status.json`, `worker.log` and `collect.log`.
+- `collected/`: `manifest.md`, `readouts/`, `dlt_text/` and `nuc/`.
+- `report.md`, and the agent transcript `agent_session.md`.
+- After feedback: `feedback.json`, `feedback.md` and earlier reports `report_v<N>.md`.
+
+Limitations:
+- Readout and NUC file times are treated as UTC.
+- A wrongly auto-picked SDDB gives a poor readout decode. Choose the SDDB in the form.
+- PCAP files are only downloaded, not decoded.
+- The report is an AI hypothesis, to be confirmed by an engineer.
 
 ## Combined Streamlit app
 

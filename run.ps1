@@ -22,6 +22,8 @@ function Show-Usage {
     Write-Host "  decoder    Combined readout decoder (Streamlit app)"
     Write-Host "  someip     SOME/IP communication analyzer (CLI)"
     Write-Host "  someip-ui  SOME/IP communication analyzer (Streamlit)"
+    Write-Host "  investigate         Root-cause investigation page (Streamlit)"
+    Write-Host "  investigate-worker  Worker that collects logs and runs the root-cause agent"
     Write-Host ""
     Write-Host "Examples:"
     Write-Host "  .\run.ps1 confighub 32477281IMJ"
@@ -64,6 +66,12 @@ switch ($Tool.ToLowerInvariant()) {
     }
     "someip-ui" {
         & (Join-Path $PSScriptRoot "someip_comm_analyzer\run.ps1") @Arguments
+    }
+    "investigate" {
+        uv run streamlit run investigate\app.py @Arguments
+    }
+    "investigate-worker" {
+        uv run python investigate\worker.py @Arguments
     }
     default {
         Show-Usage
